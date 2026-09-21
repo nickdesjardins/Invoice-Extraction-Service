@@ -1,0 +1,20 @@
+# --- Runtime -------------------------------------------------------------
+# Web framework & server
+fastapi>=0.115.0            # also brings starlette, which app/main.py imports directly
+uvicorn[standard]>=0.30.0
+
+# Contracts, validation & configuration
+pydantic>=2.7.0
+pydantic-settings>=2.3.0
+python-dotenv>=1.0.0
+
+# LLM provider. OpenRouter speaks the OpenAI-compatible Chat Completions API.
+# Floor is the release that introduced the `json_schema` response_format this
+# service relies on. Verified against 3.16.2; versions from 3.0 ship their own
+# httpx2, which app/extractors.py detects at import time.
+openai>=1.40.0
+
+# --- Testing -------------------------------------------------------------
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+httpx>=0.27.0               # test-only: ASGITransport drives the app in-process

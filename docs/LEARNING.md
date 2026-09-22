@@ -4,6 +4,10 @@ This document explains **why this project is built the way it is**. It is a stud
 reference material: it walks the ideas in the order they matter, and points at the code where
 each one lives. Read it next to the source.
 
+New to Python? Start with [PYTHON_LEARNING.md](PYTHON_LEARNING.md), a code-first
+companion that explains the syntax through this project's actual functions, classes,
+request flow, and tests, with runnable examples and exercises.
+
 The companion document, [USAGE.md](USAGE.md), covers how to *run* the thing.
 
 ---

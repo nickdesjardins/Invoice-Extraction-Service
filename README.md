@@ -9,10 +9,11 @@ It talks to a single vendor, **OpenRouter**, and gets its resilience from routin
 **several models** rather than several vendors. Every default model is `:free`, so a
 normal request costs nothing and a fallback costs nothing either.
 
-> **New here?** Two guides accompany this README:
+> **New here?** Start with **[docs/PYTHON_LEARNING.md](docs/PYTHON_LEARNING.md)** if you are
+> learning Python: it explains the actual code with runnable examples and exercises.
 > **[docs/LEARNING.md](docs/LEARNING.md)** explains the Applied AI concepts and why the code is
-> shaped this way. **[docs/USAGE.md](docs/USAGE.md)** is the practical guide to installing,
-> calling, configuring and troubleshooting it.
+> shaped this way. **[docs/USAGE.md](docs/USAGE.md)** covers installing, calling,
+> configuring and troubleshooting the service.
 
 | Position | Default model                  | Benchmark          | Role                                          |
 |----------|--------------------------------|--------------------|-----------------------------------------------|

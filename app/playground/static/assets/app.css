@@ -2719,6 +2719,12 @@ code,
     display: none;
   }
 
+  /* Nor is there room for two links beside the status. The link to the code stays; the
+     API docs, which only a development copy shows, are still at their own address. */
+  #docs-link {
+    display: none;
+  }
+
   .plan__row {
     grid-template-columns: 24px minmax(0, 1fr);
   }

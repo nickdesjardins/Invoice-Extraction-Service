@@ -466,8 +466,8 @@ down the first time:
   every run of **Model check** shows a yellow warning that begins "This job publishes
   to". The other two are the address of the project page and the address of the
   repository itself. Search the repository for the old name and change it everywhere,
-  in one commit. It is in `app/config.py`, in `site/index.html`, in
-  `.github/workflows/pages.yml`, in `tests/test_front_door.py`, in
+  in one commit. It is in `app/config.py`, in `app/playground/static/index.html`, in
+  `site/index.html`, in `.github/workflows/pages.yml`, in `tests/test_front_door.py`, in
   `tests/test_published_chain.py` and in the documents. Then give the new address of
   the project page out.
 - **Taking it offline:** Render Dashboard, the service, **Settings**: at the bottom

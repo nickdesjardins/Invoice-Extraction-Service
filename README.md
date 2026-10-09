@@ -1,6 +1,6 @@
 # Invoice Extraction Service
 
-Production-grade asynchronous FastAPI microservice that turns messy, unstructured text
+Asynchronous FastAPI microservice that turns messy, unstructured text
 (email threads, vendor receipts, delivery slips, OCR dumps) into a **deterministic,
 schema-validated invoice record** using constrained LLM decoding with multi-model
 fallback routing.

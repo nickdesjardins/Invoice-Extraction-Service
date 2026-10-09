@@ -128,7 +128,12 @@ def test_page_loads_nothing_the_policy_would_block() -> None:
     scripts = re.findall(r"<script\b[^>]*>", PAGE)
     assert scripts and all("src=" in tag for tag in scripts)
 
-    urls = re.findall(r'(?:src|href)="([^"]+)"', PAGE)
+    # A link that a visitor follows loads nothing into the page, so the policy has no say
+    # about it. The page has one that leaves: the link to the code, opened in a new tab.
+    # tests/test_front_door.py holds its address to the one the project page gives.
+    leaving = re.findall(r'<a\b[^>]*\bhref="(?:[a-z]+:)?//[^"]*"[^>]*>', PAGE)
+    assert len(leaving) == 1 and 'target="_blank" rel="noopener"' in leaving[0]
+    urls = re.findall(r'(?:src|href)="([^"]+)"', PAGE.replace(leaving[0], ""))
     assert urls
     assert not [url for url in urls if re.match(r"(?:[a-z]+:)?//", url)], "external URL in page"
 

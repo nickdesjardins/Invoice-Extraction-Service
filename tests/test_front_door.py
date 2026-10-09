@@ -89,6 +89,8 @@ DEFAULT_CHAIN = [model.strip() for model in DEFAULT_MODEL_CHAIN.split(",")]
 #: Where GitHub Pages serves the page: a project site, so under the repository's name.
 PAGES_URL = "https://nickdesjardins.github.io/Invoice-Extraction-Service/"
 REPOSITORY_URL = "https://github.com/nickdesjardins/Invoice-Extraction-Service"
+#: Whose work this is: the account that holds the repository. The foot of the page links to it.
+AUTHOR_URL = REPOSITORY_URL.rsplit("/", 1)[0]
 
 #: The part of the demo's own page that the link leads to: where a visitor runs a document.
 #: Without it the visitor would land on a headline that is this page's headline again.
@@ -229,6 +231,9 @@ LABELS = {
     "Using the service",
     "The ideas behind it",
     "The Python, explained",
+    # The foot of the page.
+    "Built by",
+    "Nicolas Desjardins",
 }
 
 #: What a screen reader says that is not on the screen: the names of regions and buttons.
@@ -975,6 +980,8 @@ def test_the_page_goes_by_the_demos_name_and_previews_its_own_sentence() -> None
     # On a narrow phone the top bar has no room for the name: the foot of the page has it too.
     (foot,) = with_class("footer__row")
     assert clean(foot.find(lambda node: node.tag == "span")[0].text()) == their_title
+    # Both pages lead to the same code.
+    assert theirs.find(lambda node: node.tag == "a" and node.attrs.get("href") == REPOSITORY_URL)
     # Someone who sees the link before the page reads the page's own plain sentence, held to
     # the code like the one on the page.
     assert meta("description") == meta("og:description") == facts()["what-it-does"]
@@ -1179,7 +1186,7 @@ Code on GitHub | {guides.code}
 Using the service | <<Covers installing, calling, configuring and troubleshooting the service.>>
 The ideas behind it | <<Explains the Applied AI concepts and why the code is shaped this way.>>
 The Python, explained | <<Explains the actual code with runnable examples and exercises.>>
-Invoice Extraction Service | {page.nature} | {runs.where}
+Invoice Extraction Service | Built by | Nicolas Desjardins | {page.nature} | {runs.where}
 """
 
 
@@ -1243,6 +1250,7 @@ def test_every_link_leads_where_its_words_say() -> None:
         ("Using the service", blob + "docs/USAGE.md"),
         ("The ideas behind it", blob + "docs/LEARNING.md"),
         ("The Python, explained", blob + "docs/PYTHON_LEARNING.md"),
+        ("Nicolas Desjardins", AUTHOR_URL),
     ]
     found = [(clean(link.text()), link.attrs.get("href")) for link in BODY.find(lambda node: node.tag == "a")]
     assert found == expected
@@ -2136,6 +2144,8 @@ def test_every_link_leads_somewhere_that_exists() -> None:
             kinds.add("a part of this page")
         elif address == REPOSITORY_URL:
             kinds.add("the code")
+        elif address == AUTHOR_URL:
+            kinds.add("the author")
         elif address.startswith(REPOSITORY_URL + "/"):
             kind, branch, path = address[len(REPOSITORY_URL) + 1 :].split("/", 2)
             assert (kind, branch) in {("blob", "main"), ("tree", "main")}, address
@@ -2146,7 +2156,9 @@ def test_every_link_leads_somewhere_that_exists() -> None:
             assert not re.match(r"[a-z][a-z0-9+.-]*:", address) and not address.startswith("/"), address
             assert (SITE / address).is_file(), f"{address} is not in site/"
             kinds.add("a recording")
-    assert kinds == {"demo", "this page", "a part of this page", "the code", "a file of the repository", "a recording"}
+    assert kinds == {
+        "demo", "this page", "a part of this page", "the code", "the author", "a file of the repository", "a recording",
+    }
 
     # Each recording can be opened from the page, and nothing else is published beside them.
     opened = {link.attrs["href"] for link in links if link.attrs["href"].startswith("recorded/")}

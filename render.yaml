@@ -1,0 +1,32 @@
+# Render Blueprint: one free web service that serves the API and its page at "/".
+#
+# Render reads this file when you choose New > Blueprint and pick this repository,
+# so the only thing typed into a form is the API key. docs/DEPLOY.md walks through
+# it step by step.
+services:
+  - type: web
+    name: invoice-extraction-service
+    runtime: python # the Python version comes from the .python-version file
+    plan: free # without this line Render creates a paid instance
+    region: virginia # cannot be changed once the service exists
+    buildCommand: pip install -r requirements.txt
+    # One process on purpose: what the service remembers lives in its memory.
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+    autoDeployTrigger: commit # every push to main is built and deployed
+    buildFilter:
+      ignoredPaths: # a push that changes only these does not rebuild the service
+        - site/**
+        - docs/**
+        - README.md
+        - .github/**
+        - tests/**
+    envVars:
+      - key: ENVIRONMENT
+        value: production # hides /docs and the page's "run the test suite" button
+      - key: OPENROUTER_API_KEY
+        sync: false # asked for once, when the Blueprint is created; never stored here
+      - key: CORS_ALLOW_ORIGINS # this service's own address, filled in by Render
+        fromService:
+          name: invoice-extraction-service
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL

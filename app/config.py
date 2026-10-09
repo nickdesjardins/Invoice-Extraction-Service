@@ -12,9 +12,10 @@ rather than several vendors. ``OPENROUTER_MODELS`` is an ordered, comma-separate
 list: the first entry is the primary and each later entry is tried only when the
 ones before it fail.
 
-The defaults are all ``:free`` models, chosen from a six-case benchmark of every
-free model on OpenRouter that supports structured outputs (see the README). A
-request therefore normally costs nothing, and a fallback costs nothing either.
+The defaults are all ``:free`` models, so a request normally costs nothing and a
+fallback costs nothing either. Free models are withdrawn often, sometimes without
+notice, so the default chain is a dated snapshot: the README records how it was
+measured, and :mod:`app.model_catalogue` reports whether its models are still listed.
 
 Notes on env parsing
 --------------------
@@ -34,23 +35,31 @@ from dotenv import load_dotenv
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app import model_cache
+
 Environment = Literal["development", "staging", "production", "test"]
 
 #: Ordered default chain. Every entry is free to call.
 #:
-#: Benchmarked over six invoice cases (OCR noise, EUR amounts, an un-itemised
-#: service invoice, discount/shipping arithmetic, a non-invoice, and a prompt
-#: injection attempt):
-#:
-#: * ``nex-n2.5-mini``  - 29/31, 0 errors, ~4.5 s average. Fastest reliable model.
-#: * ``lfm-2.5-2.6b``   - 30/31, 0 errors, ~5.6 s. A different provider, so a
-#:   single upstream outage cannot take out both the primary and the fallback.
-#: * ``nex-n2.5-pro``   - 31/31, 0 errors, ~12.3 s. Most accurate, used last
-#:   because it is also the slowest.
+#: A dated snapshot, not a ranking. Both models were measured through this service
+#: on 7 October 2026; the figures are in the README under "Model selection". The
+#: first position goes to the model with the fewest wrong answers and failed calls,
+#: because the chain moves on only when a call fails: a fallback replaces a failed
+#: call, never a wrong answer. The two models are served by different providers, so
+#: one upstream outage cannot take out both.
 DEFAULT_MODEL_CHAIN = (
-    "nex-agi/nex-n2.5-mini:free,"
-    "liquid/lfm-2.5-2.6b:free,"
-    "nex-agi/nex-n2.5-pro:free"
+    "nvidia/nemotron-3-super-120b-a12b:free,"
+    "liquid/lfm-2.5-2.6b:free"
+)
+
+#: Where this project publishes the chain its scheduled test chose: one small JSON
+#: file on a branch of its own, written by ``.github/workflows/model-check.yml``. A
+#: clone or a fork reads the same file until it is pointed elsewhere. If the
+#: repository or the account is ever renamed, change this at once: the old address
+#: can go on answering for whoever takes the old name.
+DEFAULT_PUBLISHED_URL = (
+    "https://raw.githubusercontent.com/nickdesjardins/Invoice-Extraction-Service/"
+    "tested-models/chain.json"
 )
 
 #: Placeholder values shipped in ``.env.example``. Treated as "not configured" so
@@ -71,6 +80,9 @@ class Settings(BaseSettings):
         extra="ignore",
         env_ignore_empty=True,
         env_parse_none_str="null",
+        # Older pydantic-settings releases reserve every name that starts with
+        # "model_" and would warn about model_catalogue_check on each import.
+        protected_namespaces=("settings_",),
     )
 
     # --- Service -----------------------------------------------------------
@@ -81,8 +93,10 @@ class Settings(BaseSettings):
     environment: Environment = Field(
         default="development",
         description=(
-            "Deployment environment. Reported by /health, enables uvicorn auto-reload when "
-            "launched via `python -m app.main`, and disables /docs when set to production."
+            "Deployment environment. Reported by /health, and enables uvicorn auto-reload "
+            "when launched via `python -m app.main`. Set to production, it disables /docs, "
+            "switches the page's test-suite route off and makes the page's POST routes "
+            "refuse callers that are not a browser."
         ),
     )
     log_level: str = Field(
@@ -92,6 +106,33 @@ class Settings(BaseSettings):
     cors_allow_origins: str = Field(
         default="*",
         description="Comma-separated list of allowed CORS origins ('*' allows any origin).",
+    )
+    playground_enabled: bool = Field(
+        default=True,
+        description=(
+            "Serve the browser playground at '/' together with its /playground/* support "
+            "routes. Set to false for an API-only deployment."
+        ),
+    )
+    model_catalogue_check: bool = Field(
+        default=True,
+        description=(
+            "At startup, when a key is set, ask OpenRouter's public catalogue whether each "
+            "model of the chain is still listed, and log the answer. With OPENROUTER_MODELS "
+            "left blank the chain this project's scheduled test published is read first, and "
+            "used if it is newer. Neither request sends a key. Set to false to start without "
+            "any request, for example when working offline; the published chain is then read "
+            "after the first request that fails."
+        ),
+    )
+
+    model_published_url: Optional[str] = Field(
+        default=DEFAULT_PUBLISHED_URL,
+        description=(
+            "Where the service reads the model chain this project's scheduled test "
+            "published (https only, no key). Read at startup and after a failed request, "
+            "and only when OPENROUTER_MODELS is blank. Set to null to never read it."
+        ),
     )
 
     # --- Provider credentials ---------------------------------------------
@@ -106,7 +147,9 @@ class Settings(BaseSettings):
         description=(
             "Ordered, comma-separated OpenRouter model ids. The first is the primary; "
             "each later entry is a fallback tried only when the earlier ones fail. "
-            "Ids ending in ':free' cost nothing but carry tighter rate limits."
+            "Ids ending in ':free' cost nothing but carry tighter rate limits. Naming models "
+            "here pins the chain: the service then never tests or replaces one. Left blank, "
+            "it starts from the tested default and looks after the chain itself."
         ),
     )
     openrouter_base_url: str = Field(
@@ -127,7 +170,9 @@ class Settings(BaseSettings):
         gt=0,
         description=(
             "Output cap per request. Kept modest because providers reserve this value "
-            "against per-minute token budgets before the request runs."
+            "against per-minute token budgets before the request runs. Models that reason "
+            "before answering spend part of it on that, so an invoice with many lines can "
+            "need a higher cap."
         ),
     )
 
@@ -147,8 +192,8 @@ class Settings(BaseSettings):
         gt=0,
         description=(
             "Per-model wall-clock budget. Worst-case request latency is roughly "
-            "timeout_seconds * the number of models in the chain. The default allows "
-            "for the slowest benchmarked free model, which took ~30 s under load."
+            "timeout_seconds * the number of models in the chain. The default leaves room "
+            "for slow free models: answers of more than 20 s were measured on the default chain."
         ),
     )
 
@@ -185,11 +230,31 @@ class Settings(BaseSettings):
 
     # --- Derived helpers ---------------------------------------------------
     @property
+    def models_pinned(self) -> bool:
+        """True when ``OPENROUTER_MODELS`` names the chain; False when it was left blank.
+
+        Left blank, the service looks after the chain itself (:mod:`app.model_chooser`).
+        Pydantic records which settings were given a value, and a blank one was not
+        (``env_ignore_empty``), so this tells "left blank" from "named", even when the
+        names are exactly the default ones.
+        """
+        return "openrouter_models" in self.model_fields_set
+
+    @property
     def model_chain(self) -> list[str]:
-        """The ordered model ids, de-duplicated while preserving order."""
+        """The ordered model ids to use, de-duplicated while preserving order.
+
+        With models named in ``OPENROUTER_MODELS``: exactly those, always. With the
+        setting left blank: the chain the service chose for itself when it has chosen
+        one (:mod:`app.model_cache`), and the tested default otherwise. The settings
+        object itself never changes after startup; only what this property looks up does.
+        """
+        configured = self.openrouter_models
+        if not self.models_pinned:
+            configured = ",".join(model_cache.chain()) or configured
         seen: set[str] = set()
         chain: list[str] = []
-        for item in self.openrouter_models.split(","):
+        for item in configured.split(","):
             model = item.strip()
             if model and model not in seen:
                 seen.add(model)

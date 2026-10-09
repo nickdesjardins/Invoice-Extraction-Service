@@ -1,20 +1,26 @@
+# Exact versions on purpose. The host that runs the service installs this file
+# again at every deploy, so "whatever is newest that day" would mean running
+# versions nobody tested. These are the versions the test suite passes on.
+# To move one: change the number, run `pytest`, then commit.
+
 # --- Runtime -------------------------------------------------------------
 # Web framework & server
-fastapi>=0.115.0            # also brings starlette, which app/main.py imports directly
-uvicorn[standard]>=0.30.0
+fastapi==0.141.1
+starlette==1.6.0            # fastapi brings it anyway; named because app/main.py imports it directly
+uvicorn[standard]==0.53.0
 
 # Contracts, validation & configuration
-pydantic>=2.7.0
-pydantic-settings>=2.3.0
-python-dotenv>=1.0.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
 
 # LLM provider. OpenRouter speaks the OpenAI-compatible Chat Completions API.
-# Floor is the release that introduced the `json_schema` response_format this
-# service relies on. Verified against 3.16.2; versions from 3.0 ship their own
+# Needs 1.40.0 or later, the release that introduced the `json_schema`
+# response_format this service relies on. Versions from 3.0 ship their own
 # httpx2, which app/extractors.py detects at import time.
-openai>=1.40.0
+openai==3.16.2
 
 # --- Testing -------------------------------------------------------------
-pytest>=8.0.0
-pytest-asyncio>=0.23.0
-httpx>=0.27.0               # test-only: ASGITransport drives the app in-process
+pytest==9.1.1
+pytest-asyncio==1.4.0
+httpx==0.28.1               # test-only: ASGITransport drives the app in-process

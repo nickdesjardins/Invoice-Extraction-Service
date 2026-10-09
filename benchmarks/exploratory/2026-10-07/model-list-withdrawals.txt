@@ -1,0 +1,115 @@
+field first present in snapshot 20260123064106 | previous snapshot without it: 20260110094234
+snapshots (with field) where no model at all has a date: ['20260910181642']
+
+==== :free ids: disappeared while the field existed: 63 ====
+carried a date in >=1 snapshot: 25 (40%) | never showed a date: 38 (60%)
+ WARNED: id | date value(s) | first snapshot with date | last snapshot still null | notice>= days | notice<= days | last listed | first absent | gone before stated date | base listed at removal
+   xiaomi/mimo-v2-flash:free | 2026-01-26 | 01-23 06:41 | (set at first sighting) | 3.3 | ? | 01-23 06:41 | 01-26 08:50 | True | True
+   mistralai/devstral-2512:free | 2026-01-27 | 01-23 06:41 | (set at first sighting) | 4.3 | ? | 01-23 06:41 | 01-26 08:50 | True | True
+   google/gemini-2.0-flash-exp:free | 2026-02-06->2026-03-03 | 01-23 06:41 | (set at first sighting) | 14.3 | ? | 01-28 22:57 | 02-01 23:22 | True | False
+   upstage/solar-pro-3:free | 2026-03-02 | 01-26 08:50 | (set at first sighting) | 35.2 | ? | 02-19 04:56 | 03-03 07:52 | False | True
+   mistralai/mistral-small-3.1-24b-instruct:free | 2026-03-29 | 03-19 16:24 | 03-17 07:07 | 9.9 | 12.2 | 03-28 18:16 | 03-30 16:19 | False | True
+   qwen/qwen3-4b:free | 2026-03-29 | 03-19 16:24 | 03-17 07:07 | 9.9 | 12.2 | 03-28 18:16 | 03-30 16:19 | False | False
+   qwen/qwen3.6-plus:free | 2026-04-07 | 04-07 22:56 | 04-05 19:05 | -0.4 | 1.7 | 04-07 22:56 | 04-09 18:04 | False | True
+   arcee-ai/trinity-mini:free | 2026-04-10 | 04-03 13:00 | 04-02 11:24 | 7.0 | 8.1 | 04-09 18:04 | 04-10 23:51 | False | True
+   arcee-ai/trinity-large-preview:free | 2026-03-31->2026-04-03->2026-04-10->2026-04-22 | 03-26 01:36 | 03-23 12:26 | 5.5 | 8.0 | 04-10 23:51 | 04-23 14:04 | False | True
+   inclusionai/ling-2.6-flash:free | 2026-04-29 | 04-23 14:04 | (set at first sighting) | 6.0 | ? | 04-28 21:20 | 04-30 22:19 | False | True
+   tencent/hy3-preview:free | 2026-05-08 | 04-25 06:40 | 04-23 14:04 | 13.3 | 15.0 | 05-04 01:54 | 05-13 12:25 | False | True
+   inclusionai/ling-2.6-1t:free | 2026-04-30->2026-05-07 | 04-25 06:40 | (set at first sighting) | 5.3 | ? | 05-04 01:54 | 05-13 12:25 | False | True
+   meta-llama/llama-3.2-3b-instruct:free | 2026-07-19 | 07-17 21:09 | 06-28 13:08 | 1.7 | 21.0 | 07-18 08:05 | 07-20 00:21 | False | True
+   meta-llama/llama-3.3-70b-instruct:free | 2026-07-19 | 07-17 21:09 | 06-28 13:08 | 1.7 | 21.0 | 07-18 08:05 | 07-20 00:21 | False | True
+   qwen/qwen3-coder:free | 2026-07-19 | 07-17 21:09 | 06-28 13:08 | 1.7 | 21.0 | 07-18 08:05 | 07-20 00:21 | False | True
+   cognitivecomputations/dolphin-mistral-24b-venice-edition:free | 2026-07-19 | 07-17 21:09 | 06-28 13:08 | 1.7 | 21.0 | 07-18 08:05 | 07-20 00:21 | False | True
+   nousresearch/hermes-3-llama-3.1-405b:free | 2026-07-19 | 07-17 21:09 | 06-28 13:08 | 1.7 | 21.0 | 07-18 08:05 | 07-20 00:21 | False | True
+   qwen/qwen3-next-80b-a3b-instruct:free | 2026-07-19 | 07-17 21:09 | 06-28 13:08 | 1.7 | 21.0 | 07-18 08:05 | 07-20 00:21 | False | True
+   tencent/hy3:free | 2026-07-21 | 07-17 21:09 | (set at first sighting) | 3.7 | ? | 07-20 00:21 | 07-21 07:00 | True | True
+   poolside/laguna-m.1:free | 2026-07-28 | 07-17 21:09 | 06-28 13:08 | 10.7 | 30.0 | 07-28 01:59 | 07-31 22:42 | False | False
+   nvidia/nemotron-nano-9b-v2:free | 2026-08-24 | 08-21 15:02 | 08-14 06:05 | 2.9 | 10.3 | 08-24 05:08 | 08-25 12:44 | False | False
+   nvidia/nemotron-nano-12b-v2-vl:free | 2026-08-24 | 08-21 15:02 | 08-14 06:05 | 2.9 | 10.3 | 08-24 05:08 | 08-25 12:44 | False | False
+   nvidia/nemotron-3-nano-30b-a3b:free | 2026-08-24 | 08-21 15:02 | 08-14 06:05 | 2.9 | 10.3 | 08-24 05:08 | 08-25 12:44 | False | True
+   nex-agi/nex-n2.5-mini:free | 2026-09-25 | 09-22 09:24 | 09-21 19:30 | 3.1 | 3.7 | 09-24 10:07 | 09-26 00:54 | False | False
+   nex-agi/nex-n2.5-pro:free | 2026-09-25 | 09-22 09:24 | 09-21 19:30 | 3.1 | 3.7 | 09-24 10:07 | 09-26 00:54 | False | False
+ notice-at-least days (stated date 13:00 UTC minus first snapshot showing it): n=25 min=-0.4 median=3.3 max=35.2
+    values: [-0.4, 1.7, 1.7, 1.7, 1.7, 1.7, 1.7, 2.9, 2.9, 2.9, 3.1, 3.1, 3.3, 3.7, 4.3, 5.3, 5.5, 6.0, 7.0, 9.9, 9.9, 10.7, 13.3, 14.3, 35.2]
+ notice-at-most days (stated date minus last snapshot where it was still null): n=18 min=1.7 median=12.2 max=30.0
+    values: [1.7, 3.7, 3.7, 8.0, 8.1, 10.3, 10.3, 10.3, 12.2, 12.2, 15.0, 21.0, 21.0, 21.0, 21.0, 21.0, 21.0, 30.0]
+ gone from the list BEFORE the stated date (13:00 UTC): 4 of 25 -> ['xiaomi/mimo-v2-flash:free', 'mistralai/devstral-2512:free', 'google/gemini-2.0-flash-exp:free', 'tencent/hy3:free']
+ date value changed while listed: 3 of 25 -> [('google/gemini-2.0-flash-exp:free', ['2026-02-06', '2026-03-03']), ('arcee-ai/trinity-large-preview:free', ['2026-03-31', '2026-04-03', '2026-04-10', '2026-04-22']), ('inclusionai/ling-2.6-1t:free', ['2026-04-30', '2026-05-07'])]
+ last snapshot before vanishing had null although an earlier one had a date: []
+ still listed after the stated date passed (id, days after): [('qwen/qwen3.6-plus:free', 0.4)]
+ UNWARNED: id | last listed (null) | first absent | gap days | snapshots with field | base listed at removal
+   meta-llama/llama-3.1-405b-instruct:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   qwen/qwen-2.5-vl-7b-instruct:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   tngtech/deepseek-r1t-chimera:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   moonshotai/kimi-k2:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   tngtech/deepseek-r1t2-chimera:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   tngtech/tng-r1t-chimera:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   allenai/molmo-2-8b:free | 02-01 23:22 | 02-15 04:12 | 13.2 | 4 | True
+   deepseek/deepseek-r1-0528:free | 02-19 04:56 | 03-03 07:52 | 12.1 | 6 | True
+   qwen/qwen3.6-plus-preview:free | 04-02 11:24 | 04-03 13:00 | 1.1 | 3 | False
+   stepfun/step-3.5-flash:free | 04-07 22:56 | 04-09 18:04 | 1.8 | 19 | True
+   google/gemma-3-4b-it:free | 05-04 01:54 | 05-13 12:25 | 9.4 | 31 | True
+   google/gemma-3-12b-it:free | 05-04 01:54 | 05-13 12:25 | 9.4 | 31 | True
+   google/gemma-3-27b-it:free | 05-04 01:54 | 05-13 12:25 | 9.4 | 31 | True
+   google/gemma-3n-e4b-it:free | 05-04 01:54 | 05-13 12:25 | 9.4 | 31 | True
+   google/gemma-3n-e2b-it:free | 05-04 01:54 | 05-13 12:25 | 9.4 | 31 | False
+   baidu/qianfan-ocr-fast:free | 05-13 12:25 | 05-15 12:59 | 2.0 | 7 | True
+   inclusionai/ring-2.6-1t:free | 05-15 12:59 | 05-18 03:01 | 2.6 | 2 | True
+   baidu/cobuddy:free | 05-24 12:25 | 05-29 05:01 | 4.7 | 7 | False
+   arcee-ai/trinity-large-thinking:free | 05-24 12:25 | 05-29 05:01 | 4.7 | 7 | True
+   minimax/minimax-m2.5:free | 05-30 18:05 | 05-31 02:01 | 0.3 | 32 | True
+   deepseek/deepseek-v4-flash:free | 05-31 02:01 | 06-06 04:57 | 6.1 | 9 | True
+   z-ai/glm-4.5-air:free | 06-06 04:57 | 06-16 14:56 | 10.4 | 42 | True
+   moonshotai/kimi-k2.6:free | 06-06 04:57 | 06-16 14:56 | 10.4 | 4 | True
+   nex-agi/nex-n2-pro:free | 06-16 14:56 | 06-27 13:05 | 10.9 | 1 | True
+   openai/gpt-oss-120b:free | 06-28 13:08 | 07-17 21:09 | 19.3 | 45 | True
+   liquid/lfm-2.5-1.2b-thinking:free | 06-28 13:08 | 07-17 21:09 | 19.3 | 45 | False
+   liquid/lfm-2.5-1.2b-instruct:free | 06-28 13:08 | 07-17 21:09 | 19.3 | 45 | False
+   poolside/laguna-xs.2:free | 06-28 13:08 | 07-17 21:09 | 19.3 | 17 | False
+   inclusionai/ling-3.0-flash:free | 08-03 06:56 | 08-06 19:57 | 3.5 | 3 | True
+   inclusionai/ling-3.0-tiny:free | 08-06 19:57 | 08-14 06:05 | 7.4 | 1 | False
+   openai/gpt-oss-20b:free | 08-21 15:02 | 08-24 05:08 | 2.6 | 55 | True
+   minimax/minimax-m3:free | 09-06 19:30 | 09-07 19:30 | 1.0 | 7 | True
+   minimax/minimax-m2.7:free | 09-06 19:30 | 09-07 19:30 | 1.0 | 7 | True
+   deepseek/deepseek-v4-flash-0731:free | 09-19 19:31 | 09-20 10:45 | 0.6 | 2 | True
+   inclusionai/ling-3.0-flash-vl:free | 09-23 00:07 | 09-24 10:07 | 1.4 | 13 | True
+   z-ai/glm-5.2:free | 09-24 10:07 | 09-26 00:54 | 1.6 | 18 | True
+   inclusionai/ling-3.0-flash-fin:free | 09-27 19:30 | 09-29 00:04 | 1.2 | 25 | True
+   qwen/qwen3.8-27b:free | 10-05 00:05 | 10-06 00:05 | 1.0 | 15 | True
+ unwarned with a snapshot gap <= 1.6 days around the removal: 8 of 38
+ at the first snapshot without the :free id, the base (paid) id was listed: 49 of 63 ; base not listed either: 14
+   went-paid cases: warned 18, unwarned 31 | fully-removed cases: warned 7, unwarned 7
+
+==== non-free ids: disappeared while the field existed: 192 ====
+carried a date in >=1 snapshot: 56 (29%) | never showed a date: 136 (71%)
+ notice-at-least days (stated date 13:00 UTC minus first snapshot showing it): n=56 min=0.6 median=6.6 max=26429.9
+    values: [0.6, 0.9, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.3, 2.3, 2.3, 2.4, 2.9, 2.9, 2.9, 3.5, 3.5, 3.5, 4.5, 4.5, 5.3, 5.3, 6.0, 6.2, 6.2, 6.2, 6.9, 7.3, 7.3, 10.4, 10.7, 11.2, 12.3, 12.3, 12.3, 13.1, 13.3, 14.0, 14.3, 16.9, 16.9, 16.9, 17.0, 23.7, 25.3, 29.2, 31.3, 41.9, 67.3, 75.3, 75.3, 26396.1, 26403.7, 26429.9]
+ notice-at-most days (stated date minus last snapshot where it was still null): n=47 min=3.4 median=11.5 max=79.4
+    values: [3.4, 6.6, 6.6, 6.6, 7.0, 7.0, 7.6, 7.6, 7.6, 8.5, 9.9, 9.9, 10.3, 10.3, 10.3, 11.3, 11.5, 11.5, 11.5, 11.5, 11.5, 11.5, 11.5, 11.5, 11.5, 11.5, 12.0, 12.0, 14.1, 14.3, 15.2, 15.6, 18.3, 18.5, 19.5, 20.2, 20.2, 20.2, 23.6, 26.5, 30.0, 36.0, 39.9, 43.0, 44.2, 79.4, 79.4]
+ gone from the list BEFORE the stated date (13:00 UTC): 6 of 56 -> ['allenai/olmo-3-7b-instruct', 'allenai/olmo-3-7b-think', 'allenai/molmo-2-8b', 'google/gemini-3-pro-preview', 'stealth/ox-alpha', 'stealth/union-alpha']
+ date value changed while listed: 6 of 56 -> [('google/gemini-3-pro-preview', ['2026-03-09', '2026-03-26']), ('google/gemini-2.0-flash-001', ['2026-03-31', '2026-06-01']), ('google/gemini-2.0-flash-lite-001', ['2026-02-06', '2026-03-03', '2026-06-01']), ('meta-llama/llama-3-8b-instruct', ['2026-05-07', '2026-06-19']), ('deepseek/deepseek-r1-distill-llama-70b', ['2026-06-11', '2026-09-28']), ('stealth/space-bunny-alpha', ['2098-12-31', '2026-10-05'])]
+ last snapshot before vanishing had null although an earlier one had a date: ['meta-llama/llama-3.1-405b-instruct', 'meta-llama/llama-3-8b-instruct']
+ still listed after the stated date passed (id, days after): [('meta-llama/llama-3.1-405b-instruct', 28.1), ('meta-llama/llama-guard-2-8b', 9.1), ('meta-llama/llama-3-8b-instruct', 9.0)]
+ unwarned with a snapshot gap <= 1.6 days around the removal: 32 of 136
+
+==== listing duration of :free ids first seen after 2026-01-10 ====
+first seen after 2026-01-10: 50 ids | gone: 34 | still listed: 16
+gone: listed-for days, lower bound (first..last sighting): min=0 median=12 max=176 mean=33
+gone: listed-for days, upper bound (prev snapshot..first absent): min=3 median=23 max=191 mean=45
+   gone within <= 14 days (upper bound): 4 of 34 ; (lower bound): 18 of 34
+   gone within <= 30 days (upper bound): 20 of 34 ; (lower bound): 24 of 34
+   gone within <= 60 days (upper bound): 26 of 34 ; (lower bound): 27 of 34
+   gone within <= 90 days (upper bound): 29 of 34 ; (lower bound): 30 of 34
+still listed, days since first sighting: [(6, 'apodex/apodex-1.1-mini:free'), (33, 'inclusionai/ling-3.0-flash-sante:free'), (44, 'thinkingmachines/inkling-small:free'), (44, 'thinkingmachines/inkling:free'), (54, 'dots-studio/dots-3-note-preview:free'), (54, 'liquid/lfm-2.5-2.6b:free'), (54, 'nvidia/nemotron-3.5-lightning:free'), (72, 'poolside/laguna-s-2.1:free'), (82, 'poolside/laguna-xs-2.1:free'), (102, 'cohere/north-mini-code:free'), (123, 'nvidia/nemotron-3-ultra-550b-a55b:free'), (123, 'nvidia/nemotron-3.5-content-safety:free'), (162, 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free'), (183, 'google/gemma-4-26b-a4b-it:free'), (183, 'google/gemma-4-31b-it:free'), (204, 'nvidia/nemotron-3-super-120b-a12b:free')]
+
+==== :free ids: first sightings and disappearances per month (2026) ====
+   2026-01  new :free ids:  6   disappeared:  5
+   2026-02  new :free ids:  1   disappeared:  8
+   2026-03  new :free ids:  3   disappeared:  4
+   2026-04  new :free ids: 10   disappeared:  6
+   2026-05  new :free ids:  5   disappeared: 12
+   2026-06  new :free ids:  4   disappeared:  4
+   2026-07  new :free ids:  4   disappeared: 12
+   2026-08  new :free ids: 10   disappeared:  6
+   2026-09  new :free ids:  6   disappeared:  8
+   2026-10  new :free ids:  1   disappeared:  1

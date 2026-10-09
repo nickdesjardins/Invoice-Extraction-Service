@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A FastAPI service that turns emails, receipts and OCR text into a schema-validated invoice, with automatic fallback across a chain of models.">
+  <title>Invoice Extraction Service</title>
+  <link rel="icon" href="/playground/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/playground/assets/app.css">
+  <!-- Applies a saved colour theme before first paint. -->
+  <script src="/playground/assets/theme.js"></script>
+  <script type="module" src="/playground/assets/app.js"></script>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
+  <symbol id="i-bang" viewBox="0 0 24 24"><path d="M12 6v7.5M12 17.5v.5"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3.8l9.2 16.2H2.8z"/><path d="M12 10v4.5M12 17.4v.2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2A8 8 0 0 1 9.8 4a8 8 0 1 0 10.2 10.2z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4.5v4.8h4.8"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M4 7h3.5c5 0 5.5 10 10.5 10H20M17 14l3 3-3 3M4 17h3.5c1.4 0 2.4-.8 3.2-1.9M20 7h-2c-1.4 0-2.4.8-3.2 1.9M17 4l3 3-3 3"/></symbol>
+</svg>
+
+<a class="skip" href="#playground">Skip to the playground</a>
+
+<header class="topbar">
+  <div class="wrap topbar__row">
+    <a class="brand" href="/">
+      <svg class="brand__mark" viewBox="0 0 26 26" aria-hidden="true">
+        <rect class="bg" width="26" height="26" rx="7"/>
+        <path class="pg" d="M7.5 5.5h11v15l-1.85-1.5-1.8 1.5-1.85-1.5-1.85 1.5-1.8-1.5-1.85 1.5z"/>
+        <path class="ln" d="M10.5 9.5h5M10.5 12.5h5M10.5 15.5h2.6"/>
+      </svg>
+      <span class="brand__name">Invoice Extraction Service</span>
+      <span class="chip" id="version" hidden></span>
+    </a>
+    <nav class="topbar__nav" aria-label="Sections">
+      <a href="#playground">Playground</a>
+      <a href="#upkeep">Model upkeep</a>
+      <a href="#tests">Test suite</a>
+      <a href="#how">How it works</a>
+    </nav>
+    <div class="topbar__actions">
+      <a class="status" id="status" href="/health" target="_blank" rel="noopener" data-state="unknown" title="GET /health">
+        <span class="status__dot"></span><span id="status-text">Checking</span>
+      </a>
+      <a class="btn btn--ghost btn--sm" id="docs-link" href="/docs" hidden>API docs</a>
+      <button class="iconbtn" id="theme-toggle" type="button" aria-label="Switch between light and dark theme">
+        <svg class="icon theme-icon--light" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="icon theme-icon--dark" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="kicker">Applied AI · structured extraction</p>
+        <h1>Messy text in. <span>Validated invoice out.</span></h1>
+        <p class="lede">
+          Paste an email, a till receipt or an OCR dump and get back a schema-validated invoice.
+          Each request walks a chain of models and falls back automatically when one fails, and
+          every response says which model answered and how long it took.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--primary btn--lg" href="#playground">
+            Open the playground <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+          <a class="btn btn--ghost btn--lg" href="#how">How it works</a>
+        </div>
+        <p class="hero__facts" id="hero-facts" hidden></p>
+      </div>
+
+      <div class="card chain" aria-labelledby="chain-title">
+        <div class="chain__head">
+          <p class="kicker" id="chain-title">Model chain</p>
+          <p>Tried in order. The first valid answer wins.</p>
+        </div>
+        <ol class="chain__list" id="chain"></ol>
+        <p class="chain__foot" id="chain-foot">
+          A healthy request calls only the first model. Each later model runs only when the one before it fails.
+        </p>
+        <p class="chain__origin" id="chain-origin" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="playground">
+    <div class="wrap">
+      <header class="section__head">
+        <div>
+          <p class="kicker">01 · Playground</p>
+          <h2>Run it yourself</h2>
+          <p>
+            Pick a scenario or paste your own document. Every run goes through the real pipeline,
+            and you can make any model in the chain fail to watch the next one take over.
+          </p>
+        </div>
+      </header>
+
+      <p class="notice" id="notice" hidden></p>
+
+      <div class="lab">
+        <aside class="card rail" aria-label="Scenarios">
+          <div class="rail__head">
+            <h3>Scenarios</h3>
+            <button class="btn btn--primary btn--sm" id="run-all" type="button" disabled>Run all</button>
+          </div>
+          <p class="rail__meta" id="run-all-meta" data-pending>Loading</p>
+          <div class="progress" id="batch-progress" hidden><div class="progress__fill"></div></div>
+          <div class="rail__scroll" id="scenarios"></div>
+        </aside>
+
+        <section class="card panel request" aria-labelledby="scenario-title">
+          <header class="panel__head">
+            <div>
+              <p class="kicker" id="scenario-group">Scenario</p>
+              <h3 id="scenario-title" data-pending>Loading</h3>
+            </div>
+            <button class="btn btn--primary" id="run" type="button" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>
+              <span>Run extraction</span>
+            </button>
+          </header>
+          <p class="panel__summary" id="scenario-summary"></p>
+          <p class="covers" id="scenario-covers" hidden></p>
+
+          <div class="paper-wrap">
+            <div class="paper">
+              <div class="paper__bar">
+                <strong>Document</strong>
+                <span id="char-count"></span>
+              </div>
+              <textarea id="document" spellcheck="false" autocomplete="off" readonly
+                aria-label="Document text" placeholder="Paste an email, a receipt or any text that might contain an invoice."></textarea>
+            </div>
+          </div>
+          <p class="paper-note">
+            What you run is sent to the model's provider. Free models may keep prompts and train
+            on them, so use the samples or redacted text, not real invoices.
+          </p>
+
+          <fieldset class="plan">
+            <legend>Model chain for this run</legend>
+            <p class="plan__hint">Leave a model live, or choose how it should fail.</p>
+            <div class="plan__rows" id="plan"></div>
+          </fieldset>
+
+          <div class="request__actions">
+            <span class="request__hint" id="run-hint"></span>
+            <button class="btn btn--ghost btn--sm" id="reset" type="button" hidden>
+              <svg class="icon" aria-hidden="true"><use href="#i-reset"/></svg> Reset to the scenario
+            </button>
+          </div>
+        </section>
+
+        <section class="card panel result" id="result" aria-label="Result">
+          <div class="result__part" id="result-head"></div>
+          <div class="upnote" id="upkeep-notice" hidden></div>
+          <div class="result__part" id="result-body"></div>
+        </section>
+      </div>
+
+      <section class="card session" id="session" aria-labelledby="session-title" hidden></section>
+    </div>
+  </section>
+
+  <section class="section" id="upkeep">
+    <div class="wrap">
+      <header class="section__head">
+        <div>
+          <p class="kicker">02 · Model upkeep</p>
+          <h2>What happens when a free model disappears</h2>
+          <p>
+            Free models are withdrawn without notice. This service can look after its own chain:
+            when a model stops answering and OpenRouter no longer offers it, the service tests the
+            free models that are on offer with seven sample documents and gives the free place to
+            one that passes. By itself it tests nothing while the chain works.
+          </p>
+        </div>
+      </header>
+
+      <div class="card panel upkeep">
+        <div class="upkeep__origin" id="upkeep-origin"><p data-pending>Loading</p></div>
+        <div class="upkeep__control" id="upkeep-control" hidden>
+          <button class="btn btn--primary" id="upkeep-start" type="button" aria-describedby="upkeep-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>
+            <span>Test the free models now</span>
+          </button>
+          <p class="footnote upkeep__note" id="upkeep-note" role="status"></p>
+        </div>
+        <div class="upkeep__test" id="upkeep-test"></div>
+        <ul class="footnote legend" id="upkeep-legend"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tests">
+    <div class="wrap">
+      <header class="section__head">
+        <div>
+          <p class="kicker">03 · Test suite</p>
+          <h2>The same behaviour, pinned by pytest</h2>
+          <p>
+            Each scenario above has a counterpart in the automated suite. It replaces the model
+            client with a fake, so it needs no API key, makes no network calls and finishes in
+            well under a minute.
+          </p>
+        </div>
+        <button class="btn btn--primary" id="run-suite" type="button" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>
+          <span>Run the test suite</span>
+        </button>
+      </header>
+
+      <div class="card suite" id="suite">
+        <div class="suite__idle">
+          <div>
+            <strong>No network, no key</strong>
+            <span>The model client is swapped for a fake that answers per model id, so every run is offline and free.</span>
+          </div>
+          <div>
+            <strong>Everything above the fake is real</strong>
+            <span>Request building, error translation, timeouts, routing, validation and the HTTP layer all execute.</span>
+          </div>
+          <div>
+            <strong>Error paths get equal billing</strong>
+            <span>The cascade test alone is parametrised over ten distinct ways a model can fail.</span>
+          </div>
+        </div>
+      </div>
+      <p class="footnote" id="suite-note" hidden></p>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <header class="section__head">
+        <div>
+          <p class="kicker">04 · How it works</p>
+          <h2>Five steps between the text and the invoice</h2>
+        </div>
+      </header>
+
+      <ol class="steps">
+        <li class="card step">
+          <h3>Validate the request</h3>
+          <p>The body must carry <span id="limit-min">10</span> to <span id="limit-max">50,000</span> characters of text. Anything else is a 422 before a model is called.</p>
+        </li>
+        <li class="card step">
+          <h3>Fence the document</h3>
+          <p>The text is wrapped in document markers, literal markers inside it are defanged, and the prompt declares it untrusted data.</p>
+        </li>
+        <li class="card step">
+          <h3>Walk the chain</h3>
+          <p>Strict JSON-schema output at temperature 0. Any classified failure moves to the next model; two “not an invoice” verdicts stop early.</p>
+        </li>
+        <li class="card step">
+          <h3>Validate and normalise</h3>
+          <p>Pydantic recomputes every line total, maps currency symbols to ISO 4217 and collapses “N/A” to empty.</p>
+        </li>
+        <li class="card step">
+          <h3>Report what happened</h3>
+          <p>Every response names the model that answered, the time it took and whether a fallback was needed.</p>
+        </li>
+      </ol>
+
+      <div class="duo">
+        <div class="card panel">
+          <h3>How the default chain was chosen</h3>
+          <p>
+            Free models come and go, so this is a dated snapshot, not a live reading. Each free
+            model on OpenRouter that advertised structured output was sent the documents from the
+            playground above, through this service's own prompt, schema and validation.
+          </p>
+          <p class="table-title" id="benchmark-title"></p>
+          <div class="table-scroll"><table class="table" id="benchmark" aria-labelledby="benchmark-title"></table></div>
+          <ul class="footnote legend" id="benchmark-note"></ul>
+        </div>
+
+        <div class="card panel">
+          <h3>What a caller can rely on</h3>
+          <ul class="promises">
+            <li>
+              <strong>Line totals always add up</strong>
+              <span>Each one is recomputed as quantity × unit price, never copied from the model.</span>
+            </li>
+            <li>
+              <strong>One shape, whichever model answers</strong>
+              <span>The same prompt, schema and validators apply to every model in the chain.</span>
+            </li>
+            <li>
+              <strong>Errors are sanitised</strong>
+              <span>Raw upstream text stays in the server log, keyed by the request id.</span>
+            </li>
+            <li>
+              <strong>Failures are attributable</strong>
+              <span>A success names the model that answered; a 503 lists every attempt and why it failed, or says that the ceiling on live calls refused the request before any model was called.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <span id="footer-version">Invoice Extraction Service</span>
+    <span>FastAPI · Pydantic v2 · OpenRouter</span>
+  </div>
+</footer>
+
+<template id="tpl-empty">
+  <div class="empty">
+    <svg class="empty__art" viewBox="0 0 74 74" aria-hidden="true">
+      <path d="M20 9h34v52l-5.7-4.2-5.6 4.2-5.7-4.2-5.6 4.2-5.7-4.2L20 61z"/>
+      <path d="M28 22h18M28 30h18M28 38h10"/>
+    </svg>
+    <strong>No run yet</strong>
+    <p>Press Run extraction to send this document through the chain and watch each model answer.</p>
+  </div>
+</template>
+
+<div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+<div class="sr-only" id="announcer" aria-live="polite"></div>
+
+</body>
+</html>

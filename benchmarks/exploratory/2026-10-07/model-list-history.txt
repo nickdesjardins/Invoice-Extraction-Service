@@ -1,0 +1,451 @@
+snapshots loaded: 106 from 20250117102709 to LIVE-20261007
+
+=== per-snapshot: total, :free count, zero-priced count, has expiration_date field, non-null expiration count (free non-null) ===
+  20250117102709 total=219 :free=23 zero=26 field=False exp_nonnull= 0 (free=0)
+  20250213072008 total=232 :free=28 zero=29 field=False exp_nonnull= 0 (free=0)
+  20250303144428 total=248 :free=35 zero=36 field=False exp_nonnull= 0 (free=0)
+  20250403043148 total=288 :free=54 zero=55 field=False exp_nonnull= 0 (free=0)
+  20250503132119 total=324 :free=71 zero=73 field=False exp_nonnull= 0 (free=0)
+  20250605100521 total=324 :free=68 zero=69 field=False exp_nonnull= 0 (free=0)
+  20250701111106 total=319 :free=53 zero=55 field=False exp_nonnull= 0 (free=0)
+  20250812105045 total=315 :free=55 zero=56 field=False exp_nonnull= 0 (free=0)
+  20250904192312 total=318 :free=56 zero=57 field=False exp_nonnull= 0 (free=0)
+  20251001171035 total=328 :free=53 zero=53 field=False exp_nonnull= 0 (free=0)
+  20251101165301 total=343 :free=46 zero=46 field=False exp_nonnull= 0 (free=0)
+  20251206224151 total=337 :free=30 zero=31 field=False exp_nonnull= 0 (free=0)
+  20260107124305 total=347 :free=32 zero=32 field=False exp_nonnull= 0 (free=0)
+  20260108123745 total=347 :free=32 zero=32 field=False exp_nonnull= 0 (free=0)
+  20260110094234 total=347 :free=32 zero=32 field=False exp_nonnull= 0 (free=0)
+  20260123064106 total=345 :free=33 zero=32 field=True exp_nonnull= 9 (free=3)
+  20260126085007 total=347 :free=33 zero=33 field=True exp_nonnull= 9 (free=2)
+  20260128225715 total=347 :free=33 zero=33 field=True exp_nonnull= 9 (free=2)
+  20260201232250 total=347 :free=32 zero=32 field=True exp_nonnull= 9 (free=1)
+  20260215041252 total=340 :free=26 zero=31 field=True exp_nonnull= 8 (free=1)
+  20260219045605 total=337 :free=26 zero=31 field=True exp_nonnull= 7 (free=1)
+  20260303075210 total=342 :free=24 zero=28 field=True exp_nonnull= 8 (free=0)
+  20260306154958 total=346 :free=24 zero=27 field=True exp_nonnull=10 (free=0)
+  20260317070710 total=345 :free=26 zero=29 field=True exp_nonnull= 9 (free=0)
+  20260319162447 total=350 :free=26 zero=27 field=True exp_nonnull=12 (free=2)
+  20260321062115 total=350 :free=26 zero=27 field=True exp_nonnull=12 (free=2)
+  20260322073815 total=352 :free=26 zero=27 field=True exp_nonnull=12 (free=2)
+  20260323122647 total=349 :free=26 zero=27 field=True exp_nonnull=10 (free=2)
+  20260326013618 total=346 :free=26 zero=27 field=True exp_nonnull=10 (free=3)
+  20260327174819 total=346 :free=26 zero=27 field=True exp_nonnull=10 (free=3)
+  20260328181634 total=347 :free=26 zero=27 field=True exp_nonnull=10 (free=3)
+  20260330161909 total=345 :free=24 zero=25 field=True exp_nonnull= 8 (free=1)
+  20260331184952 total=348 :free=25 zero=28 field=True exp_nonnull= 8 (free=1)
+  20260401095816 total=348 :free=25 zero=28 field=True exp_nonnull= 8 (free=1)
+  20260402112425 total=350 :free=25 zero=28 field=True exp_nonnull= 9 (free=1)
+  20260403130040 total=349 :free=25 zero=28 field=True exp_nonnull= 9 (free=1)
+  20260405190519 total=349 :free=25 zero=28 field=True exp_nonnull= 9 (free=1)
+  20260407225629 total=352 :free=27 zero=30 field=True exp_nonnull= 9 (free=2)
+  20260409180411 total=351 :free=25 zero=28 field=True exp_nonnull= 9 (free=2)
+  20260410235108 total=350 :free=24 zero=27 field=True exp_nonnull= 8 (free=1)
+  20260423140446 total=349 :free=26 zero=29 field=True exp_nonnull= 7 (free=1)
+  20260425064034 total=355 :free=27 zero=30 field=True exp_nonnull= 9 (free=3)
+  20260427073520 total=360 :free=27 zero=30 field=True exp_nonnull= 9 (free=3)
+  20260428212003 total=371 :free=30 zero=33 field=True exp_nonnull= 9 (free=3)
+  20260430221927 total=370 :free=29 zero=33 field=True exp_nonnull= 6 (free=2)
+  20260504015436 total=371 :free=29 zero=33 field=True exp_nonnull=11 (free=2)
+  20260513122532 total=363 :free=25 zero=29 field=True exp_nonnull=13 (free=0)
+  20260515125913 total=364 :free=25 zero=29 field=True exp_nonnull=11 (free=0)
+  20260518030148 total=356 :free=24 zero=28 field=True exp_nonnull= 3 (free=0)
+  20260520232241 total=358 :free=24 zero=29 field=True exp_nonnull= 4 (free=0)
+  20260521145231 total=357 :free=24 zero=29 field=True exp_nonnull= 4 (free=0)
+  20260523083424 total=358 :free=24 zero=28 field=True exp_nonnull= 4 (free=0)
+  20260524122544 total=358 :free=24 zero=28 field=True exp_nonnull= 4 (free=0)
+  20260529050140 total=357 :free=23 zero=27 field=True exp_nonnull=10 (free=0)
+  20260530180555 total=355 :free=23 zero=27 field=True exp_nonnull= 9 (free=0)
+  20260531020150 total=350 :free=22 zero=26 field=True exp_nonnull= 9 (free=0)
+  20260606045727 total=344 :free=23 zero=27 field=True exp_nonnull= 8 (free=0)
+  20260616145608 total=336 :free=22 zero=26 field=True exp_nonnull= 5 (free=0)
+  20260627130556 total=339 :free=22 zero=26 field=True exp_nonnull= 5 (free=0)
+  20260628130805 total=339 :free=22 zero=26 field=True exp_nonnull= 5 (free=0)
+  20260717210931 total=343 :free=20 zero=23 field=True exp_nonnull=15 (free=8)
+  20260718080548 total=344 :free=20 zero=23 field=True exp_nonnull=15 (free=8)
+  20260720002121 total=338 :free=14 zero=17 field=True exp_nonnull= 9 (free=2)
+  20260721070040 total=338 :free=13 zero=16 field=True exp_nonnull= 8 (free=1)
+  20260728015936 total=341 :free=15 zero=18 field=True exp_nonnull= 7 (free=1)
+  20260731224218 total=336 :free=14 zero=17 field=True exp_nonnull= 5 (free=0)
+  20260803065634 total=337 :free=14 zero=17 field=True exp_nonnull= 5 (free=0)
+  20260806195724 total=400 :free=14 zero=17 field=True exp_nonnull= 5 (free=0)
+  20260814060553 total=412 :free=16 zero=19 field=True exp_nonnull= 3 (free=0)
+  20260821150252 total=420 :free=17 zero=21 field=True exp_nonnull=13 (free=5)
+  20260824050816 total=422 :free=18 zero=22 field=True exp_nonnull=14 (free=5)
+  20260825124457 total=419 :free=17 zero=21 field=True exp_nonnull= 8 (free=2)
+  20260828140349 total=387 :free=18 zero=21 field=True exp_nonnull= 8 (free=1)
+  20260829163340 total=396 :free=18 zero=21 field=True exp_nonnull= 7 (free=1)
+  20260902084534 total=421 :free=18 zero=21 field=True exp_nonnull=10 (free=1)
+  20260904193059 total=427 :free=19 zero=22 field=True exp_nonnull= 9 (free=1)
+  20260905193002 total=431 :free=19 zero=22 field=True exp_nonnull= 9 (free=1)
+  20260906193004 total=430 :free=18 zero=21 field=True exp_nonnull= 9 (free=1)
+  20260907193055 total=428 :free=16 zero=19 field=True exp_nonnull= 9 (free=1)
+  20260908193012 total=431 :free=18 zero=21 field=True exp_nonnull= 6 (free=1)
+  20260909193005 total=430 :free=18 zero=21 field=True exp_nonnull= 5 (free=1)
+  20260910181642 total=437 :free=19 zero=22 field=True exp_nonnull= 0 (free=0)
+  20260911193004 total=443 :free=19 zero=22 field=True exp_nonnull= 5 (free=1)
+  20260913052345 total=445 :free=19 zero=22 field=True exp_nonnull= 5 (free=1)
+  20260914161300 total=447 :free=19 zero=22 field=True exp_nonnull= 5 (free=1)
+  20260915193044 total=446 :free=20 zero=23 field=True exp_nonnull= 4 (free=1)
+  20260916193004 total=444 :free=20 zero=24 field=True exp_nonnull= 5 (free=2)
+  20260917005913 total=444 :free=20 zero=24 field=True exp_nonnull= 5 (free=2)
+  20260918162212 total=445 :free=22 zero=25 field=True exp_nonnull=10 (free=1)
+  20260919193110 total=447 :free=22 zero=25 field=True exp_nonnull=10 (free=1)
+  20260920104500 total=446 :free=21 zero=24 field=True exp_nonnull=16 (free=1)
+  20260921193032 total=440 :free=21 zero=24 field=True exp_nonnull=16 (free=1)
+  20260922092405 total=444 :free=21 zero=24 field=True exp_nonnull=21 (free=3)
+  20260923000733 total=454 :free=21 zero=24 field=True exp_nonnull=21 (free=3)
+  20260924100700 total=458 :free=20 zero=24 field=True exp_nonnull=23 (free=4)
+  20260926005441 total=459 :free=17 zero=21 field=True exp_nonnull=28 (free=0)
+  20260927193003 total=458 :free=17 zero=21 field=True exp_nonnull=28 (free=0)
+  20260929000400 total=460 :free=16 zero=20 field=True exp_nonnull=24 (free=0)
+  20260930051631 total=464 :free=16 zero=20 field=True exp_nonnull=25 (free=0)
+  20261002000425 total=464 :free=17 zero=21 field=True exp_nonnull=28 (free=2)
+  20261003000419 total=466 :free=17 zero=22 field=True exp_nonnull=32 (free=4)
+  20261004000933 total=466 :free=17 zero=22 field=True exp_nonnull=33 (free=4)
+  20261005000520 total=466 :free=17 zero=22 field=True exp_nonnull=32 (free=4)
+  20261006000532 total=464 :free=16 zero=20 field=True exp_nonnull=31 (free=3)
+  20261007000546 total=466 :free=16 zero=20 field=True exp_nonnull=31 (free=3)
+  LIVE-20261007 total=465 :free=16 zero=20 field=True exp_nonnull=31 (free=3)
+first snapshot with expiration_date field: 20260123064106
+
+=== :free ids ever seen: 179 | still listed live today: 16 | gone: 163 ===
+
+=== GONE :free ids (sorted by last seen) ===
+id | created | first_seen | last_seen | first_absent | lifetime_days(created->last_seen .. ->first_absent) | expiration_date history | paid base listed today?
+  google/gemini-exp-1114:free | 2024-11-15 | 2025-01-17 | 2025-01-17 | 2025-02-13 | 62..89 | field did not exist yet | paid_base_now=False
+  google/gemini-exp-1121:free | 2024-11-21 | 2025-01-17 | 2025-01-17 | 2025-02-13 | 56..83 | field did not exist yet | paid_base_now=False
+  meta-llama/llama-3.1-70b-instruct:free | 2024-07-23 | 2025-01-17 | 2025-01-17 | 2025-02-13 | 178..205 | field did not exist yet | paid_base_now=True
+  meta-llama/llama-3.2-90b-vision-instruct:free | 2024-09-25 | 2025-01-17 | 2025-01-17 | 2025-02-13 | 114..141 | field did not exist yet | paid_base_now=False
+  google/gemini-2.0-flash-lite-preview-02-05:free | 2025-02-05 | 2025-02-13 | 2025-03-03 | 2025-04-03 | 25..56 | field did not exist yet | paid_base_now=False
+  google/gemini-exp-1206:free | 2024-12-06 | 2025-01-17 | 2025-03-03 | 2025-04-03 | 86..117 | field did not exist yet | paid_base_now=False
+  gryphe/mythomax-l2-13b:free | 2023-07-02 | 2025-01-17 | 2025-03-03 | 2025-04-03 | 610..641 | field did not exist yet | paid_base_now=True
+  meta-llama/llama-3-8b-instruct:free | 2024-04-18 | 2025-01-17 | 2025-03-03 | 2025-04-03 | 319..350 | field did not exist yet | paid_base_now=False
+  qwen/qwen-vl-plus:free | 2025-02-05 | 2025-02-13 | 2025-03-03 | 2025-04-03 | 26..56 | field did not exist yet | paid_base_now=False
+  google/gemini-2.0-flash-thinking-exp-1219:free | 2024-12-19 | 2025-02-13 | 2025-04-03 | 2025-05-03 | 104..134 | field did not exist yet | paid_base_now=False
+  google/gemini-2.0-flash-thinking-exp:free | 2024-12-19 | 2025-01-17 | 2025-04-03 | 2025-05-03 | 104..134 | field did not exist yet | paid_base_now=False
+  google/gemini-2.0-pro-exp-02-05:free | 2025-02-05 | 2025-02-13 | 2025-04-03 | 2025-05-03 | 56..86 | field did not exist yet | paid_base_now=False
+  google/gemini-2.5-pro-exp-03-25:free | 2025-03-25 | 2025-04-03 | 2025-04-03 | 2025-05-03 | 8..38 | field did not exist yet | paid_base_now=False
+  microsoft/phi-3-medium-128k-instruct:free | 2024-05-24 | 2025-01-17 | 2025-04-03 | 2025-05-03 | 314..344 | field did not exist yet | paid_base_now=False
+  microsoft/phi-3-mini-128k-instruct:free | 2024-05-26 | 2025-01-17 | 2025-04-03 | 2025-05-03 | 312..342 | field did not exist yet | paid_base_now=False
+  nvidia/llama-3.1-nemotron-70b-instruct:free | 2024-10-15 | 2025-02-13 | 2025-04-03 | 2025-05-03 | 170..200 | field did not exist yet | paid_base_now=False
+  open-r1/olympiccoder-7b:free | 2025-03-15 | 2025-04-03 | 2025-04-03 | 2025-05-03 | 18..48 | field did not exist yet | paid_base_now=False
+  openchat/openchat-7b:free | 2023-11-28 | 2025-01-17 | 2025-04-03 | 2025-05-03 | 492..522 | field did not exist yet | paid_base_now=False
+  qwen/qwen-2-7b-instruct:free | 2024-07-16 | 2025-01-17 | 2025-04-03 | 2025-05-03 | 261..291 | field did not exist yet | paid_base_now=False
+  sophosympatheia/rogue-rose-103b-v0.2:free | 2025-01-18 | 2025-02-13 | 2025-04-03 | 2025-05-03 | 74..105 | field did not exist yet | paid_base_now=False
+  undi95/toppy-m-7b:free | 2023-11-10 | 2025-01-17 | 2025-04-03 | 2025-05-03 | 510..540 | field did not exist yet | paid_base_now=False
+  allenai/molmo-7b-d:free | 2025-03-26 | 2025-04-03 | 2025-05-03 | 2025-06-05 | 37..70 | field did not exist yet | paid_base_now=False
+  bytedance-research/ui-tars-72b:free | 2025-03-26 | 2025-04-03 | 2025-05-03 | 2025-06-05 | 37..70 | field did not exist yet | paid_base_now=False
+  google/learnlm-1.5-pro-experimental:free | 2024-11-21 | 2025-01-17 | 2025-05-03 | 2025-06-05 | 162..195 | field did not exist yet | paid_base_now=False
+  huggingfaceh4/zephyr-7b-beta:free | 2023-08-02 | 2025-01-17 | 2025-05-03 | 2025-06-05 | 640..673 | field did not exist yet | paid_base_now=False
+  qwen/qwen3-0.6b-04-28:free | 2025-04-30 | 2025-05-03 | 2025-05-03 | 2025-06-05 | 2..35 | field did not exist yet | paid_base_now=False
+  qwen/qwen3-1.7b:free | 2025-04-30 | 2025-05-03 | 2025-05-03 | 2025-06-05 | 2..35 | field did not exist yet | paid_base_now=False
+  qwen/qwq-32b-preview:free | 2024-11-28 | 2025-04-03 | 2025-05-03 | 2025-06-05 | 156..189 | field did not exist yet | paid_base_now=False
+  thudm/glm-4-9b:free | 2025-04-25 | 2025-05-03 | 2025-05-03 | 2025-06-05 | 7..40 | field did not exist yet | paid_base_now=False
+  thudm/glm-z1-9b:free | 2025-04-25 | 2025-05-03 | 2025-05-03 | 2025-06-05 | 7..40 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-prover-v2:free | 2025-04-30 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 35..61 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-r1-distill-qwen-32b:free | 2025-01-29 | 2025-04-03 | 2025-06-05 | 2025-07-01 | 126..152 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-r1-zero:free | 2025-03-06 | 2025-04-03 | 2025-06-05 | 2025-07-01 | 90..116 | field did not exist yet | paid_base_now=False
+  google/gemma-3-1b-it:free | 2025-03-14 | 2025-04-03 | 2025-06-05 | 2025-07-01 | 82..108 | field did not exist yet | paid_base_now=False
+  meta-llama/llama-3.1-405b:free | 2024-08-02 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 307..333 | field did not exist yet | paid_base_now=False
+  microsoft/phi-4-reasoning-plus:free | 2025-05-01 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 34..60 | field did not exist yet | paid_base_now=False
+  microsoft/phi-4-reasoning:free | 2025-05-01 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 34..60 | field did not exist yet | paid_base_now=False
+  moonshotai/moonlight-16b-a3b-instruct:free | 2025-02-28 | 2025-03-03 | 2025-06-05 | 2025-07-01 | 97..123 | field did not exist yet | paid_base_now=False
+  nousresearch/deephermes-3-mistral-24b-preview:free | 2025-05-09 | 2025-06-05 | 2025-06-05 | 2025-07-01 | 26..52 | field did not exist yet | paid_base_now=False
+  open-r1/olympiccoder-32b:free | 2025-03-15 | 2025-04-03 | 2025-06-05 | 2025-07-01 | 81..107 | field did not exist yet | paid_base_now=False
+  opengvlab/internvl3-14b:free | 2025-04-30 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 35..61 | field did not exist yet | paid_base_now=False
+  opengvlab/internvl3-2b:free | 2025-04-30 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 35..61 | field did not exist yet | paid_base_now=False
+  qwen/qwen-2.5-7b-instruct:free | 2024-10-16 | 2025-05-03 | 2025-06-05 | 2025-07-01 | 232..258 | field did not exist yet | paid_base_now=True
+  qwen/qwen2.5-vl-3b-instruct:free | 2025-03-26 | 2025-04-03 | 2025-06-05 | 2025-07-01 | 70..96 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-chat:free | 2024-12-26 | 2025-02-13 | 2025-07-01 | 2025-08-12 | 186..228 | field did not exist yet | paid_base_now=True
+  deepseek/deepseek-v3-base:free | 2025-03-29 | 2025-04-03 | 2025-07-01 | 2025-08-12 | 93..135 | field did not exist yet | paid_base_now=False
+  meta-llama/llama-3.1-8b-instruct:free | 2024-07-23 | 2025-01-17 | 2025-07-01 | 2025-08-12 | 343..385 | field did not exist yet | paid_base_now=True
+  meta-llama/llama-3.2-1b-instruct:free | 2024-09-25 | 2025-01-17 | 2025-07-01 | 2025-08-12 | 279..321 | field did not exist yet | paid_base_now=True
+  mistralai/devstral-small:free | 2025-05-21 | 2025-06-05 | 2025-07-01 | 2025-08-12 | 40..82 | field did not exist yet | paid_base_now=False
+  nvidia/llama-3.3-nemotron-super-49b-v1:free | 2025-04-08 | 2025-05-03 | 2025-07-01 | 2025-08-12 | 83..125 | field did not exist yet | paid_base_now=False
+  qwen/qwen3-32b:free | 2025-04-28 | 2025-05-03 | 2025-07-01 | 2025-08-12 | 63..105 | field did not exist yet | paid_base_now=True
+  thudm/glm-4-32b:free | 2025-04-17 | 2025-05-03 | 2025-07-01 | 2025-08-12 | 74..116 | field did not exist yet | paid_base_now=False
+  featherless/qwerky-72b:free | 2025-03-20 | 2025-04-03 | 2025-08-12 | 2025-09-04 | 144..168 | field did not exist yet | paid_base_now=False
+  meta-llama/llama-3.2-11b-vision-instruct:free | 2024-09-25 | 2025-01-17 | 2025-08-12 | 2025-09-04 | 321..344 | field did not exist yet | paid_base_now=False
+  sarvamai/sarvam-m:free | 2025-05-25 | 2025-06-05 | 2025-08-12 | 2025-09-04 | 78..102 | field did not exist yet | paid_base_now=False
+  thudm/glm-z1-32b:free | 2025-04-17 | 2025-05-03 | 2025-08-12 | 2025-09-04 | 116..139 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-r1-distill-qwen-14b:free | 2025-01-29 | 2025-04-03 | 2025-09-04 | 2025-10-01 | 217..244 | field did not exist yet | paid_base_now=False
+  nvidia/llama-3.1-nemotron-ultra-253b-v1:free | 2025-04-08 | 2025-05-03 | 2025-09-04 | 2025-10-01 | 149..176 | field did not exist yet | paid_base_now=False
+  qwen/qwq-32b:free | 2025-03-05 | 2025-04-03 | 2025-09-04 | 2025-10-01 | 182..209 | field did not exist yet | paid_base_now=False
+  rekaai/reka-flash-3:free | 2025-03-12 | 2025-04-03 | 2025-09-04 | 2025-10-01 | 175..202 | field did not exist yet | paid_base_now=True
+  cognitivecomputations/dolphin3.0-mistral-24b:free | 2025-02-13 | 2025-03-03 | 2025-10-01 | 2025-11-01 | 230..261 | field did not exist yet | paid_base_now=False
+  cognitivecomputations/dolphin3.0-r1-mistral-24b:free | 2025-02-13 | 2025-03-03 | 2025-10-01 | 2025-11-01 | 230..261 | field did not exist yet | paid_base_now=False
+  google/gemma-2-9b-it:free | 2024-06-28 | 2025-01-17 | 2025-10-01 | 2025-11-01 | 460..491 | field did not exist yet | paid_base_now=False
+  mistralai/devstral-small-2505:free | 2025-05-21 | 2025-08-12 | 2025-10-01 | 2025-11-01 | 133..164 | field did not exist yet | paid_base_now=False
+  moonshotai/kimi-dev-72b:free | 2025-06-16 | 2025-07-01 | 2025-10-01 | 2025-11-01 | 106..137 | field did not exist yet | paid_base_now=False
+  moonshotai/kimi-vl-a3b-thinking:free | 2025-04-10 | 2025-05-03 | 2025-10-01 | 2025-11-01 | 174..204 | field did not exist yet | paid_base_now=False
+  nousresearch/deephermes-3-llama-3-8b-preview:free | 2025-02-28 | 2025-03-03 | 2025-10-01 | 2025-11-01 | 215..246 | field did not exist yet | paid_base_now=False
+  qwen/qwen2.5-vl-72b-instruct:free | 2025-02-01 | 2025-02-13 | 2025-10-01 | 2025-11-01 | 242..273 | field did not exist yet | paid_base_now=True
+  qwen/qwen3-8b:free | 2025-04-28 | 2025-05-03 | 2025-10-01 | 2025-11-01 | 155..186 | field did not exist yet | paid_base_now=True
+  tencent/hunyuan-a13b-instruct:free | 2025-07-08 | 2025-08-12 | 2025-10-01 | 2025-11-01 | 85..116 | field did not exist yet | paid_base_now=True
+  x-ai/grok-4-fast:free | 2025-09-19 | 2025-10-01 | 2025-10-01 | 2025-11-01 | 12..43 | field did not exist yet | paid_base_now=False
+  agentica-org/deepcoder-14b-preview:free | 2025-04-13 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 202..237 | field did not exist yet | paid_base_now=False
+  arliai/qwq-32b-arliai-rpr-v1:free | 2025-04-13 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 202..237 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-chat-v3-0324:free | 2025-03-24 | 2025-04-03 | 2025-11-01 | 2025-12-06 | 222..257 | field did not exist yet | paid_base_now=True
+  deepseek/deepseek-chat-v3.1:free | 2025-08-21 | 2025-09-04 | 2025-11-01 | 2025-12-06 | 72..107 | field did not exist yet | paid_base_now=True
+  deepseek/deepseek-r1-0528-qwen3-8b:free | 2025-05-29 | 2025-06-05 | 2025-11-01 | 2025-12-06 | 155..191 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-r1-distill-llama-70b:free | 2025-01-23 | 2025-02-13 | 2025-11-01 | 2025-12-06 | 281..317 | field did not exist yet | paid_base_now=False
+  deepseek/deepseek-r1:free | 2025-01-20 | 2025-02-13 | 2025-11-01 | 2025-12-06 | 285..320 | field did not exist yet | paid_base_now=True
+  meta-llama/llama-3.3-8b-instruct:free | 2025-05-14 | 2025-06-05 | 2025-11-01 | 2025-12-06 | 171..206 | field did not exist yet | paid_base_now=False
+  meta-llama/llama-4-maverick:free | 2025-04-05 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 209..245 | field did not exist yet | paid_base_now=True
+  meta-llama/llama-4-scout:free | 2025-04-05 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 209..245 | field did not exist yet | paid_base_now=True
+  microsoft/mai-ds-r1:free | 2025-04-21 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 194..229 | field did not exist yet | paid_base_now=False
+  minimax/minimax-m2:free | 2025-10-23 | 2025-11-01 | 2025-11-01 | 2025-12-06 | 8..44 | field did not exist yet | paid_base_now=True
+  mistralai/mistral-nemo:free | 2024-07-19 | 2025-02-13 | 2025-11-01 | 2025-12-06 | 470..505 | field did not exist yet | paid_base_now=True
+  mistralai/mistral-small-24b-instruct-2501:free | 2025-01-30 | 2025-02-13 | 2025-11-01 | 2025-12-06 | 275..310 | field did not exist yet | paid_base_now=True
+  mistralai/mistral-small-3.2-24b-instruct:free | 2025-06-20 | 2025-07-01 | 2025-11-01 | 2025-12-06 | 133..169 | field did not exist yet | paid_base_now=True
+  qwen/qwen-2.5-72b-instruct:free | 2024-09-19 | 2025-04-03 | 2025-11-01 | 2025-12-06 | 408..443 | field did not exist yet | paid_base_now=True
+  qwen/qwen-2.5-coder-32b-instruct:free | 2024-11-11 | 2025-03-03 | 2025-11-01 | 2025-12-06 | 354..389 | field did not exist yet | paid_base_now=True
+  qwen/qwen2.5-vl-32b-instruct:free | 2025-03-24 | 2025-04-03 | 2025-11-01 | 2025-12-06 | 221..257 | field did not exist yet | paid_base_now=False
+  qwen/qwen3-14b:free | 2025-04-28 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 186..222 | field did not exist yet | paid_base_now=True
+  qwen/qwen3-30b-a3b:free | 2025-04-28 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 186..222 | field did not exist yet | paid_base_now=True
+  shisa-ai/shisa-v2-llama3.3-70b:free | 2025-04-15 | 2025-05-03 | 2025-11-01 | 2025-12-06 | 199..235 | field did not exist yet | paid_base_now=False
+  alibaba/tongyi-deepresearch-30b-a3b:free | 2025-09-18 | 2025-11-01 | 2025-12-06 | 2026-01-07 | 79..110 | field did not exist yet | paid_base_now=False
+  allenai/olmo-3-32b-think:free | 2025-11-21 | 2025-12-06 | 2025-12-06 | 2026-01-07 | 15..46 | field did not exist yet | paid_base_now=False
+  amazon/nova-2-lite-v1:free | 2025-12-02 | 2025-12-06 | 2025-12-06 | 2026-01-07 | 4..35 | field did not exist yet | paid_base_now=True
+  meituan/longcat-flash-chat:free | 2025-09-09 | 2025-11-01 | 2025-12-06 | 2026-01-07 | 88..119 | field did not exist yet | paid_base_now=False
+  qwen/qwen3-235b-a22b:free | 2025-04-28 | 2025-05-03 | 2025-12-06 | 2026-01-07 | 222..253 | field did not exist yet | paid_base_now=True
+  kwaipilot/kat-coder-pro:free | 2025-11-10 | 2025-12-06 | 2026-01-10 | 2026-01-23 | 61..74 | field did not exist yet | paid_base_now=False
+  mistralai/mistral-7b-instruct:free | 2024-05-27 | 2025-01-17 | 2026-01-10 | 2026-01-23 | 593..606 | field did not exist yet | paid_base_now=False
+  nex-agi/deepseek-v3.1-nex-n1:free | 2025-12-08 | 2026-01-07 | 2026-01-10 | 2026-01-23 | 32..45 | field did not exist yet | paid_base_now=False
+  mistralai/devstral-2512:free | 2025-12-09 | 2026-01-07 | 2026-01-23 | 2026-01-26 | 44..47 | SET 2026-01-27 (first seen set 2026-01-23; last value 2026-01-27; set in 1/1 snapshots with field) | paid_base_now=True
+  xiaomi/mimo-v2-flash:free | 2025-12-14 | 2026-01-07 | 2026-01-23 | 2026-01-26 | 39..42 | SET 2026-01-26 (first seen set 2026-01-23; last value 2026-01-26; set in 1/1 snapshots with field) | paid_base_now=False
+  google/gemini-2.0-flash-exp:free | 2024-12-11 | 2025-01-17 | 2026-01-28 | 2026-02-01 | 413..417 | SET 2026-02-06 (first seen set 2026-01-23; last value 2026-03-03; set in 3/3 snapshots with field) | paid_base_now=False
+  allenai/molmo-2-8b:free | 2026-01-09 | 2026-01-23 | 2026-02-01 | 2026-02-15 | 23..36 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=False
+  meta-llama/llama-3.1-405b-instruct:free | 2024-07-23 | 2025-01-17 | 2026-02-01 | 2026-02-15 | 558..572 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=False
+  moonshotai/kimi-k2:free | 2025-07-11 | 2025-08-12 | 2026-02-01 | 2026-02-15 | 205..218 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=True
+  qwen/qwen-2.5-vl-7b-instruct:free | 2024-08-28 | 2025-04-03 | 2026-02-01 | 2026-02-15 | 522..536 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=False
+  tngtech/deepseek-r1t-chimera:free | 2025-04-27 | 2025-05-03 | 2026-02-01 | 2026-02-15 | 280..293 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=False
+  tngtech/deepseek-r1t2-chimera:free | 2025-07-08 | 2025-08-12 | 2026-02-01 | 2026-02-15 | 208..221 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=False
+  tngtech/tng-r1t-chimera:free | 2025-11-26 | 2025-12-06 | 2026-02-01 | 2026-02-15 | 67..80 | null in all 4 snapshots with field (last seen null 2026-02-01) | paid_base_now=False
+  deepseek/deepseek-r1-0528:free | 2025-05-28 | 2025-06-05 | 2026-02-19 | 2026-03-03 | 266..278 | null in all 6 snapshots with field (last seen null 2026-02-19) | paid_base_now=True
+  upstage/solar-pro-3:free | 2026-01-27 | 2026-01-26 | 2026-02-19 | 2026-03-03 | 23..35 | SET 2026-03-02 (first seen set 2026-01-26; last value 2026-03-02; set in 5/5 snapshots with field) | paid_base_now=True
+  mistralai/mistral-small-3.1-24b-instruct:free | 2025-03-17 | 2025-04-03 | 2026-03-28 | 2026-03-30 | 375..377 | SET 2026-03-29 (first seen set 2026-03-19; last value 2026-03-29; set in 7/16 snapshots with field) | paid_base_now=True
+  qwen/qwen3-4b:free | 2025-04-30 | 2025-05-03 | 2026-03-28 | 2026-03-30 | 332..333 | SET 2026-03-29 (first seen set 2026-03-19; last value 2026-03-29; set in 7/16 snapshots with field) | paid_base_now=False
+  qwen/qwen3.6-plus-preview:free | 2026-03-30 | 2026-03-31 | 2026-04-02 | 2026-04-03 | 2..3 | null in all 3 snapshots with field (last seen null 2026-04-02) | paid_base_now=False
+  qwen/qwen3.6-plus:free | 2026-04-02 | 2026-04-03 | 2026-04-07 | 2026-04-09 | 5..7 | SET 2026-04-07 (first seen set 2026-04-07; last value 2026-04-07; set in 1/3 snapshots with field) | paid_base_now=True
+  stepfun/step-3.5-flash:free | 2026-01-29 | 2026-02-15 | 2026-04-07 | 2026-04-09 | 67..69 | null in all 19 snapshots with field (last seen null 2026-04-07) | paid_base_now=True
+  arcee-ai/trinity-mini:free | 2025-12-01 | 2025-12-06 | 2026-04-09 | 2026-04-10 | 129..130 | SET 2026-04-10 (first seen set 2026-04-03; last value 2026-04-10; set in 4/24 snapshots with field) | paid_base_now=False
+  arcee-ai/trinity-large-preview:free | 2026-01-27 | 2026-01-26 | 2026-04-10 | 2026-04-23 | 73..85 | SET 2026-03-31 (first seen set 2026-03-26; last value 2026-04-22; set in 9/24 snapshots with field) | paid_base_now=False
+  inclusionai/ling-2.6-flash:free | 2026-04-21 | 2026-04-23 | 2026-04-28 | 2026-04-30 | 7..9 | SET 2026-04-29 (first seen set 2026-04-23; last value 2026-04-29; set in 4/4 snapshots with field) | paid_base_now=False
+  google/gemma-3-12b-it:free | 2025-03-13 | 2025-04-03 | 2026-05-04 | 2026-05-13 | 416..425 | null in all 31 snapshots with field (last seen null 2026-05-04) | paid_base_now=True
+  google/gemma-3-27b-it:free | 2025-03-12 | 2025-04-03 | 2026-05-04 | 2026-05-13 | 417..427 | null in all 31 snapshots with field (last seen null 2026-05-04) | paid_base_now=True
+  google/gemma-3-4b-it:free | 2025-03-13 | 2025-04-03 | 2026-05-04 | 2026-05-13 | 416..425 | null in all 31 snapshots with field (last seen null 2026-05-04) | paid_base_now=True
+  google/gemma-3n-e2b-it:free | 2025-07-09 | 2025-08-12 | 2026-05-04 | 2026-05-13 | 298..307 | null in all 31 snapshots with field (last seen null 2026-05-04) | paid_base_now=False
+  google/gemma-3n-e4b-it:free | 2025-05-20 | 2025-06-05 | 2026-05-04 | 2026-05-13 | 348..357 | null in all 31 snapshots with field (last seen null 2026-05-04) | paid_base_now=False
+  inclusionai/ling-2.6-1t:free | 2026-04-23 | 2026-04-25 | 2026-05-04 | 2026-05-13 | 10..19 | SET 2026-04-30 (first seen set 2026-04-25; last value 2026-05-07; set in 5/5 snapshots with field) | paid_base_now=False
+  tencent/hy3-preview:free | 2026-04-22 | 2026-04-23 | 2026-05-04 | 2026-05-13 | 11..20 | SET 2026-05-08 (first seen set 2026-04-25; last value 2026-05-08; set in 5/6 snapshots with field) | paid_base_now=True
+  baidu/qianfan-ocr-fast:free | 2026-04-20 | 2026-04-23 | 2026-05-13 | 2026-05-15 | 22..24 | null in all 7 snapshots with field (last seen null 2026-05-13) | paid_base_now=False
+  inclusionai/ring-2.6-1t:free | 2026-05-08 | 2026-05-13 | 2026-05-15 | 2026-05-18 | 6..9 | null in all 2 snapshots with field (last seen null 2026-05-15) | paid_base_now=False
+  arcee-ai/trinity-large-thinking:free | 2026-04-01 | 2026-05-13 | 2026-05-24 | 2026-05-29 | 52..57 | null in all 7 snapshots with field (last seen null 2026-05-24) | paid_base_now=True
+  baidu/cobuddy:free | 2026-05-06 | 2026-05-13 | 2026-05-24 | 2026-05-29 | 18..23 | null in all 7 snapshots with field (last seen null 2026-05-24) | paid_base_now=False
+  minimax/minimax-m2.5:free | 2026-02-12 | 2026-03-17 | 2026-05-30 | 2026-05-31 | 107..107 | null in all 32 snapshots with field (last seen null 2026-05-30) | paid_base_now=True
+  deepseek/deepseek-v4-flash:free | 2026-04-24 | 2026-05-15 | 2026-05-31 | 2026-06-06 | 36..43 | null in all 9 snapshots with field (last seen null 2026-05-31) | paid_base_now=True
+  moonshotai/kimi-k2.6:free | 2026-04-20 | 2026-05-29 | 2026-06-06 | 2026-06-16 | 46..56 | null in all 4 snapshots with field (last seen null 2026-06-06) | paid_base_now=True
+  z-ai/glm-4.5-air:free | 2025-07-25 | 2025-08-12 | 2026-06-06 | 2026-06-16 | 315..325 | null in all 42 snapshots with field (last seen null 2026-06-06) | paid_base_now=True
+  nex-agi/nex-n2-pro:free | 2026-06-08 | 2026-06-16 | 2026-06-16 | 2026-06-27 | 7..18 | null in all 1 snapshots with field (last seen null 2026-06-16) | paid_base_now=False
+  liquid/lfm-2.5-1.2b-instruct:free | 2026-01-20 | 2026-01-23 | 2026-06-28 | 2026-07-17 | 158..178 | null in all 45 snapshots with field (last seen null 2026-06-28) | paid_base_now=False
+  liquid/lfm-2.5-1.2b-thinking:free | 2026-01-20 | 2026-01-23 | 2026-06-28 | 2026-07-17 | 158..178 | null in all 45 snapshots with field (last seen null 2026-06-28) | paid_base_now=False
+  openai/gpt-oss-120b:free | 2025-08-05 | 2025-09-04 | 2026-06-28 | 2026-07-17 | 326..346 | null in all 45 snapshots with field (last seen null 2026-06-28) | paid_base_now=True
+  poolside/laguna-xs.2:free | 2026-04-28 | 2026-04-28 | 2026-06-28 | 2026-07-17 | 60..80 | null in all 17 snapshots with field (last seen null 2026-06-28) | paid_base_now=False
+  cognitivecomputations/dolphin-mistral-24b-venice-edition:free | 2025-07-09 | 2025-08-12 | 2026-07-18 | 2026-07-20 | 373..375 | SET 2026-07-19 (first seen set 2026-07-17; last value 2026-07-19; set in 2/47 snapshots with field) | paid_base_now=True
+  meta-llama/llama-3.2-3b-instruct:free | 2024-09-25 | 2025-01-17 | 2026-07-18 | 2026-07-20 | 661..663 | SET 2026-07-19 (first seen set 2026-07-17; last value 2026-07-19; set in 2/47 snapshots with field) | paid_base_now=True
+  meta-llama/llama-3.3-70b-instruct:free | 2024-12-06 | 2025-02-13 | 2026-07-18 | 2026-07-20 | 588..590 | SET 2026-07-19 (first seen set 2026-07-17; last value 2026-07-19; set in 2/47 snapshots with field) | paid_base_now=True
+  nousresearch/hermes-3-llama-3.1-405b:free | 2024-08-16 | 2025-11-01 | 2026-07-18 | 2026-07-20 | 701..703 | SET 2026-07-19 (first seen set 2026-07-17; last value 2026-07-19; set in 2/47 snapshots with field) | paid_base_now=True
+  qwen/qwen3-coder:free | 2025-07-23 | 2025-08-12 | 2026-07-18 | 2026-07-20 | 360..361 | SET 2026-07-19 (first seen set 2026-07-17; last value 2026-07-19; set in 2/47 snapshots with field) | paid_base_now=True
+  qwen/qwen3-next-80b-a3b-instruct:free | 2025-09-11 | 2026-01-23 | 2026-07-18 | 2026-07-20 | 309..311 | SET 2026-07-19 (first seen set 2026-07-17; last value 2026-07-19; set in 2/47 snapshots with field) | paid_base_now=True
+  tencent/hy3:free | 2026-07-06 | 2026-07-17 | 2026-07-20 | 2026-07-21 | 13..14 | SET 2026-07-21 (first seen set 2026-07-17; last value 2026-07-21; set in 3/3 snapshots with field) | paid_base_now=True
+  poolside/laguna-m.1:free | 2026-04-28 | 2026-04-28 | 2026-07-28 | 2026-07-31 | 90..94 | SET 2026-07-28 (first seen set 2026-07-17; last value 2026-07-28; set in 5/22 snapshots with field) | paid_base_now=False
+  inclusionai/ling-3.0-flash:free | 2026-07-23 | 2026-07-28 | 2026-08-03 | 2026-08-06 | 10..14 | null in all 3 snapshots with field (last seen null 2026-08-03) | paid_base_now=True
+  inclusionai/ling-3.0-tiny:free | 2026-08-06 | 2026-08-06 | 2026-08-06 | 2026-08-14 | 0..7 | null in all 1 snapshots with field (last seen null 2026-08-06) | paid_base_now=False
+  openai/gpt-oss-20b:free | 2025-08-05 | 2025-08-12 | 2026-08-21 | 2026-08-24 | 380..383 | null in all 55 snapshots with field (last seen null 2026-08-21) | paid_base_now=True
+  nvidia/nemotron-3-nano-30b-a3b:free | 2025-12-14 | 2026-01-07 | 2026-08-24 | 2026-08-25 | 252..253 | SET 2026-08-24 (first seen set 2026-08-21; last value 2026-08-24; set in 2/56 snapshots with field) | paid_base_now=True
+  nvidia/nemotron-nano-12b-v2-vl:free | 2025-10-28 | 2025-11-01 | 2026-08-24 | 2026-08-25 | 299..300 | SET 2026-08-24 (first seen set 2026-08-21; last value 2026-08-24; set in 2/56 snapshots with field) | paid_base_now=False
+  nvidia/nemotron-nano-9b-v2:free | 2025-09-05 | 2025-10-01 | 2026-08-24 | 2026-08-25 | 352..353 | SET 2026-08-24 (first seen set 2026-08-21; last value 2026-08-24; set in 2/56 snapshots with field) | paid_base_now=False
+  minimax/minimax-m2.7:free | 2026-03-18 | 2026-08-25 | 2026-09-06 | 2026-09-07 | 172..173 | null in all 7 snapshots with field (last seen null 2026-09-06) | paid_base_now=True
+  minimax/minimax-m3:free | 2026-05-31 | 2026-08-25 | 2026-09-06 | 2026-09-07 | 98..99 | null in all 7 snapshots with field (last seen null 2026-09-06) | paid_base_now=True
+  deepseek/deepseek-v4-flash-0731:free | 2026-07-31 | 2026-09-18 | 2026-09-19 | 2026-09-20 | 50..51 | null in all 2 snapshots with field (last seen null 2026-09-19) | paid_base_now=True
+  inclusionai/ling-3.0-flash-vl:free | 2026-09-10 | 2026-09-10 | 2026-09-23 | 2026-09-24 | 12..13 | null in all 13 snapshots with field (last seen null 2026-09-23) | paid_base_now=True
+  nex-agi/nex-n2.5-mini:free | 2026-09-08 | 2026-09-08 | 2026-09-24 | 2026-09-26 | 15..17 | SET 2026-09-25 (first seen set 2026-09-22; last value 2026-09-25; set in 3/16 snapshots with field) | paid_base_now=True
+  nex-agi/nex-n2.5-pro:free | 2026-09-08 | 2026-09-08 | 2026-09-24 | 2026-09-26 | 15..17 | SET 2026-09-25 (first seen set 2026-09-22; last value 2026-09-25; set in 3/16 snapshots with field) | paid_base_now=True
+  z-ai/glm-5.2:free | 2026-06-16 | 2026-08-21 | 2026-09-24 | 2026-09-26 | 99..101 | null in all 18 snapshots with field (last seen null 2026-09-24) | paid_base_now=True
+  inclusionai/ling-3.0-flash-fin:free | 2026-08-27 | 2026-08-28 | 2026-09-27 | 2026-09-29 | 31..32 | null in all 25 snapshots with field (last seen null 2026-09-27) | paid_base_now=True
+  qwen/qwen3.8-27b:free | 2026-08-14 | 2026-09-18 | 2026-10-05 | 2026-10-06 | 51..52 | null in all 15 snapshots with field (last seen null 2026-10-05) | paid_base_now=True
+
+SUMMARY of gone :free ids:
+  gone total: 163 | of which the paid base slug is listed today: 62
+  gone while expiration_date field existed in snapshots: 63
+     carried a non-null expiration_date in at least one snapshot before vanishing: 25
+     expiration_date was null in every snapshot before vanishing: 38
+     days between first snapshot showing the date and last snapshot listing the model:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 5, 5, 6, 8, 8, 9, 9, 10, 15, 23]
+  lifetime of gone :free ids, created->last seen (lower bound) days: n=163 min=0 median=129.0 max=701 mean=173.9
+  lifetime of gone :free ids, created->first absent (upper bound) days: n=163 min=3 median=152.0 max=703 mean=195.4
+  unwarned ids: ['allenai/molmo-2-8b:free', 'meta-llama/llama-3.1-405b-instruct:free', 'moonshotai/kimi-k2:free', 'qwen/qwen-2.5-vl-7b-instruct:free', 'tngtech/deepseek-r1t-chimera:free', 'tngtech/deepseek-r1t2-chimera:free', 'tngtech/tng-r1t-chimera:free', 'deepseek/deepseek-r1-0528:free', 'qwen/qwen3.6-plus-preview:free', 'stepfun/step-3.5-flash:free', 'google/gemma-3-12b-it:free', 'google/gemma-3-27b-it:free', 'google/gemma-3-4b-it:free', 'google/gemma-3n-e2b-it:free', 'google/gemma-3n-e4b-it:free', 'baidu/qianfan-ocr-fast:free', 'inclusionai/ring-2.6-1t:free', 'arcee-ai/trinity-large-thinking:free', 'baidu/cobuddy:free', 'minimax/minimax-m2.5:free', 'deepseek/deepseek-v4-flash:free', 'moonshotai/kimi-k2.6:free', 'z-ai/glm-4.5-air:free', 'nex-agi/nex-n2-pro:free', 'liquid/lfm-2.5-1.2b-instruct:free', 'liquid/lfm-2.5-1.2b-thinking:free', 'openai/gpt-oss-120b:free', 'poolside/laguna-xs.2:free', 'inclusionai/ling-3.0-flash:free', 'inclusionai/ling-3.0-tiny:free', 'openai/gpt-oss-20b:free', 'minimax/minimax-m2.7:free', 'minimax/minimax-m3:free', 'deepseek/deepseek-v4-flash-0731:free', 'inclusionai/ling-3.0-flash-vl:free', 'z-ai/glm-5.2:free', 'inclusionai/ling-3.0-flash-fin:free', 'qwen/qwen3.8-27b:free']
+  warned ids: ['mistralai/devstral-2512:free', 'xiaomi/mimo-v2-flash:free', 'google/gemini-2.0-flash-exp:free', 'upstage/solar-pro-3:free', 'mistralai/mistral-small-3.1-24b-instruct:free', 'qwen/qwen3-4b:free', 'qwen/qwen3.6-plus:free', 'arcee-ai/trinity-mini:free', 'arcee-ai/trinity-large-preview:free', 'inclusionai/ling-2.6-flash:free', 'inclusionai/ling-2.6-1t:free', 'tencent/hy3-preview:free', 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free', 'meta-llama/llama-3.2-3b-instruct:free', 'meta-llama/llama-3.3-70b-instruct:free', 'nousresearch/hermes-3-llama-3.1-405b:free', 'qwen/qwen3-coder:free', 'qwen/qwen3-next-80b-a3b-instruct:free', 'tencent/hy3:free', 'poolside/laguna-m.1:free', 'nvidia/nemotron-3-nano-30b-a3b:free', 'nvidia/nemotron-nano-12b-v2-vl:free', 'nvidia/nemotron-nano-9b-v2:free', 'nex-agi/nex-n2.5-mini:free', 'nex-agi/nex-n2.5-pro:free']
+
+=== survival: of the :free ids listed in snapshot X, how many are still listed today ===
+  20250117 (628 days ago): 23 free ->  0 still listed (0%)
+  20250213 (601 days ago): 28 free ->  0 still listed (0%)
+  20250303 (583 days ago): 35 free ->  0 still listed (0%)
+  20250403 (552 days ago): 54 free ->  0 still listed (0%)
+  20250503 (522 days ago): 71 free ->  0 still listed (0%)
+  20250605 (489 days ago): 68 free ->  0 still listed (0%)
+  20250701 (463 days ago): 53 free ->  0 still listed (0%)
+  20250812 (421 days ago): 55 free ->  0 still listed (0%)
+  20250904 (397 days ago): 56 free ->  0 still listed (0%)
+  20251001 (370 days ago): 53 free ->  0 still listed (0%)
+  20251101 (339 days ago): 46 free ->  0 still listed (0%)
+  20251206 (304 days ago): 30 free ->  0 still listed (0%)
+  20260107 (273 days ago): 32 free ->  0 still listed (0%)
+  20260108 (272 days ago): 32 free ->  0 still listed (0%)
+  20260110 (270 days ago): 32 free ->  0 still listed (0%)
+  20260123 (257 days ago): 33 free ->  0 still listed (0%)
+  20260126 (254 days ago): 33 free ->  0 still listed (0%)
+  20260128 (251 days ago): 33 free ->  0 still listed (0%)
+  20260201 (247 days ago): 32 free ->  0 still listed (0%)
+  20260215 (234 days ago): 26 free ->  0 still listed (0%)
+  20260219 (230 days ago): 26 free ->  0 still listed (0%)
+  20260303 (218 days ago): 24 free ->  0 still listed (0%)
+  20260306 (215 days ago): 24 free ->  0 still listed (0%)
+  20260317 (204 days ago): 26 free ->  1 still listed (4%)
+  20260319 (201 days ago): 26 free ->  1 still listed (4%)
+  20260321 (200 days ago): 26 free ->  1 still listed (4%)
+  20260322 (199 days ago): 26 free ->  1 still listed (4%)
+  20260323 (198 days ago): 26 free ->  1 still listed (4%)
+  20260326 (195 days ago): 26 free ->  1 still listed (4%)
+  20260327 (193 days ago): 26 free ->  1 still listed (4%)
+  20260328 (192 days ago): 26 free ->  1 still listed (4%)
+  20260330 (190 days ago): 24 free ->  1 still listed (4%)
+  20260331 (189 days ago): 25 free ->  1 still listed (4%)
+  20260401 (189 days ago): 25 free ->  1 still listed (4%)
+  20260402 (188 days ago): 25 free ->  1 still listed (4%)
+  20260403 (187 days ago): 25 free ->  1 still listed (4%)
+  20260405 (184 days ago): 25 free ->  1 still listed (4%)
+  20260407 (182 days ago): 27 free ->  3 still listed (11%)
+  20260409 (180 days ago): 25 free ->  3 still listed (12%)
+  20260410 (179 days ago): 24 free ->  3 still listed (12%)
+  20260423 (167 days ago): 26 free ->  3 still listed (12%)
+  20260425 (165 days ago): 27 free ->  3 still listed (11%)
+  20260427 (163 days ago): 27 free ->  3 still listed (11%)
+  20260428 (161 days ago): 30 free ->  4 still listed (13%)
+  20260430 (159 days ago): 29 free ->  4 still listed (14%)
+  20260504 (156 days ago): 29 free ->  4 still listed (14%)
+  20260513 (147 days ago): 25 free ->  4 still listed (16%)
+  20260515 (145 days ago): 25 free ->  4 still listed (16%)
+  20260518 (142 days ago): 24 free ->  4 still listed (17%)
+  20260520 (139 days ago): 24 free ->  4 still listed (17%)
+  20260521 (139 days ago): 24 free ->  4 still listed (17%)
+  20260523 (137 days ago): 24 free ->  4 still listed (17%)
+  20260524 (136 days ago): 24 free ->  4 still listed (17%)
+  20260529 (131 days ago): 23 free ->  4 still listed (17%)
+  20260530 (129 days ago): 23 free ->  4 still listed (17%)
+  20260531 (129 days ago): 22 free ->  4 still listed (18%)
+  20260606 (123 days ago): 23 free ->  6 still listed (26%)
+  20260616 (113 days ago): 22 free ->  6 still listed (27%)
+  20260627 (102 days ago): 22 free ->  7 still listed (32%)
+  20260628 (101 days ago): 22 free ->  7 still listed (32%)
+  20260717 ( 81 days ago): 20 free ->  8 still listed (40%)
+  20260718 ( 81 days ago): 20 free ->  8 still listed (40%)
+  20260720 ( 79 days ago): 14 free ->  8 still listed (57%)
+  20260721 ( 78 days ago): 13 free ->  8 still listed (62%)
+  20260728 ( 71 days ago): 15 free ->  9 still listed (60%)
+  20260731 ( 67 days ago): 14 free ->  9 still listed (64%)
+  20260803 ( 65 days ago): 14 free ->  9 still listed (64%)
+  20260806 ( 61 days ago): 14 free ->  9 still listed (64%)
+  20260814 ( 54 days ago): 16 free -> 12 still listed (75%)
+  20260821 ( 47 days ago): 17 free -> 12 still listed (71%)
+  20260824 ( 44 days ago): 18 free -> 14 still listed (78%)
+  20260825 ( 43 days ago): 17 free -> 14 still listed (82%)
+  20260828 ( 40 days ago): 18 free -> 14 still listed (78%)
+  20260829 ( 38 days ago): 18 free -> 14 still listed (78%)
+  20260902 ( 35 days ago): 18 free -> 14 still listed (78%)
+  20260904 ( 32 days ago): 19 free -> 15 still listed (79%)
+  20260905 ( 31 days ago): 19 free -> 15 still listed (79%)
+  20260906 ( 30 days ago): 18 free -> 15 still listed (83%)
+  20260907 ( 29 days ago): 16 free -> 15 still listed (94%)
+  20260908 ( 28 days ago): 18 free -> 15 still listed (83%)
+  20260909 ( 27 days ago): 18 free -> 15 still listed (83%)
+  20260910 ( 26 days ago): 19 free -> 15 still listed (79%)
+  20260911 ( 25 days ago): 19 free -> 15 still listed (79%)
+  20260913 ( 24 days ago): 19 free -> 15 still listed (79%)
+  20260914 ( 22 days ago): 19 free -> 15 still listed (79%)
+  20260915 ( 21 days ago): 20 free -> 15 still listed (75%)
+  20260916 ( 20 days ago): 20 free -> 15 still listed (75%)
+  20260917 ( 20 days ago): 20 free -> 15 still listed (75%)
+  20260918 ( 18 days ago): 22 free -> 15 still listed (68%)
+  20260919 ( 17 days ago): 22 free -> 15 still listed (68%)
+  20260920 ( 17 days ago): 21 free -> 15 still listed (71%)
+  20260921 ( 15 days ago): 21 free -> 15 still listed (71%)
+  20260922 ( 15 days ago): 21 free -> 15 still listed (71%)
+  20260923 ( 14 days ago): 21 free -> 15 still listed (71%)
+  20260924 ( 13 days ago): 20 free -> 15 still listed (75%)
+  20260926 ( 11 days ago): 17 free -> 15 still listed (88%)
+  20260927 (  9 days ago): 17 free -> 15 still listed (88%)
+  20260929 (  8 days ago): 16 free -> 15 still listed (94%)
+  20260930 (  7 days ago): 16 free -> 15 still listed (94%)
+  20261002 (  5 days ago): 17 free -> 16 still listed (94%)
+  20261003 (  4 days ago): 17 free -> 16 still listed (94%)
+  20261004 (  3 days ago): 17 free -> 16 still listed (94%)
+  20261005 (  2 days ago): 17 free -> 16 still listed (94%)
+  20261006 (  1 days ago): 16 free -> 16 still listed (100%)
+  20261007 (  0 days ago): 16 free -> 16 still listed (100%)
+
+=== traces ===
+ -- nex-agi/nex-n2.5-mini:free
+     20250117102709  ABSENT
+     20260908193012  listed exp=None prompt=0 completion=0
+     20260922092405  listed exp=2026-09-25 prompt=0 completion=0
+     20260926005441  ABSENT
+ -- nex-agi/nex-n2.5-mini
+     20250117102709  ABSENT
+     20260922092405  listed exp=None prompt=0.000000025 completion=0.0000001
+     20260924100700  ABSENT
+     20260929000400  listed exp=None prompt=0.000000025 completion=0.0000001
+ -- nex-agi/nex-n2.5-pro:free
+     20250117102709  ABSENT
+     20260908193012  listed exp=None prompt=0 completion=0
+     20260922092405  listed exp=2026-09-25 prompt=0 completion=0
+     20260926005441  ABSENT
+ -- nex-agi/nex-n2.5-pro
+     20250117102709  ABSENT
+     20260922092405  listed exp=None prompt=0.000000075 completion=0.00000025
+     20260924100700  ABSENT
+     20260929000400  listed exp=None prompt=0.000000075 completion=0.00000025
+ -- minimax/minimax-m3:free
+     20250117102709  ABSENT
+     20260825124457  listed exp=None prompt=0 completion=0
+     20260907193055  ABSENT
+ -- openai/gpt-oss-20b:free
+     20250117102709  ABSENT
+     20250812105045  listed exp=NOFIELD prompt=0 completion=0
+     20260123064106  listed exp=None prompt=0 completion=0
+     20260824050816  ABSENT
+ -- mistralai/devstral-2512:free
+     20250117102709  ABSENT
+     20260107124305  listed exp=NOFIELD prompt=0 completion=0
+     20260123064106  listed exp=2026-01-27 prompt=0 completion=0
+     20260126085007  ABSENT
+ -- liquid/lfm-2.5-2.6b:free
+     20250117102709  ABSENT
+     20260814060553  listed exp=None prompt=0 completion=0
+ -- nvidia/nemotron-3-super-120b-a12b:free
+     20250117102709  ABSENT
+     20260317070710  listed exp=None prompt=0 completion=0
+ -- poolside/laguna-s-2.1:free
+     20250117102709  ABSENT
+     20260728015936  listed exp=None prompt=0 completion=0
+     20261003000419  listed exp=2026-10-31 prompt=0 completion=0
+ -- dots-studio/dots-3-note-preview:free
+     20250117102709  ABSENT
+     20260814060553  listed exp=None prompt=0 completion=0
+     20260821150252  listed exp=2026-09-30 prompt=0 completion=0
+     20260910181642  listed exp=None prompt=0 completion=0
+     20260911193004  listed exp=2026-09-30 prompt=0 completion=0
+     20260923000733  listed exp=2026-12-31 prompt=0 completion=0
+     20260926005441  listed exp=None prompt=0 completion=0
+     20261002000425  listed exp=2026-12-31 prompt=0 completion=0

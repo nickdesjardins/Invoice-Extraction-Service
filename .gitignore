@@ -3,6 +3,11 @@
 .env.*
 !.env.example
 
+# The model chain a running service chose for itself (app/model_cache.py). It belongs to
+# one machine: committed, it would be read at every start of every deployment.
+model_cache.json
+model_cache.json.*.tmp
+
 # Virtual environments
 .venv/
 venv/

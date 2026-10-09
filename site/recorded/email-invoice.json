@@ -1,0 +1,166 @@
+{
+  "recorded_at": "2026-10-08T15:54:06Z",
+  "service": {
+    "name": "invoice-extraction-service",
+    "version": "1.0.0",
+    "environment": "development",
+    "docs_url": "/docs"
+  },
+  "limits": {
+    "min_chars": 10,
+    "max_chars": 50000,
+    "timeout_seconds": 30.0,
+    "simulated_timeout_seconds": 1.0
+  },
+  "scenario": {
+    "id": "email-invoice",
+    "group": "documents",
+    "title": "Invoice inside an email thread",
+    "summary": "Greetings, a signature and a confidentiality footer surround the invoice. The baseline case: on a healthy chain the first model answers alone.",
+    "simulate": [
+      null,
+      null
+    ],
+    "checks": [
+      {
+        "kind": "status",
+        "label": "Returns HTTP 200",
+        "expected": 200
+      },
+      {
+        "kind": "field",
+        "label": "Invoice number is NW-2024-0187",
+        "path": "data.invoice_number",
+        "expected": "NW-2024-0187"
+      },
+      {
+        "kind": "field",
+        "label": "Date is normalised to 2024-03-14",
+        "path": "data.invoice_date",
+        "expected": "2024-03-14"
+      },
+      {
+        "kind": "field",
+        "label": "Total is 377.98",
+        "path": "data.total_amount",
+        "expected": 377.98
+      },
+      {
+        "kind": "field",
+        "label": "Tax is 28.00",
+        "path": "data.tax_amount",
+        "expected": 28.0
+      },
+      {
+        "kind": "field",
+        "label": "Currency is USD",
+        "path": "data.currency",
+        "expected": "USD"
+      },
+      {
+        "kind": "count",
+        "label": "Two line items",
+        "path": "data.items",
+        "expected": 2
+      }
+    ]
+  },
+  "request": {
+    "method": "POST",
+    "path": "/playground/extract",
+    "body": {
+      "text": "From: billing@northwind-traders.example\nTo: sam@customer.example\nSubject: RE: RE: Your order - invoice attached\n\nHi Sam,\n\nSorry for the delay! Here are the details you asked for. Let me know if anything looks off.\n\nNORTHWIND TRADERS INC.\nInvoice #: NW-2024-0187\nDate: March 14, 2024\nPayment terms: Net 30\n\n2 x Widget Pro (SKU 4471) @ $49.99 each ............ $99.98\n1 x Annual support plan ............................ $250.00\n\nSubtotal: $349.98\nSales tax (8%): $28.00\nTOTAL DUE: $377.98\n\nThanks,\nPriya\nNorthwind Traders | Accounts Receivable\nThis email and any attachments are confidential.\n",
+      "simulate": [
+        null,
+        null
+      ]
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "content_type": "application/x-ndjson"
+  },
+  "events": [
+    {
+      "at_ms": 408,
+      "event": {
+        "event": "start",
+        "request_id": "b1f94ab222764e7db2afc68ccb18b20f",
+        "chain": [
+          {
+            "index": 0,
+            "model": "nvidia/nemotron-3-super-120b-a12b:free",
+            "role": "primary",
+            "fault": null
+          },
+          {
+            "index": 1,
+            "model": "liquid/lfm-2.5-2.6b:free",
+            "role": "fallback",
+            "fault": null
+          }
+        ]
+      }
+    },
+    {
+      "at_ms": 488,
+      "event": {
+        "event": "attempt_started",
+        "index": 0,
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "simulated": false
+      }
+    },
+    {
+      "at_ms": 9560,
+      "event": {
+        "event": "attempt_finished",
+        "index": 0,
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "simulated": false,
+        "outcome": "answered",
+        "error_type": null,
+        "message": null,
+        "retryable": false,
+        "elapsed_ms": 9151.26
+      }
+    },
+    {
+      "at_ms": 9560,
+      "event": {
+        "event": "result",
+        "status_code": 200,
+        "headers": {},
+        "body": {
+          "success": true,
+          "data": {
+            "vendor_name": "NORTHWIND TRADERS INC.",
+            "invoice_number": "NW-2024-0187",
+            "invoice_date": "2024-03-14",
+            "total_amount": 377.98,
+            "tax_amount": 28.0,
+            "items": [
+              {
+                "description": "Widget Pro (SKU 4471)",
+                "quantity": 2,
+                "unit_price": 49.99,
+                "total": 99.98
+              },
+              {
+                "description": "Annual support plan",
+                "quantity": 1,
+                "unit_price": 250.0,
+                "total": 250.0
+              }
+            ],
+            "currency": "USD"
+          },
+          "model_used": "nvidia/nemotron-3-super-120b-a12b:free",
+          "execution_time_ms": 9151.49,
+          "fallback_triggered": false
+        },
+        "elapsed_ms": 9151.72
+      }
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+<!doctype html>
+<!-- The card that is photographed to make site/og.png, the picture shown when the
+     page's address is pasted into LinkedIn, Slack or an email. tests/test_front_door.py
+     gives the command, above PREVIEW_PICTURE. It is a tool: it is not
+     published. It carries no measured figure on purpose: a number inside a picture cannot be
+     compared with a record by a test. Its words are the page's own: the name, the line above
+     the headline, the headline, the sentence under it (without "This web service", because
+     the name stands above), the first three tools, and the stamp of the recorded invoice.
+     tests/test_front_door.py lists them in PREVIEW_PICTURE and holds each to the page, and
+     holds the picture by its fingerprint: after a change here, photograph the card again,
+     look at the picture, and bring PREVIEW_PICTURE up to date. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Preview card</title>
+<style>
+  :root {
+    --page: #f9f9f7; --surface: #fcfcfb; --paper: #fffdf7; --paper-edge: #d5d3c8;
+    --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #6b6a65; --line: #e1e0d9; --line-strong: #c3c2b7;
+    --accent: #2a78d6; --good-text: #006300; --border: rgba(11, 11, 11, 0.1);
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body { position: relative; background: var(--page); color: var(--ink); font: 24px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+  /* The faint ledger rules behind the page's headline. */
+  body::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 42px; opacity: 0.6; -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 85%); mask-image: linear-gradient(to bottom, #000 0%, transparent 85%); }
+  .card { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 380px; gap: 40px; padding: 58px 64px 54px; }
+  .words { display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 16px; font-size: 27px; font-weight: 650; letter-spacing: -0.01em; }
+  .brand svg { width: 46px; height: 46px; }
+  .kicker { margin-top: 70px; color: var(--ink-3); font-size: 18px; font-weight: 650; letter-spacing: 0.09em; text-transform: uppercase; }
+  h1 { margin-top: 12px; font-size: 64px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.03; }
+  h1 span { display: block; color: var(--ink-3); }
+  .lede { margin-top: 28px; max-width: 27em; color: var(--ink-2); font-size: 24px; line-height: 1.45; }
+  .stack { margin-top: auto; color: var(--ink-3); font-size: 19px; }
+
+  /* A drawing, not a record: lines of text become a filled-in form. No figure in it. */
+  .drawing { position: relative; align-self: center; height: 480px; }
+  .sheet { position: absolute; border: 1px solid var(--paper-edge); background: var(--paper); box-shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 18px 40px -22px rgba(11, 11, 11, 0.3); }
+  .sheet--in { left: 6px; top: 4px; width: 236px; height: 276px; padding: 26px 22px; border-radius: 12px; transform: rotate(-4deg); }
+  .sheet--out { right: 0; bottom: 0; width: 272px; height: 300px; padding: 24px 22px; border-radius: 16px; background: var(--surface); border-color: var(--border); }
+  .bar { height: 9px; margin-bottom: 13px; border-radius: 5px; background: var(--line-strong); }
+  .bar--gap { margin-bottom: 30px; }
+  .field { display: grid; grid-template-columns: 78px 1fr; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .field i { height: 9px; border-radius: 5px; background: var(--line-strong); }
+  .field b { height: 13px; border-radius: 6px; background: var(--ink); }
+  .rule { height: 1px; margin: 20px 0 18px; background: var(--line-strong); }
+  .total { display: grid; grid-template-columns: 1fr 96px; gap: 12px; align-items: center; }
+  .total i { justify-self: end; width: 64px; height: 9px; border-radius: 5px; background: var(--line-strong); }
+  .total b { height: 17px; border-radius: 8px; background: var(--ink); }
+  .stamp { position: absolute; right: 18px; top: 18px; padding: 4px 11px; border: 3px solid var(--good-text); border-radius: 8px; color: var(--good-text); font-size: 15px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; transform: rotate(-6deg); opacity: 0.9; background: var(--surface); }
+  .arrow { position: absolute; left: 52px; top: 322px; width: 70px; height: 70px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); z-index: 2; }
+  .arrow svg { width: 38px; height: 38px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="words">
+    <div class="brand">
+      <svg viewBox="0 0 26 26" aria-hidden="true">
+        <rect width="26" height="26" rx="7" fill="#0b0b0b"/>
+        <path d="M7.5 5.5h11v15l-1.85-1.5-1.8 1.5-1.85-1.5-1.85 1.5-1.8-1.5-1.85 1.5z" fill="#f9f9f7"/>
+        <path d="M10.5 9.5h5M10.5 12.5h5M10.5 15.5h2.6" fill="none" stroke="#2a78d6" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      Invoice Extraction Service
+    </div>
+    <p class="kicker">Applied AI · structured extraction</p>
+    <h1>Messy text in. <span>Validated invoice out.</span></h1>
+    <p class="lede">Takes the text of an email, a till receipt or a scanned page and asks a free language model to fill in a fixed invoice form. If it gets no answer that fits the form, it asks a second model.</p>
+    <p class="stack">FastAPI · Pydantic v2 · OpenRouter</p>
+  </div>
+  <div class="drawing" aria-hidden="true">
+    <div class="sheet sheet--in">
+      <div class="bar" style="width: 78%"></div>
+      <div class="bar" style="width: 52%"></div>
+      <div class="bar bar--gap" style="width: 88%"></div>
+      <div class="bar" style="width: 30%"></div>
+      <div class="bar" style="width: 96%"></div>
+      <div class="bar bar--gap" style="width: 64%"></div>
+      <div class="bar" style="width: 70%"></div>
+      <div class="bar" style="width: 44%"></div>
+      <div class="bar" style="width: 84%"></div>
+      <div class="bar" style="width: 58%"></div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="sheet sheet--out">
+      <span class="stamp">Schema valid</span>
+      <div class="field" style="margin-top: 50px"><i></i><b style="width: 82%"></b></div>
+      <div class="field"><i></i><b style="width: 58%"></b></div>
+      <div class="field"><i></i><b style="width: 34%"></b></div>
+      <div class="rule"></div>
+      <div class="field"><i></i><b style="width: 70%"></b></div>
+      <div class="field"><i></i><b style="width: 46%"></b></div>
+      <div class="rule"></div>
+      <div class="total"><i></i><b></b></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

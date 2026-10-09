@@ -1,0 +1,34 @@
+# Runs the test suite on every push to main and on every pull request.
+#
+# It needs no API key and calls no model: the suite replaces the network with
+# stand-ins (tests/conftest.py), so it costs nothing and stores no secret.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          # The same file tells the host which Python to run the service on.
+          python-version-file: .python-version
+          cache: pip
+      - name: Install the service's requirements
+        run: pip install -r requirements.txt
+      # Some tests run a page's script with Node.js, which GitHub's machines have. Without
+      # it those tests are skipped and the run stays green, so this step fails the run instead.
+      - name: Is Node.js here?
+        run: node --version
+      - name: Run the test suite
+        run: python -m pytest -q

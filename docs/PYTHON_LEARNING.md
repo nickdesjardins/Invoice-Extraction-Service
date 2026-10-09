@@ -110,9 +110,38 @@ Read the files in this order, rather than trying to understand `main.py` first:
 | [app/extractors.py](../app/extractors.py) | Builds prompts, calls models, parses answers, and tries fallbacks. | Inheritance, exceptions, dictionaries, `async`/`await`. |
 | [app/main.py](../app/main.py) | Connects extraction to HTTP requests and responses. | Framework callbacks, middleware, application startup. |
 | [tests/test_extract.py](../tests/test_extract.py) | Checks the behavior with controlled inputs and a fake client. | Assertions, fixtures, test doubles, asynchronous tests. |
-| [tests/conftest.py](../tests/conftest.py) | Supplies a controlled test environment. | Setup/cleanup, monkeypatching, `yield`. |
+| [tests/conftest.py](../tests/conftest.py) | Supplies a controlled test environment, and closes every way out to the network for every test. | Setup/cleanup, monkeypatching, `yield`, a context manager of your own (`@contextmanager`). |
 | [app/__init__.py](../app/__init__.py) | Marks the application package and defines its version. | Packages and module-level names. |
+| [app/model_catalogue.py](../app/model_catalogue.py) | Optional reading: asks OpenRouter's public model list whether each configured model is still listed, and reports the answer. That check changes nothing by itself: `app/model_chooser.py`, below, is the module that may replace a withdrawn model. This file also defines what counts as a free model ID, and fetches the list of free models. | Data classes (`@dataclass`), standard-library HTTP requests, passing a function as an argument, a module run as a command with an exit code. |
+| [app/budget.py](../app/budget.py) | Optional reading: one ceiling on live model calls, for all callers together. A run asks it for room before its first model is called, and a refusal is a `CallLimitError`. | An exception class that carries the seconds to wait, a `deque` that holds the calls of the last minute, a module that keeps counters and a `reset()` that clears them, `try`/`finally` around `super().extract(...)`. |
+| [app/model_rules.py](../app/model_rules.py) | Optional reading: what a test of the free models concludes. Calls go in; a verdict for each model and the chain to use come out. | **Pure functions.** `judge` and `next_chain` return a result that depends only on their arguments, and they read no file, no clock and no network. So a test can check each rule with a few made-up values. |
+| [app/model_cache.py](../app/model_cache.py) | Optional reading: remembers the chain the service chose for itself, in memory, and in a small file so that a restart finds it again. | A module that keeps state in module-level variables, the `global` statement, a `forget()` function that drops that state for tests, a file checked like any other input, a file replaced in one step with `os.replace`. |
+| [app/model_testing.py](../app/model_testing.py) | Optional reading: one test of the free models. It sends the sample documents to each model and writes everything it learns into one dictionary, the record. | **Callbacks**: functions passed as arguments, which the runner calls when a call starts and when it ends. Also a function defined inside another function that changes a variable of the outer one (`nonlocal`), and a task started with `asyncio.create_task` and cancelled when it has to stop. |
+| [app/model_chooser.py](../app/model_chooser.py) | Optional reading: looks after the chain when `OPENROUTER_MODELS` is blank. After a request that a model did not answer, it asks OpenRouter whether that model is still offered, takes out a model that is gone, and starts a test to fill the free place. It is the only module that changes the chain. | **Background tasks**: work started with `asyncio.create_task` so that no request waits for it, kept in a set until it ends, and cancelled by `stop()` at shutdown. Also flags that let one piece of work run at a time, and a blocking call moved to a thread with a time limit (`asyncio.to_thread` inside `asyncio.wait_for`). |
+| [app/published_chain.py](../app/published_chain.py) | Optional reading: the small file in which this project's scheduled test, a job on GitHub that tests the free models about once a week, publishes the chain it tested. The module holds the file's format, the checks a service makes before it uses the file, and the command the scheduled job runs. | Checking outside data field by field, an exception class that carries a reason code, a fingerprint made with `hashlib`, a command built with `argparse` that runs async code through `asyncio.run`. |
+| [app/playground/](../app/playground/) | Optional reading: the browser page at `/` for trying the service by hand. Read it last. The service itself uses two of its modules when it tests models: the sample documents (`catalogue.py`) and the benchmark in the next row. | Sub-packages, wrapping one object in another, streaming responses, running a child process, an import placed inside a function to avoid an import circle. |
+| [app/playground/benchmark.py](../app/playground/benchmark.py) | Optional reading: a command that measures free models on the playground's seven live cases and saves a record of every call. The service's own test of the free models reuses its runner and its grading. | Command-line arguments, files and paths, JSON lines, running coroutines side by side. |
+| [tests/test_playground.py](../tests/test_playground.py) | Checks the playground page and its routes through the same fake client. | Importing fixtures from another test file, reading a streamed response. |
+| [tests/test_model_catalogue.py](../tests/test_model_catalogue.py) | Checks the model-list lookup without reaching OpenRouter, including what the service logs at startup. | Passing a fake function, capturing log output, entering the application lifespan. |
+| [tests/test_benchmark.py](../tests/test_benchmark.py) | Checks the benchmark's grading, tables, and guard rails with a scripted engine in place of a model. | Temporary files, capturing printed output, a subclass as a test double. |
+| [tests/test_doors.py](../tests/test_doors.py) | Checks the test setup itself: it reaches for the network on purpose, at an address where nothing listens, and expects `conftest.py` to stop it. | Testing your own test setup, `pytest.raises(..., match=...)`, an exception that `except Exception` does not catch. |
+| [tests/test_budget.py](../tests/test_budget.py), [tests/test_body_limit.py](../tests/test_body_limit.py), [tests/test_playground_guard.py](../tests/test_playground_guard.py) | Check the ceiling on live model calls, the size limit on request bodies, and the rule that the page's POST routes accept only the page itself. | A clock that a test moves by hand, a request body that arrives in pieces, one test run over a table of cases. |
+| [tests/test_model_rules.py](../tests/test_model_rules.py), [tests/test_model_chooser.py](../tests/test_model_chooser.py), [tests/test_published_chain.py](../tests/test_published_chain.py), [tests/test_models_page.py](../tests/test_models_page.py) | Check how the service looks after its model chain, with a scripted engine in place of every model and plain Python values in place of OpenRouter. | Testing pure functions with made-up values, waiting in a test until background tasks have ended, reading the page's script as text. |
+| [tests/test_page_behaviour.py](../tests/test_page_behaviour.py), [tests/page_harness.mjs](../tests/page_harness.mjs) | Check what the playground page's JavaScript does, by running it. The Python file asks the service for the answers that a page gets. Then it starts the second file with Node.js, a program that runs JavaScript outside a browser. That second file is JavaScript too: it runs the page's script on a made-up page that only keeps the words that are drawn on it, with a clock that it moves by hand, and prints one verdict for each case. On a machine without Node.js these tests are skipped. | Finding a program with `shutil.which`, starting it with `subprocess.run` and reading what it printed, a fixture that does its work once and keeps the result for every test, `pytest.skip` inside a fixture, one test run over a list of cases with `@pytest.mark.parametrize`. |
+| [tests/test_logging.py](../tests/test_logging.py) | Checks what a successful extraction leaves in the service's log: the model and the time, but not the vendor name or the invoice number, which are written at `DEBUG` only. | Capturing log records with pytest's `caplog` fixture, log levels (`INFO`, `DEBUG`), one test run for two routes with `@pytest.mark.parametrize`. |
+| [tests/test_front_door.py](../tests/test_front_door.py) | Checks the project page in `site/`. That is a separate static page, published on GitHub Pages, and the address that is given to people. Every figure and sentence on it is compared with the recorded runs, the benchmark snapshot and the code. | Reading HTML with the standard library's `html.parser`, a fingerprint made with `hashlib`, running another program with `subprocess`, skipping a whole file with `pytest.skip(..., allow_module_level=True)`. |
+| [tests/test_docs.py](../tests/test_docs.py) | Checks the documents against the code, the two pages and the saved records: the model IDs and the settings they name, their numbers, their links, and what they quote from the page and from the log. One of its tests runs the *Run* examples of this guide. | Regular expressions, reading files with `pathlib`, skipping a test, building text to compare, reading Python source with `ast`, running a string as code with `exec`. |
 | [requirements.txt](../requirements.txt) | Lists third-party packages to install. | Dependency management. |
+
+The first seven rows are the main path of this guide. You can leave the rows
+marked *optional reading* until you have finished the lessons. Six of them belong
+together: `budget.py`, `model_rules.py`, `model_cache.py`, `model_testing.py`,
+`model_chooser.py` and `published_chain.py` are how the service limits its own
+model calls, and how it looks after its model chain when a free model is
+withdrawn. [LEARNING.md](LEARNING.md) explains that design.
+This guide names the Python that each of the six shows well. It also explains
+the few lines of them that you will meet in `config.py`, `main.py` and
+`conftest.py`.
 
 A **module** is usually a Python file. A **package** groups modules, such as `app`.
 A **library** provides reusable code; Pydantic is one. A **framework** also decides
@@ -558,15 +587,17 @@ different things. Tests and evaluation need to address both.
 
 Find `Settings.model_chain` in [app/config.py](../app/config.py).
 
-**Source:**
+**Source, docstring omitted:**
 
 ```python
 @property
 def model_chain(self) -> list[str]:
-    """The ordered model ids, de-duplicated while preserving order."""
+    configured = self.openrouter_models
+    if not self.models_pinned:
+        configured = ",".join(model_cache.chain()) or configured
     seen: set[str] = set()
     chain: list[str] = []
-    for item in self.openrouter_models.split(","):
+    for item in configured.split(","):
         model = item.strip()
         if model and model not in seen:
             seen.add(model)
@@ -574,10 +605,21 @@ def model_chain(self) -> list[str]:
     return chain
 ```
 
+The first three lines of the body decide which text the loop reads. The loop
+itself is the subject of this lesson. `self.openrouter_models` is the text of the
+`OPENROUTER_MODELS` setting, or the tested default when that setting was left
+blank. `models_pinned` is another property of the same class. It is true when you
+named models in that setting. When you did not, the service may have chosen a
+chain for itself. `model_cache` is another module of this project, imported at the
+top of `config.py`, and `model_cache.chain()` returns that chain as a list.
+`",".join(...)` glues a list of strings into one string, with a comma between the
+items. An empty list gives an empty string, which is falsy, so `or configured`
+then keeps the default.
+
 `list[str]` means a list containing strings. `set[str]` means a set of strings.
 `set()` creates an empty set; `{}` would create an empty dictionary.
 
-Trace an input of `"model-a, model-b, model-a, "`:
+Trace the loop when `configured` is `"model-a, model-b, model-a, "`:
 
 | Iteration | After `.strip()` | Decision | `chain` afterward |
 |---|---|---|---|
@@ -619,6 +661,13 @@ arguments set the fields used here; other fields can still come from your shell'
 environment. These placeholder model IDs are just strings for practicing routing
 configuration. This code makes no network calls.
 
+The example names its models, so `models_pinned` is true and the chain is exactly
+the named one. Pydantic records which fields were given a value in
+`model_fields_set`, and `models_pinned` only checks whether `"openrouter_models"`
+is in that set. A blank `OPENROUTER_MODELS=` line counts as not given. That is how
+the service tells "left blank" from "named", even when the names are exactly the
+default ones.
+
 ### A comprehension is a compact loop
 
 In `ExtractionDispatcher.models` you will find:
@@ -652,15 +701,16 @@ One detail in `config.py` is easy to misread:
 
 ```python
 DEFAULT_MODEL_CHAIN = (
-    "nex-agi/nex-n2.5-mini:free,"
-    "liquid/lfm-2.5-2.6b:free,"
-    "nex-agi/nex-n2.5-pro:free"
+    "nvidia/nemotron-3-super-120b-a12b:free,"
+    "liquid/lfm-2.5-2.6b:free"
 )
 ```
 
 This is **one string**, not a tuple. Python concatenates adjacent string literals.
-The commas above are inside the strings. A tuple needs separating commas outside
-the values, such as `("model-a", "model-b")`.
+The comma above is inside the first string. A tuple needs separating commas
+outside the values, such as `("model-a", "model-b")`. The model IDs in this
+default change over time, because free models are withdrawn often; the syntax
+point does not.
 
 ## 9. Understand imports, settings, and caching
 
@@ -708,16 +758,85 @@ instead of constructing it again.
 
 Caching is also used for the dispatcher, shared API client, and schema. It does
 **not** cache invoice extraction answers. There is no result cache in this service.
+The name `model_cache`, which you met in lesson 8, means something else: that
+module remembers which models the service chose, not what any model answered.
 
 If you edit `.env` while the process is running, do not expect cached settings to
 change. Restart the service after configuration changes. `reset_extractors()`
 clears caches for tests, but is not equivalent to a full restart: values previously
 loaded into the process environment and open connections need separate care.
 
+One cache is cleared on purpose while the service runs. The settings object stays
+the same, but its `model_chain` property asks `model_cache` each time it is read,
+so its answer changes when the service changes its own chain. The cached
+dispatcher was built from the chain as it was before. So the code that changes the
+chain, in `app/model_chooser.py`, also calls `get_dispatcher.cache_clear()`, and
+the next call to `get_dispatcher()` builds a new dispatcher from the new chain. A
+cache has to be cleared when the thing it was built from changes.
+
 The key field uses Pydantic `SecretStr`, which masks ordinary display of the value.
 `settings.secret("openrouter_api_key")` explicitly obtains the actual text for the
 client constructor. Masking is not encryption. Do not print that method's result
 or put credentials in practice files.
+
+### A module can remember things between calls
+
+`lru_cache` remembers the result of a function. A module can also remember values
+in variables of its own. A name assigned at the top level of a module is created
+when the module is first imported, and it lives as long as the process does.
+
+**Run:**
+
+```python
+_calls = 0
+
+def count() -> int:
+    global _calls
+    _calls += 1
+    return _calls
+
+def reset() -> None:
+    global _calls
+    _calls = 0
+
+print(count())
+print(count())
+reset()
+print(count())
+```
+
+Expected output:
+
+```text
+1
+2
+1
+```
+
+`global _calls` says that the assignment inside the function means the module's
+variable. Without that line, Python would treat `_calls` as a new local variable,
+and `_calls += 1` would fail with `UnboundLocalError`. Only assigning needs
+`global`. A function can read a module-level name, or call a method on it,
+without it.
+
+**Predict before continuing:** what does the last line print if you delete the
+call to `reset()`? It prints `3`: nothing else sets `_calls` back.
+
+Modules of this project keep state this way too. Three of them matter here, and
+all three are optional reading.
+[app/model_cache.py](../app/model_cache.py) remembers the chain the service chose
+for itself: that is what `model_cache.chain()` returned in lesson 8.
+[app/budget.py](../app/budget.py) remembers when each model call of the last
+minute was made. [app/model_chooser.py](../app/model_chooser.py) remembers what it
+is doing about a model that stopped answering.
+
+Two costs come with the pattern. First, the state belongs to one process. That is
+why `render.yaml`, the file that tells the host how to start the service, starts
+it as a single process (`--workers 1`): a second process would keep a chain and
+counters of its own. Second, state that outlives a function call also outlives a
+test. So each of the three modules has one function that makes it forget
+everything: `model_cache.forget()`, `budget.reset()` and `model_chooser.reset()`.
+Lesson 17 shows where the tests call them.
 
 ## 10. Build prompts and output schemas
 
@@ -1111,7 +1230,8 @@ later when the framework calls them.
 
 ### Read the extraction route
 
-**Source, abridged:** decorator metadata and logging are omitted:
+**Source, abridged:** decorator metadata, logging, and the lines that report a
+model which did not answer are omitted:
 
 ```python
 @app.post("/api/v1/extract", response_model=ExtractResponse)
@@ -1142,8 +1262,33 @@ Follow the body:
 5. Subtracting clock readings gives seconds; multiplying by 1000 gives milliseconds.
 6. `ExtractResponse(...)` creates the response object. FastAPI serializes it to JSON.
 
-The elapsed time here includes fallback attempts. The request-context middleware
-measures a wider part of HTTP handling, so its timing header can differ.
+Step 3 has a detail that the name hides. Two functions are called
+`extract_invoice`. The one at the bottom of `extractors.py` only runs the
+dispatcher of lesson 14. The route uses the other one, which `main.py` imports
+from [app/budget.py](../app/budget.py). It returns and raises the same things,
+and it asks one question first: may this run start? The service keeps a
+**ceiling** on its live model calls, which are the calls that really reach a
+model. They are counted for all callers together. A run may start only while the
+last 60 seconds hold 15 live calls or fewer, its own calls included. The day has a
+limit too. OpenRouter gives an account a fixed number of free requests for each
+day, and the last fifth of the day's free requests is kept back: a run is refused
+when one of its calls would start with only a fifth of the day's free requests
+left, or less.
+When the ceiling is reached, the function raises `CallLimitError` before any
+model is called.
+
+The lines left out of the excerpt do one more job. When no model answered, or
+when a fallback answered, the route calls `model_chooser.note(...)` with the
+models that did not give the answer. `note` returns at once, so the caller's
+response is neither delayed nor changed. What the service then does about a
+model that has stopped working belongs to the optional module
+[app/model_chooser.py](../app/model_chooser.py). One of the two calls sits in an
+`except AllProvidersFailedError` block that ends with a bare `raise`, which you
+met in lesson 11: the exception goes on to its handler as if nothing had caught it.
+
+The elapsed time here includes the question to the ceiling and any fallback
+attempts. The request-context middleware measures a wider part of HTTP handling,
+so its timing header can differ.
 
 ### Middleware wraps the request
 
@@ -1158,6 +1303,21 @@ exceptions and produces the service's 500 response.
 `CORSMiddleware` sets browser cross-origin rules. It is not authentication or a
 rule preventing arbitrary clients from calling the service.
 
+A third piece of middleware, `BodyLimitMiddleware`, is a class written in `main.py`
+itself. It refuses a request body larger than `MAX_BODY_BYTES`, which is 1,000,000
+bytes, before the service holds it in memory. A request that declares a larger
+size is answered at once. Every other body is counted piece by piece as it
+arrives, so a size that was not declared, or was declared wrongly, is caught too.
+The class has a method named `__call__`, and that method is what makes an instance
+callable: writing `obj(...)` runs `obj.__call__(...)`. The framework can therefore
+call the object as if it were a function.
+
+The counting is done by a small function, `counted`, that is defined inside
+`__call__`. It adds to `received`, a variable of `__call__` itself, and so it
+begins with the statement `nonlocal received`. That is the same idea as `global`
+in lesson 9, one level down: without the statement, the assignment would create
+a new variable inside `counted`.
+
 ### Exceptions become HTTP responses
 
 `@app.exception_handler(...)` registers the translation from a Python exception
@@ -1166,15 +1326,26 @@ to a client-facing response:
 | Event | Handler/result in this project |
 |---|---|
 | Request body is invalid | `RequestValidationError` handler: HTTP 422, `validation_error`. |
+| Request body is larger than 1,000,000 bytes | `BodyLimitMiddleware`, or the `BodyTooLargeError` handler when the body grew past the limit while it was being read: HTTP 422, `validation_error`. |
 | Dispatcher accepts a no-invoice verdict | `UnparseableTextError` handler: HTTP 422, `unparseable_text`. |
 | All models fail without that verdict | `AllProvidersFailedError` handler: HTTP 503, `providers_unavailable`. |
+| The ceiling on live model calls is reached | `CallLimitError` handler: HTTP 503, `providers_unavailable`, with `Retry-After` set to the real wait in seconds. |
 | Unknown route or wrong HTTP method | HTTP exception handler: 404/405, `http_error`. |
+| Request body cannot be read as JSON at all, for example bytes that are not UTF-8 text | The same HTTP exception handler: HTTP 400, `http_error`. FastAPI raises that exception itself. |
 | Unexpected application crash | Request-context middleware: HTTP 500, `internal_error`. |
 
 `_error_response()` creates a shared `ErrorResponse` object and wraps its encoded
 data in `JSONResponse`. The `headers = ... if exc.retryable else None` expression
 conditionally supplies `Retry-After`. The code does not sleep or retry on behalf
 of the HTTP caller when it sends that header.
+
+`CallLimitError` is a subclass of `ExtractionError`, and each of the two classes
+has a handler. FastAPI uses the handler registered for the most specific class, so
+a refusal by the ceiling gets an answer of its own. That answer has the status and
+the error code of a chain in which every model failed, so a client meets no new
+status code. The `Retry-After` header differs. The other handlers send a fixed
+`5`, and only when a retry may help. This one always sends `exc.wait_seconds`,
+the real wait.
 
 ### Startup, cleanup, and `yield`
 
@@ -1185,22 +1356,54 @@ The `lifespan` function uses `@asynccontextmanager`. Its structure is:
 ```python
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    await model_chooser.at_startup()
     dispatcher = get_dispatcher()
     dispatcher.warm_up()
     try:
         yield
     finally:
+        await model_chooser.stop()
         await dispatcher.aclose()
 ```
 
 Code before `yield` runs during startup. `yield` temporarily hands control back
 while the application serves requests. Cleanup runs afterward, including closing
 the shared client. `finally` arranges cleanup even when the managed block exits
-with an exception. The full implementation also configures logging.
+with an exception.
 
-`GET /health` reads configuration; it does not call a model or verify that the
-credential actually works. A configured service can still encounter upstream
-failures on its next extraction.
+The two `model_chooser` lines belong to the optional modules. `at_startup()` only
+reads, and only when `OPENROUTER_MODELS` is blank, a key is set, the base address
+is OpenRouter's own and `MODEL_CATALOGUE_CHECK` is true. Its work is one request
+that carries no key. A scheduled job on GitHub tests the free models about once
+a week, and publishes the chain that results in one small file: the *published
+list*. `at_startup()` fetches that file. It uses the chain when the file passes
+its checks and is newer than the chain in use. It calls no model, and it cannot
+stop startup.
+
+`stop()` is cleanup for **background tasks**. While requests are served, the same
+module may start longer work, such as a test of the free models that takes
+minutes. A request must not wait for that. So the module starts the work with
+`asyncio.create_task(...)`: the coroutine then runs on the event loop beside the
+requests, and the call returns at once. At shutdown, `stop()` calls
+`task.cancel()` on every such task that is still running, and waits until they
+have ended. Cancelling raises `asyncio.CancelledError` inside the task, at the
+`await` where it is waiting. Lesson 13 showed code that re-raises this exception
+instead of treating it as a failure, and here you see why: it is how a task is
+told to stop. A test of the models that is cut off this way is thrown away,
+because half a test is not a result.
+
+The full implementation also configures logging and, when a key is set and
+`MODEL_CATALOGUE_CHECK` is true (the default), asks OpenRouter's public model
+list whether each model of the chain is still listed and logs the answer. That
+check itself only reports: it never changes which models are called, and it
+cannot stop startup. Replacing a withdrawn model is a separate step. With
+`OPENROUTER_MODELS` blank, `app/model_chooser.py` takes it after a request that
+the model did not answer. The [README](../README.md) describes that step from the
+outside: what starts it, and what it costs.
+
+`GET /health` reports the model chain in use and whether a key is set; it does not
+call a model or verify that the credential actually works. A configured service
+can still encounter upstream failures on its next extraction.
 
 At the bottom of the file, `if __name__ == "__main__":` distinguishes direct module
 execution from import. `python -m app.main` activates the manual Uvicorn launch
@@ -1216,8 +1419,9 @@ not guaranteed to match this example.
 |---|---|---|
 | HTTP request | JSON body with `text` containing `Northwind invoice NW-1: 3 widgets at 10 each. Total CAD 30.` | `create_app` / `extract` in `main.py`. |
 | Validated request | `ExtractRequest`; `payload.text` is a `str`. | `ExtractRequest` in `schemas.py`. |
-| Routing | `extract_invoice` delegates to the cached dispatcher's `extract`. | Bottom of `extractors.py`. |
-| Attempt | One `OpenRouterExtractor` executes its inherited `extract`. | `BaseExtractor.extract`. |
+| The ceiling | `extract_invoice` asks the ceiling on live model calls whether the run may start. A refusal raises `CallLimitError` here, and no model is called. | Bottom of `budget.py`. |
+| Routing | The dispatcher's `extract` tries the models of the chain in order. | `ExtractionDispatcher.extract` in `extractors.py`. |
+| Attempt | One engine executes its inherited `extract`. The engine is an `OpenRouterExtractor` wrapped in a `CountedExtractor`, which counts the call just before the request is sent. | `BaseExtractor.extract`; `CountedExtractor` in `budget.py`. |
 | Provider request | Prompt strings and schema dictionary passed to the SDK. | `OpenRouterExtractor._generate`. |
 | Provider content | A `str` containing JSON. | `choice.message.content`. |
 | Parsed content | A Python `dict`, with nested dictionaries/lists. | `parse_invoice_json`. |
@@ -1394,17 +1598,79 @@ The `http` fixture uses `httpx.ASGITransport(app=app)` and an `AsyncClient` to c
 FastAPI **inside the Python process**. It does not require a Uvicorn server or an
 open local port. The separate `router` fixture replaces the model client.
 
-The endpoint test therefore exercises HTTP handling, input validation, routing,
-request construction, parsing, invoice validation, and response serialization.
-It does not prove that a live model correctly understands invoices. ASGITransport
-also does not automatically run the app's startup/shutdown lifespan; this fixture
-does not test those hooks.
+The endpoint test therefore exercises HTTP handling, input validation, the
+question to the ceiling, routing, request construction, parsing, invoice
+validation, and response serialization. It does not prove that a live model
+correctly understands invoices. ASGITransport also does not automatically run the
+app's startup/shutdown lifespan; this fixture does not test those hooks.
+[tests/test_model_catalogue.py](../tests/test_model_catalogue.py) does enter the
+lifespan directly, with `async with app.router.lifespan_context(app):`, to check
+what the service logs at startup.
 
 [tests/conftest.py](../tests/conftest.py) pins test settings before the application
-is imported. Its `@pytest.fixture(autouse=True)` fixture also runs around every
-test without each test requesting it. It disables `.env` loading, resets caches,
-and uses `yield` to separate setup from cleanup. That prevents your real key and
-local configuration from determining test behavior.
+is imported. Its two `@pytest.fixture(autouse=True)` fixtures run around every
+test without each test requesting them.
+
+The first, `hermetic_settings`, disables `.env` loading, resets caches, and uses
+`yield` to separate setup from cleanup. That prevents your real key and local
+configuration from determining test behavior. It also calls the three functions
+from lesson 9, `model_cache.forget()`, `model_chooser.reset()` and
+`budget.reset()`, before and after each test, so that no test inherits what
+another test left in a module's memory. And it points `model_cache.PATH` at a
+temporary folder, so that no test reads or writes the file of a server you ran
+yourself.
+
+Three of these settings are worth knowing. `OPENROUTER_MODELS` lists three
+model IDs, used only as labels, so the tests can exercise a third position
+although the default chain has two. Naming models also fixes the chain (lesson 8:
+`models_pinned` is then true), so no test can start a test of the free models by
+accident. A test about that part of the service removes the variable first.
+`MODEL_CATALOGUE_CHECK=false` and `MODEL_PUBLISHED_URL=null` switch off the two
+reads of lesson 15: the check of the model list, and the fetch of the published
+list. So the application's startup asks for nothing unless a test turns one of
+them on.
+
+The second fixture, `closed_doors`, is what keeps every test off the network. It
+names `hermetic_settings` as a parameter, the way a test names a fixture, so
+pytest always pins the settings first. Its work is done by `close_the_doors`, a
+context manager of the project's own, written with `@contextmanager` from the
+standard library's `contextlib`:
+
+**Source, with the docstring and the middle left out:**
+
+```python
+@contextmanager
+def close_the_doors(monkeypatch: pytest.MonkeyPatch) -> Iterator[list[str]]:
+    knocks: list[str] = []
+    yield knocks
+    if knocks:
+        pytest.fail("This test reached for the network: " + " | ".join(knocks))
+```
+
+This is the idea of the `lifespan` function in lesson 15, without `async`. The
+code before `yield` runs when a `with close_the_doors(...) as knocks:` block is
+entered. `yield knocks` hands the list to the name after `as`. The code after
+`yield` runs when the block is left.
+
+The lines left out replace each of the service's three ways out to the network
+with a fake. Two of them are *openers*, the standard-library objects through
+which the service sends its own small HTTP requests: one for reads that carry no
+key (OpenRouter's lists and the published list), and one for OpenRouter's count
+of the day's free requests. The third is the *transport* of the model client, the
+part that opens the connection. A fake sends nothing. It writes down in
+`knocks` what was asked for, and fails the test with `pytest.fail`. The exception
+that `pytest.fail` raises is not a subclass of `Exception`, so code under test
+that says `except Exception` cannot swallow it. The service is built to carry on
+after a failed call, so the last two lines fail the test once more when it ends,
+if anything was written down.
+
+A test that needs an answer from outside therefore asks for a fake by name:
+the `router` fixture for a model client, the `allowance` fixture for the count of
+the day's free requests, or a function of its own passed in place of a fetch. One
+answer is given without asking. Nearly every run through the service wants the
+day's count, so by default a fake says that nothing has been used yet.
+[tests/test_doors.py](../tests/test_doors.py) reaches for each way out on purpose
+and checks that it is closed.
 
 Useful tests to read after the introductory ones:
 
@@ -1416,6 +1682,8 @@ Useful tests to read after the introductory ones:
 | `test_single_no_invoice_verdict_still_consults_the_next_model` | Protect a subtle routing policy. |
 | `test_extract_endpoint_rejects_invalid_request` | Verify rejection occurs before any model call. |
 | `test_extract_endpoint_returns_503_when_every_model_fails` | Check the public error response and diagnostics. |
+| `test_a_full_minute_is_refused_inside_the_public_contract`, in `tests/test_budget.py` | See the ceiling refuse a run: a 503, the real wait in `Retry-After`, and no model called. |
+| `test_a_declared_length_over_the_limit_is_refused_before_a_byte_is_read`, in `tests/test_body_limit.py` | See an oversized body refused without being read. |
 
 ### A practical debugging routine
 
@@ -1538,7 +1806,9 @@ each attempt. Identify the first point at which the function could return.
 
 **Done when:** you can explain how a rate limit followed by a server error reaches
 the third model, why the fallback flag is true, and which assertions would catch
-an implementation that skipped or reordered attempts.
+an implementation that skipped or reordered attempts. (The third model exists
+because the tests pin their own three-entry chain in `tests/conftest.py`; the
+default chain has two.)
 
 ### Exercise 7: improve a real validation gap
 
@@ -1551,6 +1821,17 @@ Start with tests for `"2024-02-29"`, `"2024-02-30"`, `None`, and `"N/A"`.
 Then implement your chosen policy and inspect both `model_dump()` and
 `model_json_schema()`; changing a type can affect serialization and the schema
 sent to the provider. `datetime.date` is a useful standard-library type to explore.
+
+A change to that schema reaches one step further in this project. The schema is
+part of a **fingerprint**: a short code computed from what a test of the free
+models depends on, so that a change to any of it gives a different code. The
+function is `fingerprint()` in
+[app/published_chain.py](../app/published_chain.py). The published list of lesson
+15 carries the fingerprint of the code that made it. If your change alters the
+schema, the two fingerprints differ. A service started with `OPENROUTER_MODELS`
+blank then logs that the list "was made by another version of the test", and does
+not use it. That is intended: a chain tested with another schema says nothing
+about your code.
 
 **Done when:** the tests, API behavior, and documented policy agree. This is an
 exercise to implement, not a feature the current code already provides.
@@ -1565,21 +1846,36 @@ of weeks:
 | Read Python | Explain a function's input, output, branches, and failure behavior without reading an explanation. |
 | Change a service | Make a focused change, write a meaningful test, and explain its effects across files. |
 | Integrate a model | Explain the exact request, response format, parsing boundary, timeout, and error mapping. |
-| Evaluate extraction | Build a small labeled set of synthetic or permissioned invoices, compare expected fields with actual outputs, and categorize errors. |
+| Evaluate extraction | Build a small labeled set of synthetic or redacted invoices, compare expected fields with actual outputs, and categorize errors. |
 | Make a tradeoff | Compare quality, latency, call counts, and applicable cost using measured results. |
 | Communicate your work | Write a short change description covering the problem, decision, validation, and remaining limitations. |
 
-For a portfolio extension, create a reproducible evaluation runner that saves the
-model ID, configuration, expected values, extracted values, failures, and timings.
+A minimal evaluation runner now exists at
+[app/playground/benchmark.py](../app/playground/benchmark.py). It runs the
+playground's seven live cases against free models, each call going to a single
+model with no fallback, and saves one record per call: the model ID, the outcome,
+the result of each check, any failure, and the timing, under a header that
+records the settings used. For a portfolio extension, the valuable part left to
+you is your own labeled documents: synthetic or redacted invoices with their
+expected fields, graded the same way. [USAGE.md](USAGE.md) section 13 has a
+short harness to start from.
+
 Mocked tests verify the surrounding code; an evaluation against labeled documents
-measures model extraction quality. Live evaluation requires configured access and
-can consume provider allowance or incur cost depending on your model choices.
+measures model extraction quality. Live evaluation requires configured access.
+The shipped command refuses any model ID that does not end in `:free`, so it
+cannot incur cost, but every request counts against your daily free allowance.
+Do not send real invoices to free models. On 7 October 2026 OpenRouter listed
+both default providers as keeping prompts and possibly training on them, and with
+`OPENROUTER_MODELS` blank the service can put another free model in the chain by
+itself.
 
 This repository practices one part of applied AI engineering: building reliable
 software around model inference. It does not cover the entire career. Next steps
 include Git workflows, SQL and data handling, deployment and monitoring, retrieval
 and embeddings, evaluation statistics, and application security. Learn them through
 working changes with observable results, rather than only collecting terminology.
+For deployment the repository holds a first step: [DEPLOY.md](DEPLOY.md) walks
+through putting this service online.
 
 ## 19. Keep a syntax reference beside you
 
@@ -1604,7 +1900,10 @@ working changes with observable results, rather than only collecting terminology
 | `f(x) for x in xs` | Produce values lazily for another operation. | `sum` and `any`. |
 | `any(...)` | True if at least one produced value is truthy. | Aggregate `retryable` flag. |
 | `{**data, "x": value}` | Copy entries, then set/replace `x`. | Input normalization. |
+| `",".join(xs)` | Glue strings into one string, with the separator between them. | The text that `model_chain` splits. |
 | `def f(...):` / `return value` | Define a function / return its result. | Normalization helpers. |
+| `global name` | Inside a function, assign to a module-level name. | `reset()` in `app/budget.py`. |
+| `nonlocal name` | Inside a nested function, assign to a variable of the enclosing function. | `counted` in `BodyLimitMiddleware`. |
 | `*` in parameters | Following arguments must be named. | `provider` in the parser. |
 | `**kwargs` in parameters | Collect keyword arguments into a dictionary. | The fake client's `_create`. |
 | `-> T` / `value: T` | Annotate an expected type. | Function returns and fields. |
@@ -1613,6 +1912,7 @@ working changes with observable results, rather than only collecting terminology
 | `@decorator` | Apply behavior or registration to a definition. | Validators, routes, fixtures, cache. |
 | `self` / `cls` | This instance / this class, by convention. | Instance methods / class methods. |
 | `super()` | Access inherited behavior. | Extractor and exception constructors. |
+| `obj(...)` with `__call__` | Call an instance as if it were a function. | `BodyLimitMiddleware`. |
 | `async def` / `await` | Define asynchronous work / wait for its result cooperatively. | Model generation. |
 | `try` / `except` / `raise` | Attempt work / catch a failure / signal a failure. | Parsing and fallbacks. |
 | `with` / `async with` | Enter and exit a managed block. | Expected errors / test HTTP client. |

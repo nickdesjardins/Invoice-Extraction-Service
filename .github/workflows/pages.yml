@@ -1,0 +1,92 @@
+# Publishes the folder site/ on GitHub Pages:
+#
+#   https://nickdesjardins.github.io/Invoice-Extraction-Service/
+#
+# That page is the address to give to people. The service itself runs on a free host
+# that puts it to sleep, and a visitor who stays half a minute would only see the
+# host's loading page. This page is there at once: it shows a recorded run and the
+# measured figures, and it wakes the live demo while the visitor reads.
+#
+# One thing has to be done by hand, once, before the first push that brings site/: in the
+# repository's Settings > Pages, set Source to "GitHub Actions". Until then the "publish"
+# job fails at "configure-pages", its second step, with "Get Pages site failed".
+#
+# The page is written by hand and quotes figures, so it is checked before it goes
+# out: the first job runs tests/test_front_door.py, which compares every figure and
+# statement on the page with the recordings in site/recorded/, the benchmark snapshot
+# and the code. If they no longer agree, nothing is published and GitHub emails the
+# repository owner. It needs no API key and calls no model.
+#
+# What it cannot tell you:
+#   * It runs when site/, the test or this file changes. If the code moves on and the
+#     page falls behind (a new default model, a new benchmark), the "Tests" workflow
+#     is what fails; the page already published stays as it is until site/ is
+#     brought up to date.
+#   * It does not look at the live demo. Whether the demo is awake is the page's own
+#     business, in the visitor's browser. The demo's address is written in one
+#     place, in site/index.html, and nowhere in this file.
+#   * Browsers and GitHub's servers keep a copy of the page for about 10 minutes, so
+#     a change can take that long to be seen.
+name: Project page
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - tests/test_front_door.py
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+# The check only reads. The two extra permissions are given to the job that publishes.
+permissions:
+  contents: read
+
+# One publication at a time. A run that has started is allowed to finish, so that a
+# second push never leaves the site half replaced.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Does the page say what the records say?
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          # The same file tells the host which Python to run the service on.
+          python-version-file: .python-version
+          cache: pip
+      - name: Install the service's requirements
+        run: pip install -r requirements.txt
+      # Two tests replay the page's script with Node.js, which GitHub's machines have.
+      # Without it those two are skipped, and "-rs" below says so.
+      - name: Is Node.js here?
+        run: node --version || echo "Node.js is missing, so the replay of the page's script will be skipped"
+      - name: Compare the page with its sources
+        run: python -m pytest -q -rs tests/test_front_door.py
+
+  publish:
+    name: Publish site/
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write # to publish
+      id-token: write # to prove to GitHub Pages that this run is the one publishing
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      # Nothing is built: the folder is uploaded as it is in the repository.
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v5

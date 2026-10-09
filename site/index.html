@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- This page cannot send response headers, so its security policy is set here, ahead of
+       everything it covers. Scripts and styles come from this page's own files only. The one
+       outside address is the live demo's icon, which assets/door.js loads as a picture to
+       learn that the demo is awake. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' https://*.onrender.com; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <!-- An invoice number is not a telephone number: a phone must not turn it into a link. -->
+  <meta name="format-detection" content="telephone=no">
+  <title>Invoice Extraction Service</title>
+  <meta name="description" content="This web service takes the text of an email, a till receipt or a scanned page and asks a free language model to fill in a fixed invoice form. If it gets no answer that fits the form, it asks a second model.">
+  <link rel="canonical" href="https://nickdesjardins.github.io/Invoice-Extraction-Service/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Invoice Extraction Service">
+  <meta property="og:description" content="This web service takes the text of an email, a till receipt or a scanned page and asks a free language model to fill in a fixed invoice form. If it gets no answer that fits the form, it asks a second model.">
+  <meta property="og:url" content="https://nickdesjardins.github.io/Invoice-Extraction-Service/">
+  <meta property="og:image" content="https://nickdesjardins.github.io/Invoice-Extraction-Service/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Invoice Extraction Service. Messy text in. Validated invoice out.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/door.css">
+  <!-- Applies a saved colour theme before first paint. -->
+  <script src="assets/theme.js"></script>
+  <script src="assets/door.js" defer></script>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2A8 8 0 0 1 9.8 4a8 8 0 1 0 10.2 10.2z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M4 7h3.5c5 0 5.5 10 10.5 10H20M17 14l3 3-3 3M4 17h3.5c1.4 0 2.4-.8 3.2-1.9M20 7h-2c-1.4 0-2.4.8-3.2 1.9M17 4l3 3-3 3"/></symbol>
+</svg>
+
+<a class="skip" href="#title">Skip to the content</a>
+
+<header class="topbar">
+  <div class="wrap topbar__row">
+    <a class="brand" href="./">
+      <svg class="brand__mark" viewBox="0 0 26 26" aria-hidden="true">
+        <rect class="bg" width="26" height="26" rx="7"/>
+        <path class="pg" d="M7.5 5.5h11v15l-1.85-1.5-1.8 1.5-1.85-1.5-1.85 1.5-1.8-1.5-1.85 1.5z"/>
+        <path class="ln" d="M10.5 9.5h5M10.5 12.5h5M10.5 15.5h2.6"/>
+      </svg>
+      <span class="brand__name">Invoice Extraction Service</span>
+    </a>
+    <nav class="topbar__nav" aria-label="On this page">
+      <a href="#run">Recorded run</a>
+      <a href="#fallback">When a model fails</a>
+      <a href="#measured">Measured figures</a>
+      <a href="#guides">Guides</a>
+    </nav>
+    <div class="topbar__actions">
+      <!-- A second way to the live demo that stays in view while the page is read. It has no
+           address of its own: assets/door.js gives it the one below and shows it. -->
+      <a class="status" id="demo-chip" hidden><span class="status__dot" aria-hidden="true"></span>Live demo</a>
+      <button class="iconbtn" id="theme-toggle" type="button" aria-label="Switch between light and dark theme" hidden>
+        <svg class="icon theme-icon--light" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="icon theme-icon--dark" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Everything on this page that could go stale is marked. An element with data-fact says
+     what the recordings in recorded/, the benchmark snapshot or the code say; an element with
+     data-quote repeats, word for word, the file it names. tests/test_front_door.py compares
+     each one with its source, and fails on any other sentence, and on any piece that is
+     moved, hidden or pointed at another address. -->
+<main>
+  <div class="first">
+    <div class="wrap first__grid">
+
+      <section class="intro" aria-labelledby="title">
+        <p class="kicker" data-quote="app/playground/static/index.html">Applied AI · structured extraction</p>
+        <h1 id="title" data-quote="app/playground/static/index.html">Messy text in. <span>Validated invoice out.</span></h1>
+        <p class="lede" data-fact="what-it-does">
+          This web service takes the text of an email, a till receipt or a scanned page and asks
+          a free language model to fill in a fixed invoice form. If it gets no answer that fits the
+          form, it asks a second model.
+        </p>
+        <p class="stack" data-fact="stack">FastAPI · Pydantic&nbsp;v2 · OpenRouter · strict&nbsp;JSON&nbsp;schema · temperature&nbsp;0</p>
+      </section>
+
+      <section class="demo" id="demo" aria-label="Live demo">
+        <!-- THE ONE PLACE that holds the address of the live demo. In the next line, replace
+             the name that ends in .invalid, once, with the name the host shows for the
+             service: lower case, ending in .onrender.com. Keep https:// before it and
+             /#playground after it (that is the part of the demo's page where a visitor runs
+             a document). Until then the page says that the demo is not online yet, and asks
+             nothing. -->
+        <a class="btn btn--ghost btn--lg demo__link" id="demo-link" href="https://live-demo-not-deployed-yet.invalid/#playground">
+          Open the live demo <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
+        <a class="btn btn--ghost btn--lg" href="https://github.com/nickdesjardins/Invoice-Extraction-Service">Code on GitHub</a>
+        <!-- The only words on this page that change while it is read. Without the script they
+             stay as written here. -->
+        <p class="demo__line">
+          <span class="demo__mark" aria-hidden="true"></span>
+          <span>
+            <span id="demo-words" role="status" data-fact="demo.static">The live demo runs on free hosting and sleeps between visits. Opening it wakes it, which takes about a minute.</span>
+            <span class="demo__clock" id="demo-clock" aria-hidden="true" hidden></span>
+          </span>
+        </p>
+        <p class="demo__unset" data-fact="demo.unset">The live demo is not online yet. This page shows recorded runs instead.</p>
+      </section>
+
+      <section class="figures" aria-labelledby="figures-title">
+        <h2 class="kicker" id="figures-title">Measured on <time data-fact="bench.day" datetime="2026-10-07">7 October 2026</time></h2>
+        <ul class="tiles">
+          <li class="tile">
+            <span class="tile__who">First model</span>
+            <strong class="tile__value" data-fact="bench.0.correct">21 of 21</strong>
+            <span class="tile__label">answers fully correct</span>
+            <span class="tile__more">no answer: <span data-fact="bench.0.no_answer">0 of 21</span></span>
+            <span class="tile__more">median answer <span data-fact="bench.0.median">7.1 s</span></span>
+          </li>
+          <li class="tile">
+            <span class="tile__who">Second model</span>
+            <strong class="tile__value" data-fact="bench.1.correct">16 of 19</strong>
+            <span class="tile__label">answers fully correct</span>
+            <span class="tile__more">no answer: <span data-fact="bench.1.no_answer">2 of 21</span></span>
+            <span class="tile__more">median answer <span data-fact="bench.1.median">2.8 s</span></span>
+          </li>
+        </ul>
+        <p class="footnote">
+          <span data-fact="bench.limits">3 passes of 7 documents per model show whether a model can do the job, not how often it is right.</span>
+          <a href="#measured">See all <span data-fact="bench.models">four</span> models</a>
+        </p>
+      </section>
+
+      <section class="card run" id="run" aria-labelledby="run-title">
+        <header class="run__head">
+          <!-- The heading comes first for someone who moves from heading to heading: what
+               follows it says that this is a recording. The stylesheet draws the dated line
+               above the heading, here and in the two sections below. -->
+          <h2 id="run-title" data-fact="run.title">This email went in. This invoice came back.</h2>
+          <p class="kicker">Recorded run · <time data-fact="run.when" datetime="2026-10-08T15:54:06Z">8 October 2026, 15:54 UTC</time></p>
+          <span class="chip" data-fact="run.nature">A recording, not live</span>
+        </header>
+
+        <div class="run__grid">
+          <div class="in">
+            <div class="paper-wrap">
+              <div class="paper">
+                <div class="paper__bar">
+                  <strong>Sent</strong>
+                  <span><span data-fact="run.chars">591</span> characters of text</span>
+                </div>
+                <pre class="paper__text" data-fact="run.document" role="region" aria-label="The email that was sent">From: billing@northwind-traders.example
+To: sam@customer.example
+Subject: RE: RE: Your order - invoice attached
+
+Hi Sam,
+
+Sorry for the delay! Here are the details you asked for. Let me know if anything looks off.
+
+NORTHWIND TRADERS INC.
+Invoice #: NW-2024-0187
+Date: March 14, 2024
+Payment terms: Net 30
+
+2 x Widget Pro (SKU 4471) @ $49.99 each ............ $99.98
+1 x Annual support plan ............................ $250.00
+
+Subtotal: $349.98
+Sales tax (8%): $28.00
+TOTAL DUE: $377.98
+
+Thanks,
+Priya
+Northwind Traders | Accounts Receivable
+This email and any attachments are confidential.
+</pre>
+              </div>
+            </div>
+            <p class="record"><a href="recorded/email-invoice.json">The recording of this run (JSON)</a></p>
+          </div>
+
+          <div class="out">
+            <p class="out__head">
+              <span class="out__label">Returned</span>
+              <span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+              <span class="out__code" data-fact="run.status">200</span>
+              <span class="out__title" data-fact="run.outcome">Invoice extracted</span>
+            </p>
+
+            <div class="invoice">
+              <span class="stamp" data-fact="run.valid">Schema valid</span>
+              <p class="invoice__vendor" data-fact="run.vendor">NORTHWIND TRADERS INC.</p>
+              <dl class="invoice__meta">
+                <div><dt>Invoice number</dt><dd data-fact="run.number">NW-2024-0187</dd></div>
+                <div><dt>Date</dt><dd data-fact="run.date">2024-03-14</dd></div>
+                <div><dt>Currency</dt><dd data-fact="run.currency">USD</dd></div>
+              </dl>
+              <table class="items" aria-labelledby="run-items">
+                <thead>
+                  <tr>
+                    <th scope="col">Description</th>
+                    <th scope="col" class="n">Qty</th>
+                    <th scope="col" class="n">Unit price</th>
+                    <th scope="col" class="n">Line total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-fact="run.item.0">
+                    <td>Widget Pro (SKU 4471)</td>
+                    <td class="n">2</td>
+                    <td class="n">$49.99</td>
+                    <td class="n">$99.98</td>
+                  </tr>
+                  <tr data-fact="run.item.1">
+                    <td>Annual support plan</td>
+                    <td class="n">1</td>
+                    <td class="n">$250.00</td>
+                    <td class="n">$250.00</td>
+                  </tr>
+                </tbody>
+              </table>
+              <dl class="totals">
+                <dt id="run-items">Line items</dt><dd data-fact="run.lines">$349.98</dd>
+                <dt>Tax</dt><dd data-fact="run.tax">$28.00</dd>
+                <dt class="is-total">Total</dt><dd class="is-total" data-fact="run.total">$377.98</dd>
+              </dl>
+            </div>
+
+            <dl class="facts">
+              <dt>Answered by</dt>
+              <dd><span class="mono" data-fact="run.model">nemotron-3-super-120b-a12b</span> <small data-fact="run.place">the first of the two models</small></dd>
+              <dt>Response time</dt>
+              <dd><span data-fact="run.seconds">9.15 s</span> <small>measured by the service</small></dd>
+              <dt>Recorded</dt>
+              <dd><time data-fact="run.when" datetime="2026-10-08T15:54:06Z">8 October 2026, 15:54 UTC</time></dd>
+            </dl>
+            <p class="checks__title" id="run-checks"><strong>Checks this run had to pass</strong> <span><span data-fact="run.checks">7 of 7</span> passed</span></p>
+            <ul class="checks" aria-labelledby="run-checks">
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.0">Returns HTTP 200</span></li>
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.1">Invoice number is NW-2024-0187</span></li>
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.2">Date is normalised to 2024-03-14</span></li>
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.3">Total is 377.98</span></li>
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.4">Tax is 28.00</span></li>
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.5">Currency is USD</span></li>
+              <li><span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><span data-fact="run.check.6">Two line items</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <section class="section" id="fallback" aria-labelledby="fallback-title">
+    <div class="wrap">
+      <header class="section__head">
+        <h2 id="fallback-title" data-fact="fallback.title">The first model was made to fail. The second one answered.</h2>
+        <p class="kicker">Recorded run · <time data-fact="fallback.when" datetime="2026-10-08T15:54:24Z">8 October 2026, 15:54 UTC</time> · <span data-fact="fallback.simulated">simulated failure</span></p>
+        <p data-fact="fallback.story">
+          The same email was sent again. This time the first model's call was replaced by a
+          simulated timeout, after 1 second instead of the usual 30. The rest was real: the service
+          gave up on the first model, called the second one, and returned the same invoice.
+        </p>
+      </header>
+
+      <div class="card trace">
+        <ol>
+          <li class="trace__row">
+            <span class="num" data-fact="fallback.attempt.0.position">1</span>
+            <div>
+              <div class="trace__model" data-fact="fallback.attempt.0.model">nemotron-3-super-120b-a12b</div>
+              <div class="trace__state">
+                <span class="badge badge--crit"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span>
+                <span data-fact="fallback.attempt.0.outcome">Timed out</span>
+                <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-bolt"/></svg><span data-fact="fallback.attempt.0.kind">simulated</span></span>
+              </div>
+            </div>
+            <span class="trace__time" data-fact="fallback.attempt.0.seconds">1.01 s</span>
+          </li>
+          <li class="trace__row">
+            <span class="num" data-fact="fallback.attempt.1.position">2</span>
+            <div>
+              <div class="trace__model" data-fact="fallback.attempt.1.model">lfm-2.5-2.6b</div>
+              <div class="trace__state">
+                <span class="badge badge--good"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+                <span data-fact="fallback.attempt.1.outcome">Answered with a valid invoice</span>
+                <span class="chip" data-fact="fallback.attempt.1.kind">real call</span>
+              </div>
+            </div>
+            <span class="trace__time" data-fact="fallback.attempt.1.seconds">1.95 s</span>
+          </li>
+        </ol>
+
+        <div class="trace__out">
+          <p class="trace__end">
+            <span class="badge badge--good badge--lg"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+            <span class="out__code" data-fact="fallback.status">200</span>
+            <span class="out__title" data-fact="fallback.outcome">Invoice extracted</span>
+            <span class="chip chip--warn"><svg class="icon" aria-hidden="true"><use href="#i-shuffle"/></svg><span data-fact="fallback.used">Fallback used</span></span>
+          </p>
+          <dl class="facts">
+            <dt>Answered by</dt>
+            <dd><span class="mono" data-fact="fallback.model">lfm-2.5-2.6b</span> <small data-fact="fallback.place">the second model</small></dd>
+            <dt>Response time</dt>
+            <dd><span data-fact="fallback.seconds">2.96 s</span> <small>both attempts, the first one simulated</small></dd>
+            <dt>Invoice</dt>
+            <dd><span class="mono" data-fact="fallback.number">NW-2024-0187</span> <small data-fact="fallback.same">the same as in the first run, field for field</small></dd>
+            <dt>Checks</dt>
+            <dd><span data-fact="fallback.checks">4 of 4</span> <small>passed</small></dd>
+          </dl>
+          <p class="record"><a href="recorded/primary-timeout.json">The recording of this second run (JSON)</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="measured" aria-labelledby="measured-title">
+    <div class="wrap">
+      <header class="section__head">
+        <h2 id="measured-title">How the <span data-fact="chain.length">two</span> models were chosen</h2>
+        <p class="kicker">Measured on <time data-fact="bench.day" datetime="2026-10-07">7 October 2026</time>, <span data-fact="bench.window">17:54 to 19:02 UTC</span></p>
+        <p>
+          <span data-quote="app/playground/static/index.html">Free models come and go, so this is a dated snapshot, not a live reading.</span>
+          <span data-fact="bench.method">Each of the four free models on OpenRouter that advertised structured output was sent 7 documents in each of 3 passes: six invoices and receipts, one of them an invoice for services, and one meeting email that must be refused. Every call went through this service's own prompt, schema and validation, with a time limit of 30 s.</span>
+        </p>
+      </header>
+
+      <div class="card table-scroll" tabindex="0" role="region" aria-label="The table of measured models">
+        <table class="table" aria-labelledby="measured-title">
+          <thead>
+            <tr>
+              <th scope="col">Model</th>
+              <th scope="col" class="n">No answer</th>
+              <th scope="col" class="n">Fully correct</th>
+              <th scope="col" class="n">Median answer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><div class="table__model"><span data-fact="bench.0.model">nemotron-3-super-120b-a12b</span><small data-fact="bench.0.about">First model</small></div></th>
+              <td class="n" data-fact="bench.0.no_answer">0 of 21</td>
+              <td class="n" data-fact="bench.0.correct">21 of 21</td>
+              <td class="n"><span data-fact="bench.0.median">7.1 s</span><small>slowest <span data-fact="bench.0.slowest">14.4 s</span></small></td>
+            </tr>
+            <tr>
+              <th scope="row"><div class="table__model"><span data-fact="bench.1.model">lfm-2.5-2.6b</span><small data-fact="bench.1.about">Second model · Wrong tax on the service invoice in every pass</small></div></th>
+              <td class="n" data-fact="bench.1.no_answer">2 of 21</td>
+              <td class="n" data-fact="bench.1.correct">16 of 19</td>
+              <td class="n"><span data-fact="bench.1.median">2.8 s</span><small>slowest <span data-fact="bench.1.slowest">9.8 s</span></small></td>
+            </tr>
+            <tr class="is-context">
+              <th scope="row"><div class="table__model"><span data-fact="bench.2.model">dots-3-note-preview</span><small data-fact="bench.2.about">Left out · Usual answer takes most of the time limit; the model ends on 31 December 2026</small></div></th>
+              <td class="n" data-fact="bench.2.no_answer">1 of 21</td>
+              <td class="n" data-fact="bench.2.correct">20 of 20</td>
+              <td class="n"><span data-fact="bench.2.median">21.6 s</span><small>slowest <span data-fact="bench.2.slowest">27.5 s</span></small></td>
+            </tr>
+            <tr class="is-context">
+              <th scope="row"><div class="table__model"><span data-fact="bench.3.model">apodex-1.1-mini</span><small data-fact="bench.3.about">Left out · Rejects the strict response format</small></div></th>
+              <td class="n" data-fact="bench.3.no_answer">21 of 21</td>
+              <td class="n" data-fact="bench.3.correct">–</td>
+              <td class="n" data-fact="bench.3.median">–</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="legend">
+        <li><strong>No answer:</strong> <span data-quote="app/playground/static/assets/app.js">the call ended without one. A rate limit, a timeout, a rejected format or cut-off output.</span></li>
+        <li><strong>Fully correct:</strong> <span data-quote="app/playground/static/assets/app.js">of the calls that answered, those with every checked field right, or the meeting email refused.</span></li>
+        <li><strong>Order of the models:</strong> <span data-quote="app/playground/static/assets/app.js">a model that rejects the format, or whose usual answer takes more than half of the time limit, is left out. Of the rest, fewest wrong answers first, then fewest calls with no answer. A fallback replaces a failed call, never a wrong answer.</span></li>
+        <li><strong>Records:</strong> every call behind this table is saved in <a href="https://github.com/nickdesjardins/Invoice-Extraction-Service/blob/main/benchmarks/2026-10-07/175417Z.jsonl"><code data-fact="bench.records">benchmarks/2026-10-07/175417Z.jsonl</code></a>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="guides" aria-labelledby="guides-title">
+    <div class="wrap">
+      <header class="section__head">
+        <h2 id="guides-title">The code and the guides</h2>
+      </header>
+      <ul class="links">
+        <li>
+          <a href="https://github.com/nickdesjardins/Invoice-Extraction-Service">Code on GitHub</a>
+          <span data-fact="guides.code">The service, its tests, and this page with the test that checks its figures.</span>
+        </li>
+        <li>
+          <a href="https://github.com/nickdesjardins/Invoice-Extraction-Service/blob/main/docs/USAGE.md">Using the service</a>
+          <span data-quote="README.md">Covers installing, calling, configuring and troubleshooting the service.</span>
+        </li>
+        <li>
+          <a href="https://github.com/nickdesjardins/Invoice-Extraction-Service/blob/main/docs/LEARNING.md">The ideas behind it</a>
+          <span data-quote="README.md">Explains the Applied AI concepts and why the code is shaped this way.</span>
+        </li>
+        <li>
+          <a href="https://github.com/nickdesjardins/Invoice-Extraction-Service/blob/main/docs/PYTHON_LEARNING.md">The Python, explained</a>
+          <span data-quote="README.md">Explains the actual code with runnable examples and exercises.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <span>Invoice Extraction Service</span>
+    <span data-fact="page.nature">The runs and the figures on this page are records, each with its date.</span>
+    <span data-fact="runs.where">Both runs were recorded on a development copy of the service.</span>
+  </div>
+</footer>
+
+</body>
+</html>

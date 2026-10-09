@@ -1,0 +1,38 @@
+Long-invoice trial, 7 October 2026. Times are UTC.
+
+A one-off script built an invoice with 20 line items and one with 40, and sent each to both
+default models through the service's own engine (prompt, schema, parsing, validation). Two of
+the three runs also sent the playground's two-line email invoice first. The script was not
+kept; these are the lines it printed, as they were captured on screen, where each line was cut
+at 260 characters (which is why the error messages end mid-word).
+
+Each line: model, document, seconds until the call returned, the provider's finish reason,
+token counts (prompt, completion, and how much of the completion was reasoning), then the
+outcome. "ok items=20/20 total=ok" means every line item came back and the total was right.
+"finish=length" means the answer was cut off at the output cap.
+
+For a call that failed before any answer arrived (the rate-limited call in the third run), the
+finish reason and the token counts on its line are left over from the call before it.
+
+== started 17:20:16, default settings: MAX_OUTPUT_TOKENS=2048, TIMEOUT_SECONDS=30 ==
+nvidia/nemotron-3-super-120b-a12b:free     email invoice (2 lines)            7.0s finish=stop prompt=728 completion=909 reasoning=746 | ok items=2/2 total=ok
+nvidia/nemotron-3-super-120b-a12b:free     20-line invoice (1005 chars)      13.5s finish=length prompt=1047 completion=2048 reasoning=1581 | ContentBlockedError: nvidia/nemotron-3-super-120b-a12b:free truncated the response at max_tokens; raise MAX_OUT
+nvidia/nemotron-3-super-120b-a12b:free     40-line invoice (1935 chars)      21.0s finish=length prompt=1537 completion=2048 reasoning=2048 | ContentBlockedError: nvidia/nemotron-3-super-120b-a12b:free truncated the response at max_tokens; raise MAX_OUT
+liquid/lfm-2.5-2.6b:free                   email invoice (2 lines)            3.5s finish=stop prompt=691 completion=544 reasoning=378 | ok items=2/2 total=ok
+liquid/lfm-2.5-2.6b:free                   20-line invoice (1005 chars)       7.7s finish=length prompt=908 completion=2048 reasoning=2021 | ContentBlockedError: liquid/lfm-2.5-2.6b:free truncated the response at max_tokens; raise MAX_OUTPUT_TOKENS
+liquid/lfm-2.5-2.6b:free                   40-line invoice (1935 chars)      17.1s finish=length prompt=1269 completion=2048 reasoning=2048 | ContentBlockedError: liquid/lfm-2.5-2.6b:free truncated the response at max_tokens; raise MAX_OUTPUT_TOKENS
+
+== started 17:22:09, MAX_OUTPUT_TOKENS=6000 (TIMEOUT_SECONDS still 30) ==
+nvidia/nemotron-3-super-120b-a12b:free     20-line invoice (1005 chars)      14.4s finish=stop prompt=1047 completion=1877 reasoning=1052 | ok items=20/20 total=ok
+nvidia/nemotron-3-super-120b-a12b:free     40-line invoice (1935 chars)      28.1s finish=stop prompt=1537 completion=4795 reasoning=3210 | ok items=40/40 total=ok
+liquid/lfm-2.5-2.6b:free                   20-line invoice (1005 chars)      30.0s finish=None usage: n/a | ProviderTimeoutError: liquid/lfm-2.5-2.6b:free did not respond within 30s
+liquid/lfm-2.5-2.6b:free                   40-line invoice (1935 chars)      30.0s finish=None usage: n/a | ProviderTimeoutError: liquid/lfm-2.5-2.6b:free did not respond within 30s
+
+== same command, MAX_OUTPUT_TOKENS=2048 with reasoning effort "low" ==
+== (the script added that to the request; the service has no such setting) ==
+nvidia/nemotron-3-super-120b-a12b:free     email invoice (2 lines)            3.9s finish=stop prompt=728 completion=466 reasoning=304 | ok items=2/2 total=ok
+nvidia/nemotron-3-super-120b-a12b:free     20-line invoice (1005 chars)      13.2s finish=stop prompt=1047 completion=1831 reasoning=1006 | ok items=20/20 total=ok
+nvidia/nemotron-3-super-120b-a12b:free     40-line invoice (1935 chars)      13.9s finish=length prompt=1537 completion=2048 reasoning=1718 | ContentBlockedError: nvidia/nemotron-3-super-120b-a12b:free truncated the response at max_tokens; raise MAX_
+liquid/lfm-2.5-2.6b:free                   email invoice (2 lines)            5.9s finish=stop prompt=691 completion=673 reasoning=507 | ok items=2/2 total=ok
+liquid/lfm-2.5-2.6b:free                   20-line invoice (1005 chars)       0.1s finish=stop prompt=691 completion=673 reasoning=507 | ProviderRateLimitError: liquid/lfm-2.5-2.6b:free: rate limited (429)
+liquid/lfm-2.5-2.6b:free                   40-line invoice (1935 chars)      15.3s finish=length prompt=1269 completion=2048 reasoning=1838 | ContentBlockedError: liquid/lfm-2.5-2.6b:free truncated the response at max_tokens; raise MAX_OUTPUT_TOKENS

@@ -1,0 +1,171 @@
+{
+  "recorded_at": "2026-10-08T15:54:24Z",
+  "service": {
+    "name": "invoice-extraction-service",
+    "version": "1.0.0",
+    "environment": "development",
+    "docs_url": "/docs"
+  },
+  "limits": {
+    "min_chars": 10,
+    "max_chars": 50000,
+    "timeout_seconds": 30.0,
+    "simulated_timeout_seconds": 1.0
+  },
+  "scenario": {
+    "id": "primary-timeout",
+    "group": "resilience",
+    "title": "Primary never answers",
+    "summary": "The first model hangs. Its time budget, cut to one second for the demo, ends the attempt and the chain moves on. The second model is called for real. If it is rate limited at that moment there is no third model to try, and the run ends in a 503.",
+    "simulate": [
+      "timeout",
+      null
+    ],
+    "checks": [
+      {
+        "kind": "status",
+        "label": "Returns HTTP 200",
+        "expected": 200
+      },
+      {
+        "kind": "attempt",
+        "label": "Primary is stopped by the timeout",
+        "index": 0,
+        "expected": "ProviderTimeoutError"
+      },
+      {
+        "kind": "field",
+        "label": "Response reports fallback_triggered: true",
+        "path": "fallback_triggered",
+        "expected": true
+      },
+      {
+        "kind": "field",
+        "label": "The invoice is still extracted: NW-2024-0187",
+        "path": "data.invoice_number",
+        "expected": "NW-2024-0187"
+      }
+    ]
+  },
+  "request": {
+    "method": "POST",
+    "path": "/playground/extract",
+    "body": {
+      "text": "From: billing@northwind-traders.example\nTo: sam@customer.example\nSubject: RE: RE: Your order - invoice attached\n\nHi Sam,\n\nSorry for the delay! Here are the details you asked for. Let me know if anything looks off.\n\nNORTHWIND TRADERS INC.\nInvoice #: NW-2024-0187\nDate: March 14, 2024\nPayment terms: Net 30\n\n2 x Widget Pro (SKU 4471) @ $49.99 each ............ $99.98\n1 x Annual support plan ............................ $250.00\n\nSubtotal: $349.98\nSales tax (8%): $28.00\nTOTAL DUE: $377.98\n\nThanks,\nPriya\nNorthwind Traders | Accounts Receivable\nThis email and any attachments are confidential.\n",
+      "simulate": [
+        "timeout",
+        null
+      ]
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "content_type": "application/x-ndjson"
+  },
+  "events": [
+    {
+      "at_ms": 475,
+      "event": {
+        "event": "start",
+        "request_id": "867702451290491a9fee4d02618e97b9",
+        "chain": [
+          {
+            "index": 0,
+            "model": "nvidia/nemotron-3-super-120b-a12b:free",
+            "role": "primary",
+            "fault": "timeout"
+          },
+          {
+            "index": 1,
+            "model": "liquid/lfm-2.5-2.6b:free",
+            "role": "fallback",
+            "fault": null
+          }
+        ]
+      }
+    },
+    {
+      "at_ms": 475,
+      "event": {
+        "event": "attempt_started",
+        "index": 0,
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "simulated": true
+      }
+    },
+    {
+      "at_ms": 1492,
+      "event": {
+        "event": "attempt_finished",
+        "index": 0,
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "simulated": true,
+        "outcome": "failed",
+        "error_type": "ProviderTimeoutError",
+        "message": "nvidia/nemotron-3-super-120b-a12b:free did not respond within 1s",
+        "retryable": true,
+        "elapsed_ms": 1013.22
+      }
+    },
+    {
+      "at_ms": 1492,
+      "event": {
+        "event": "attempt_started",
+        "index": 1,
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "simulated": false
+      }
+    },
+    {
+      "at_ms": 3436,
+      "event": {
+        "event": "attempt_finished",
+        "index": 1,
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "simulated": false,
+        "outcome": "answered",
+        "error_type": null,
+        "message": null,
+        "retryable": false,
+        "elapsed_ms": 1947.47
+      }
+    },
+    {
+      "at_ms": 3437,
+      "event": {
+        "event": "result",
+        "status_code": 200,
+        "headers": {},
+        "body": {
+          "success": true,
+          "data": {
+            "vendor_name": "NORTHWIND TRADERS INC.",
+            "invoice_number": "NW-2024-0187",
+            "invoice_date": "2024-03-14",
+            "total_amount": 377.98,
+            "tax_amount": 28.0,
+            "items": [
+              {
+                "description": "Widget Pro (SKU 4471)",
+                "quantity": 2,
+                "unit_price": 49.99,
+                "total": 99.98
+              },
+              {
+                "description": "Annual support plan",
+                "quantity": 1,
+                "unit_price": 250.0,
+                "total": 250.0
+              }
+            ],
+            "currency": "USD"
+          },
+          "model_used": "liquid/lfm-2.5-2.6b:free",
+          "execution_time_ms": 2961.28,
+          "fallback_triggered": true
+        },
+        "elapsed_ms": 2961.41
+      }
+    }
+  ]
+}

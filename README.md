@@ -179,6 +179,7 @@ Invoice-Extraction-Service/
 ├── pytest.ini            # two settings of the test run; one makes a test that stands still say where
 ├── render.yaml           # Render Blueprint: one free web service, started as one process
 ├── requirements.txt      # exact versions, because the host installs this file again at every deploy
+├── LICENSE               # MIT
 └── README.md
 ```
 
@@ -1515,3 +1516,13 @@ The playground's *Test suite* panel runs all of this from the browser.
   Render is the one place where `/health` should not be the host's health check:
   [docs/DEPLOY.md](docs/DEPLOY.md#2-create-the-service-from-the-repositorys-own-settings-file)
   says why.
+
+## License
+
+This repository is released under the [MIT License](LICENSE): anyone may use, change, share and
+sell it, as long as copies keep the copyright notice and the license text. It comes as is, without
+warranty.
+
+The packages in `requirements.txt` keep their own licenses, and all of them are permissive: MIT
+(FastAPI, Pydantic, pydantic-settings, pytest), BSD (Starlette, Uvicorn, python-dotenv, HTTPX) and
+Apache 2.0 (the OpenAI SDK, pytest-asyncio).

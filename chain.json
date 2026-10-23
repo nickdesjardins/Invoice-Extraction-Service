@@ -310,14 +310,15 @@
     "requests": 23
   },
   "job": {
-    "checked": "2026-10-16T11:27:28Z",
+    "checked": "2026-10-23T11:41:23Z",
     "found": [
       "dots-studio/dots-3-note-preview:free",
       "liquid/lfm-2.5-2.6b:free",
       "nvidia/nemotron-3-super-120b-a12b:free",
-      "nvidia/nemotron-3.5-super-vl:free"
+      "nvidia/nemotron-3.5-super-vl:free",
+      "xingchen-agi/xing4.0-29b-a4b:free"
     ],
-    "outcome": "published"
+    "outcome": "nothing"
   },
   "by": {
     "repository": "nickdesjardins/Invoice-Extraction-Service",

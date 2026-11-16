@@ -170,6 +170,7 @@ Invoice-Extraction-Service/
 │   ├── test_current_defaults.py # current model choices and preserved historical replay evidence
 │   ├── test_model_chooser.py # the service looking after its chain, with scripted models
 │   ├── test_published_chain.py # the published list: the file, a service that reads it, the scheduled job's command
+│   ├── test_published_refresh.py # healthy-traffic refresh, throttling, opt-outs and last-good retention
 │   ├── test_models_page.py # the model upkeep part of the page, and the two routes behind it
 │   ├── test_page_behaviour.py # the playground's script, run with Node.js on the service's own answers (skipped without Node.js)
 │   ├── page_harness.mjs  # the Node.js script that test_page_behaviour.py starts: a made-up page, and a clock moved by hand
@@ -292,7 +293,7 @@ defaults. Blank values are treated as unset, and the literal `null` resolves to 
 |---------------------------------|--------------------------------|---------------------------------------------------------------------|
 | `OPENROUTER_API_KEY`            | *(unset)*                      | The only credential. Missing → `/health` reports `unavailable`, and the service tests and replaces no model |
 | `OPENROUTER_MODELS`             | see the table at the top       | Ordered, comma-separated chain. First is primary, rest are fallbacks. Blank means: start from that default, and let the service look after the chain. Any value fixes the chain, even the default ids written out: nothing is then read, tested or replaced |
-| `MODEL_PUBLISHED_URL`           | this project's `chain.json` on the branch `tested-models` | Where the service reads the chain that the scheduled test published: an `https` address. The request sends no key. Only a service that looks after its chain makes it (`OPENROUTER_MODELS` blank, a key set, OpenRouter's own base address), at startup and after a failed request. `null` means never read it, which keeps a deployment on its own tests (see [The scheduled test](#the-scheduled-test)) |
+| `MODEL_PUBLISHED_URL`           | this project's `chain.json` on the branch `tested-models` | Where the service reads the chain that the scheduled test published: an `https` address. The request sends no key. Only a service that looks after its chain makes it (`OPENROUTER_MODELS` blank, a key set, OpenRouter's own base address), at startup, after a failed request, and in the background at most hourly during healthy traffic. `null` means never read it, which keeps a deployment on its own tests (see [The scheduled test](#the-scheduled-test)) |
 | `OPENROUTER_BASE_URL`           | `https://openrouter.ai/api/v1` | OpenAI-compatible endpoint. With any other address the service has no list of free models and no count of the day's free requests. It then replaces no model, and live calls are limited by the per-minute ceiling alone (see *The ceiling on live model calls* under [Security & operations](#security--operations)) |
 | `OPENROUTER_STRICT_JSON_SCHEMA` | `true`                         | `false` falls back to plain JSON mode for models without structured outputs. Such a deployment does not use this project's published list, which was made with the strict format: it relies on its own tests |
 | `MAX_OUTPUT_TOKENS`             | `2048`                         | Output cap. Providers reserve this against per-minute token budgets. A model's reasoning counts against it, so long invoices need more (see [Latency vs cost trade-offs](#latency-vs-cost-trade-offs)) |
@@ -302,7 +303,7 @@ defaults. Blank values are treated as unset, and the literal `null` resolves to 
 | `LOG_LEVEL`                     | `INFO`                         | Python logging level. `DEBUG` also writes the vendor name and the invoice number of each extraction to the log, and the figures of a line whose total was corrected, so keep `INFO` wherever other people's documents arrive |
 | `CORS_ALLOW_ORIGINS`            | `*`                            | Comma-separated allow-list                                          |
 | `PLAYGROUND_ENABLED`            | `true`                         | Serves the browser playground at `/` and its `/playground/*` routes. `false` leaves a pure API. The service still looks after its chain then, but nobody can watch it or start a test from the page |
-| `MODEL_CATALOGUE_CHECK`         | `true`                         | At startup, when a key is set, asks OpenRouter's public catalogue whether each configured model is still listed, and logs the answer. The lookup sends no key and changes nothing by itself. `false` starts without any request to the network: neither that lookup nor the reading of the published list, for example when working offline |
+| `MODEL_CATALOGUE_CHECK`         | `true`                         | At startup, when a key is set, asks OpenRouter's public catalogue whether each configured model is still listed, and logs the answer. The lookup sends no key and changes nothing by itself. `false` disables this startup lookup and published-list reads at startup or during healthy traffic, for example when working offline. Recovery after a failed request can still read the published list |
 | `OPENROUTER_SITE_URL`           | *(unset)*                      | `HTTP-Referer` header for OpenRouter attribution                    |
 | `OPENROUTER_APP_NAME`           | `invoice-extraction-service`   | `X-Title` header for OpenRouter attribution                         |
 
@@ -717,7 +718,12 @@ https://raw.githubusercontent.com/nickdesjardins/Invoice-Extraction-Service/test
 That is `DEFAULT_PUBLISHED_URL` in `app/config.py`. The setting `MODEL_PUBLISHED_URL` points a
 deployment to another address, or to none (`null`). The request sends no key and calls no model. A
 service makes it once when it starts, and waits 8 seconds at most. It makes it again after a
-failed request, and then waits 3 seconds at most.
+failed request, and then waits 3 seconds at most. Successful requests also schedule a background
+refresh at most once an hour, with the same 3-second limit and no model calls. This lets an
+instance that stays awake adopt new tested chains without first failing. These healthy-traffic
+refreshes also update the evidence date when the model ids are unchanged; the failed-request
+guard below still applies. `MODEL_CATALOGUE_CHECK=false` disables startup and healthy-traffic
+reads; `MODEL_PUBLISHED_URL=null` disables every published-list read.
 
 The file is a claim like any other, so nothing in it is used before it is checked, and it is used
 whole or not at all:
@@ -753,8 +759,8 @@ reasons it is:
   published. Either the test ran and no model of the chain passed, or it could not run:
   OpenRouter's list could not be read, or too few free requests were left for the day. Services
   are then on their own, and each repairs its chain when it has to.
-* The job has no key, a test is due, and either a model of the built-in default chain is no
-  longer listed or the published list is three weeks old.
+* The job has no key, a test is due, and either no usable list is published, a model of the
+  built-in default chain is no longer listed, or the published list is three weeks old.
 * OpenRouter no longer offers any model of the chain, and no other free model passed the test.
   Services that read the list then have no model that works. The job tests again the next day.
 * A chain was published, and a model of it failed the test, which means that its verdict was

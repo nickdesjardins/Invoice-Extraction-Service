@@ -352,6 +352,8 @@ def create_app() -> FastAPI:
 
         response.headers["X-Request-ID"] = request_id
         response.headers["X-Process-Time-Ms"] = f"{(time.perf_counter() - started) * 1000:.2f}"
+        if response.status_code < 400:
+            model_chooser.refresh_after_request()
         return response
 
     # --- CORS --------------------------------------------------------------

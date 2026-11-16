@@ -1086,7 +1086,7 @@ def test_the_job_spends_nothing_when_no_test_is_due(world: Callable[..., World],
     assert code == 0 and written is None and made.test_calls == []
 
 
-@pytest.mark.parametrize(("default_gone", "exit_code"), [(False, 0), (True, 1)])
+@pytest.mark.parametrize(("default_gone", "exit_code"), [(False, 1), (True, 1)])
 def test_the_job_without_a_key_says_what_is_due_and_tests_nothing(
     default_gone: bool, exit_code: int, world: Callable[..., World], tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],

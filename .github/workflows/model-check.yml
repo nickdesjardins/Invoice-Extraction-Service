@@ -8,7 +8,8 @@
 #            service's own (app/model_testing.py): seven sample documents per model.
 #            It needs the repository secret OPENROUTER_API_KEY and spends free
 #            requests from that account: about 23 per test today, 42 at the very most.
-#            Without the secret this job only says what is due.
+#            Without the secret it reports what is due and fails if no current confirmed
+#            published chain exists (or a built-in default is withdrawn).
 #
 #   publish  Writes the tested chain to chain.json on the branch "tested-models".
 #            A service reads that file when it starts (app/published_chain.py). The
@@ -28,7 +29,7 @@
 #   * a test ran, or could not run, and no chain younger than three weeks is published
 #     (services are on their own);
 #   * OpenRouter refused the key;
-#   * there is no key, and a model of the built-in default chain is no longer listed;
+#   * there is no key, and no current confirmed published chain or a withdrawn default;
 #   * OpenRouter no longer offers any model of the chain, and no other model passed;
 #   * a model of the chain failed the test. The chain is published all the same, and
 #     only a person can change its order (README, "Model selection").

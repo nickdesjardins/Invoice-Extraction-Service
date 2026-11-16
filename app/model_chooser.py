@@ -5,6 +5,8 @@ replace one. With ``OPENROUTER_MODELS`` left blank the service does it by itself
 
 * **When it starts** it reads the chain this project's scheduled test published
   (:mod:`app.published_chain`): one small public file, no key, no model called.
+  Successful traffic checks that file again in the background at most once an hour,
+  so an instance that stays awake can adopt updates without waiting for a failure.
 * **Nothing is tested while requests succeed.** After a real request that a model of
   the chain did not answer, the service asks OpenRouter's own page for that model
   (free). If the answer is "Model not found", the model is taken out of the chain,
@@ -57,6 +59,8 @@ LOOK_PAUSE_SECONDS = 60
 #: After failed requests the published list is read at most this often: the address
 #: hands out the same copy for five minutes.
 PUBLISHED_PAUSE_SECONDS = 5 * 60
+#: Healthy traffic refreshes published evidence without calling a model.
+PUBLISHED_REFRESH_SECONDS = 60 * 60
 #: How long a key-less read may take at startup before the service goes on without
 #: it. The visitor is already waiting for the host then, so this may be generous.
 READ_SECONDS = 8.0
@@ -129,6 +133,7 @@ _published: dict[str, Any] = {"state": "off", "tested": None}  #: what became of
 _published_record: Optional[dict[str, Any]] = None  #: the scheduled test, for the page
 _published_read_at = -math.inf  #: when the published list was last asked for (monotonic)
 _published_answered = False  #: whether that address has answered at all since the start
+_refreshing = False  #: one healthy-traffic refresh at a time
 _refusal: Optional[dict[str, Any]] = None  #: the last "not now" the button was given
 _look_note: Optional[dict[str, Any]] = None  #: what the last look into a failed request found
 _failed_here: set[str] = set()  #: models that failed a test since this process started
@@ -139,11 +144,13 @@ def reset() -> None:
     """Forget everything this process remembers (between tests)."""
     global _test, _looking, _looked_at, _test_ended_at, _published, _published_record
     global _published_read_at, _published_answered, _refusal, _awake_since, _look_note, _starting
+    global _refreshing
     _test, _looking, _looked_at, _test_ended_at = None, False, -math.inf, -math.inf
     _look_note, _starting = None, False
     _failed_here.clear()
     _published, _published_record = {"state": "off", "tested": None}, None
     _published_read_at, _published_answered, _refusal = -math.inf, False, None
+    _refreshing = False
     _awake_since = datetime.now(timezone.utc)
     _gone.clear()
     _tasks.clear()
@@ -311,7 +318,7 @@ def log_mode() -> None:
 # ---------------------------------------------------------------------------
 
 
-async def read_published(at_startup: bool) -> bool:
+async def read_published(at_startup: bool, *, after_failure: bool = True) -> bool:
     """Read the chain the scheduled test published, and use it if it is newer.
 
     Returns True when the chain in use changed. Calls no model, sends no key and
@@ -385,6 +392,8 @@ async def read_published(at_startup: bool) -> bool:
     in_use = get_dispatcher().models
     if _test is not None:
         return False  # one writer at a time: a running test has the chain
+    if not after_failure and (_looking or _starting):
+        return False  # a healthy-traffic refresh must not race a repair
     if found.tested <= tested_at():
         _published = {"state": "older", "tested": tested}
         logger.info(
@@ -394,7 +403,7 @@ async def read_published(at_startup: bool) -> bool:
             _stamp(tested_at()),
         )
         return False
-    if not at_startup and list(found.chain) == in_use:
+    if after_failure and not at_startup and list(found.chain) == in_use:
         # The very chain that has just failed here. A newer date does not make it answer.
         _published = {"state": "same", "tested": tested}
         return False
@@ -412,6 +421,34 @@ async def read_published(at_startup: bool) -> bool:
         found.by.get("run") or url,
     )
     return list(found.chain) != in_use
+
+
+def refresh_after_request() -> None:
+    """Schedule one cheap refresh after healthy traffic, never delaying its answer."""
+    global _refreshing, _published_read_at
+    settings = get_settings()
+    if (
+        mode(settings) != "automatic"
+        or not settings.model_published_url
+        or not settings.model_catalogue_check
+        or _refreshing
+        or _looking
+        or _starting
+        or _test is not None
+        or time.monotonic() - _published_read_at < PUBLISHED_REFRESH_SECONDS
+    ):
+        return
+    _refreshing = True
+    _published_read_at = time.monotonic()
+
+    async def refresh() -> None:
+        global _refreshing
+        try:
+            await read_published(at_startup=False, after_failure=False)
+        finally:
+            _refreshing = False
+
+    _in_background(refresh())
 
 
 async def at_startup() -> None:

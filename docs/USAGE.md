@@ -669,7 +669,7 @@ All settings are environment variables, readable from `.env`. Blank means unset;
 | Variable | Default | Purpose |
 |---|---|---|
 | `OPENROUTER_MODELS` | two free models, see the [README](../README.md) | Ordered, comma-separated chain. First is primary. Blank: the service starts from the default and looks after the chain itself. Any value: exactly those models, in that order, and the service tests and replaces nothing (§9). |
-| `MODEL_PUBLISHED_URL` | the address of this project's `chain.json`; it is `DEFAULT_PUBLISHED_URL` in `app/config.py` | Where the service reads the chain that this project's scheduled test published (§9). Only a service that looks after its chain reads it (`OPENROUTER_MODELS` blank, a key set, OpenRouter's own address in `OPENROUTER_BASE_URL`), at startup and after a failed request. It has to be an `https` address. `null` means: never read a published list. |
+| `MODEL_PUBLISHED_URL` | the address of this project's `chain.json`; it is `DEFAULT_PUBLISHED_URL` in `app/config.py` | Where the service reads the chain that this project's scheduled test published (§9). Only a service that looks after its chain reads it (`OPENROUTER_MODELS` blank, a key set, OpenRouter's own address in `OPENROUTER_BASE_URL`), at startup, after a failed request, and in the background at most hourly during healthy traffic. It has to be an `https` address. `null` means: never read a published list. |
 | `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` | Change only for a proxy or a compatible provider. With another address the service does not look after its chain, and nobody counts the day for it: only the per-minute ceiling then limits live calls (§7). |
 | `OPENROUTER_STRICT_JSON_SCHEMA` | `true` | `false` uses plain JSON mode for models without structured-output support. With `false`, a service that looks after its own chain does not use this project's published list, which was made with the strict format. |
 | `MAX_OUTPUT_TOKENS` | `2048` | Output cap. A model's reasoning counts against it. Raise it for long invoices, together with `TIMEOUT_SECONDS` (see the note below). |
@@ -683,7 +683,7 @@ All settings are environment variables, readable from `.env`. Blank means unset;
 | `LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR`. `DEBUG` also writes some of what a document said to the log (§14), so keep `INFO` wherever other people's documents arrive. |
 | `CORS_ALLOW_ORIGINS` | `*` | Comma-separated allow-list. |
 | `PLAYGROUND_ENABLED` | `true` | Serves the playground at `/`. `false` leaves only the API. The service still looks after its chain then; nobody can watch it on the page. |
-| `MODEL_CATALOGUE_CHECK` | `true` | At startup, when a key is set, asks OpenRouter's public catalogue whether each model of the chain is still listed, and logs the answer (§9). The check itself changes nothing. `false` starts without any request: neither this check nor the reading of the published list happens at startup, for example when working offline. After a failed request, a service that looks after its chain still asks OpenRouter and still reads the published list. |
+| `MODEL_CATALOGUE_CHECK` | `true` | At startup, when a key is set, asks OpenRouter's public catalogue whether each model of the chain is still listed, and logs the answer (§9). The check itself changes nothing. `false` disables this startup check and published-list reads at startup or during healthy traffic, for example when working offline. After a failed request, a service that looks after its chain still asks OpenRouter and still reads the published list. |
 | `SERVICE_NAME` | `invoice-extraction-service` | Name in `/health` and logs. |
 
 > **Long invoices.** Both default models reason before they answer, and that reasoning counts
@@ -1111,7 +1111,10 @@ result where every deployment can read it.
   repository. The job publishes a chain as tested only when at least one model of it passed in
   that very test, or was right but slow, and only for a test of the `main` branch.
 - **A service reads the list** when it starts, and again after a request that a model of its
-  chain did not answer. Reading needs no key and calls no model. The service uses the list
+  chain did not answer. Successful traffic also checks for updates in the background at most
+  once an hour, so a service that stays awake can adopt new evidence without first failing.
+  `MODEL_CATALOGUE_CHECK=false` disables these healthy-traffic refreshes as well as startup reads.
+  Reading needs no key and calls no model. The service uses the list
   only when the file passes every check, was made by the very same test (same prompt, schema,
   sample documents, rules, default chain and response format), and is newer than the test
   behind the chain in use. The address is the setting `MODEL_PUBLISHED_URL` (§8). `null` there
@@ -1119,7 +1122,8 @@ result where every deployment can read it.
 
 The job needs a repository secret named `OPENROUTER_API_KEY` to test. A repository secret is
 a value that GitHub stores for a repository and hands only to its workflows. Without it, the
-job only says what is due.
+job says what is due and fails if there is no current confirmed published chain to rely on.
+If a recent confirmed chain exists, a missing key remains a warning until that evidence is stale.
 
 A run turns red when the repository's owner has something to do. There are five such reasons.
 OpenRouter refuses the key. No tested chain younger than three weeks is published, and this
@@ -1366,6 +1370,7 @@ The suite's files:
 | `tests/test_current_defaults.py` | Current model choices against the saved scheduled checks, without changing historical recordings |
 | `tests/test_model_chooser.py` | How the service looks after its chain: blank or named, noticing a failure, a repair, the button, the pauses |
 | `tests/test_published_chain.py` | The published list: the file and its checks, how a service uses it, and the scheduled job's command |
+| `tests/test_published_refresh.py` | Background refresh during healthy traffic, single-flight hourly pacing, opt-outs and last-good retention |
 | `tests/test_models_page.py` | The *Model upkeep* part of the page: words for every code the service can send, and the two routes behind it |
 | `tests/test_page_behaviour.py` | The page's script, run and not only read: which requests the page sends and when it stops asking, how often it sends a run, and that it has words for every state of the chain's upkeep. It asks the service itself for the answers that the page gets, then starts `tests/page_harness.mjs` with Node.js. Its 40 tests are skipped on a machine that has no Node.js |
 | `tests/page_harness.mjs` | Not a test file: the Node.js script that `tests/test_page_behaviour.py` starts. It runs the page's script without a browser: on a made-up page that only keeps the words that are drawn on it, and with a clock that it moves by hand. It reports one verdict for each of its 38 cases |

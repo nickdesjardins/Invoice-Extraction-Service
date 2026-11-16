@@ -517,10 +517,10 @@ async def _job(previous_path: Path, out_path: Path, forced: bool) -> int:
             "nothing was published. To let it test: add a repository secret named "
             "OPENROUTER_API_KEY (Settings, Secrets and variables, Actions)."
         )
-        if default_gone or (previous is not None and stale):
+        if default_gone or stale:
             return _fail(
-                "without a published list a service starts from the built-in default, and "
-                "that default or the list is out of date."
+                "there is no current confirmed published chain, or a built-in default is withdrawn; "
+                "set OPENROUTER_API_KEY so this job can test and publish a working chain."
             )
         return 0
     if listed is None:

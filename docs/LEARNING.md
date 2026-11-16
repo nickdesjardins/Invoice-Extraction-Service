@@ -1552,7 +1552,9 @@ and the page to visitors, and neither text leaks into the other.
 
 The file is the published list of §9.8: `chain.json`, written by the scheduled test to a branch
 of its own, `tested-models`. A service reads it from one plain address, with no key, when it
-starts and after a failed request. The module holds four things: the file's format, the checks,
+starts and after a failed request. Healthy traffic also schedules a public-file refresh at most
+once an hour, without calling a model, so a long-running instance can adopt newer selections.
+The module holds four things: the file's format, the checks,
 the rule for when a new test is due, and the command that the scheduled job runs,
 `python -m app.published_chain`.
 

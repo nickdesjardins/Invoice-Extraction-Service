@@ -10,12 +10,14 @@ identifier or raw upstream text: only the service's own error type and its sanit
 ## Current-default review: 16 November 2026
 
 [`2026-11-16-default-review.json`](2026-11-16-default-review.json) preserves the calls and verdicts
-from five published GitHub Actions checks, from 24 October through 13 November, together with
+from six published GitHub Actions checks, from 24 October through 16 November, together with
 their immutable commit IDs and run links. It is a JSON array, not a new benchmark run.
-`nvidia/nemotron-3.5-super-vl:free` passed all five checks. Dots gave correct answers throughout,
-but was slow or not judged because some calls went unanswered. These observations support the
-replacement primary and fallback after the October defaults were withdrawn; they do not rewrite
-the October benchmark, and they do not promise future availability.
+`nvidia/nemotron-3.5-super-vl` passed the first five checks, then failed on 16 November
+with two unusable outputs. Dots was slow or not judged. The latest check gave seven correct
+answers each for `baidu/ernie-5.5-flash-preview:free` and `particle-ai/particle-1:free`. Baidu
+also passed on 13 November; Particle has one passing check so far. These are provisional
+replacement defaults based on current evidence. The earlier measurements remain intact, and
+the October benchmark is unchanged; none of these checks promises future availability.
 
 ## Dated runs: `<UTC date>/<UTC time>.jsonl`
 

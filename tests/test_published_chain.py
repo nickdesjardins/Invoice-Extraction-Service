@@ -1113,7 +1113,7 @@ def test_a_test_that_confirms_nothing_keeps_the_chain_and_remembers_the_attempt(
 
     assert code == 0  # eight days old: a warning, not yet the alarm
     assert written["chain"] == [PRIMARY, FALLBACK] and written["tested"] == old
-    assert written["job"]["outcome"] == "nothing" and written["job"]["found"] == [FALLBACK, PRIMARY]
+    assert written["job"]["outcome"] == "nothing" and written["job"]["found"] == sorted([PRIMARY, FALLBACK])
     assert len(made.test_calls) == 4  # two refused calls per model, and no more
 
     previous["tested"] = stamp(datetime.now(timezone.utc) - timedelta(days=22))

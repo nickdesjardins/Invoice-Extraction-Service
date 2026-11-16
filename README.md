@@ -35,20 +35,22 @@ the chain and switches all of that off.
 
 | Position | Default model                            | Provider | Why this position                                                    |
 |----------|------------------------------------------|----------|----------------------------------------------------------------------|
-| Primary  | `nvidia/nemotron-3.5-super-vl:free` | Nvidia | Passed all five scheduled tests from 24 October through 13 November |
-| Fallback | `dots-studio/dots-3-note-preview:free` | Dots | Slower, but repeatedly answered correctly; called when the primary fails |
+| Primary  | `baidu/ernie-5.5-flash-preview:free` | Baidu | Passed on 13 and 16 November; all seven answers correct in the latest check |
+| Fallback | `particle-ai/particle-1:free` | Particle | All seven answers correct on 16 November; one passing check so far |
 
 Only one model is called on a healthy request. The fallback runs only when the primary's call
 fails. It replaces a failed call, never a wrong answer, which is why the first position goes to
 the model that is wrong least often and not to the quickest one.
 
 The defaults were reviewed on **16 November 2026** after both October defaults were withdrawn.
-The [saved review evidence](benchmarks/2026-11-16-default-review.json) contains five scheduled
-tests: the new primary passed every one. Dots remains a slower fallback; its latest three
-tests were inconclusive because calls went unanswered. The October benchmark and recordings
-below remain historical evidence, not measurements of the new primary. The scheduled test
-can add a third model after it passes. Free models are withdrawn often, and mostly without notice. The measurements, the ordering rule and what happens when a
-model disappears are under [Model selection](#model-selection-a-dated-snapshot). Free endpoints
+The [saved review evidence](benchmarks/2026-11-16-default-review.json) contains six scheduled
+checks. The latest check rejected Nvidia Nemotron 3.5 Super VL after two unusable outputs,
+despite five earlier passes. Baidu passed twice and Particle once; both got all seven cases
+right in the latest check. That is recent evidence, not a claim of long-term reliability.
+The October benchmark and recordings below remain historical evidence, not measurements of
+the new primary. The scheduled test can add a third model after it passes. Free models are
+withdrawn often, and mostly without notice. The measurements, the ordering rule and what happens
+when a model disappears are under [Model selection](#model-selection-a-dated-snapshot). Free endpoints
 may also keep what you send them: read [Data handling](#data-handling) before you send a real
 invoice.
 
@@ -730,7 +732,7 @@ whole or not at all:
   own. A fork that rewrites the prompt therefore ignores this project's file by itself.
 * Its test is newer than the test behind the chain in use. For the built-in default, that test is
   the latest evidence used in its review: `DEFAULT_CHAIN_TESTED_AT` in `app/config.py`
-  (13 November 2026 at 14:38:32 UTC). The October replay date does not date the current defaults.
+  (16 November 2026 at 15:29:01 UTC). The October replay date does not date the current defaults.
   So a list that the job tests later on that same day is newer, and is taken.
 
 A list is never taken while a test is running. After a failed request, a list that names the very

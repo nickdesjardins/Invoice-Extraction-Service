@@ -225,6 +225,20 @@ async def pictures_of_every_state(
     Each story starts from a service that remembers nothing. The models answer as
     ``ScriptedEngine`` says; nothing here reaches a model or the network.
     """
+    threaded = asyncio.to_thread
+
+    async def in_memory_catalogue(function: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+        # These World methods only read Python values. Sending them to an executor
+        # makes state coverage depend on thread scheduling while the picture watcher
+        # repeatedly serializes state: a fast Linux loop can starve the worker until
+        # the real five-second catalogue deadline expires. Keep real chooser logic
+        # and its timeout, but make the fake I/O deterministic. Other work still uses
+        # the executor; timeout/transport behavior is tested in test_model_chooser.
+        if function in (made.check_chain, made.free_models):
+            return function(*args, **kwargs)
+        return await threaded(function, *args, **kwargs)
+
+    monkeypatch.setattr(asyncio, "to_thread", in_memory_catalogue)
     pictures = Pictures(config)
     right = always("right")
 
@@ -300,6 +314,8 @@ async def pictures_of_every_state(
     full = [*closed, Failure(NEWCOMER, "ProviderError", False, f"{NEWCOMER} is not available (403)")]
     monkeypatch.setattr(model_chooser, "_looked_at", -10_000.0)
     await pictures.during("closed, and the chain is full", fail(full, False))
+    assert made.lookups[-1] == [PRIMARY, FALLBACK, NEWCOMER]
+    assert model_chooser.picture()["look"]["result"] == "no_place"
 
     # The key is refused in the middle of the button's test.
     fresh([PRIMARY, FALLBACK, NEWCOMER], {PRIMARY: always("key"), FALLBACK: right, NEWCOMER: right})

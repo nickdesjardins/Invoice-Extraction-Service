@@ -42,17 +42,18 @@ Environment = Literal["development", "staging", "production", "test"]
 #: Ordered default chain. Every entry is free to call.
 #:
 #: Reviewed on 16 November 2026 after both October defaults were withdrawn.
-#: The primary passed five scheduled tests (24 October through 13 November).
-#: Dots is a slower fallback, with correct answers in the October benchmark and
-#: subsequent checks. Evidence: benchmarks/2026-11-16-default-review.json.
+#: Baidu passed the checks of 13 and 16 November; Particle passed on 16 November.
+#: Both answered all seven cases correctly in the latest check. This replaces the
+#: Nvidia model that failed that check, not a claim of long-term reliability.
+#: Evidence: benchmarks/2026-11-16-default-review.json.
 #: The October benchmark remains a historical recording, not the current default.
 DEFAULT_MODEL_CHAIN = (
-    "nvidia/nemotron-3.5-super-vl:free,"
-    "dots-studio/dots-3-note-preview:free"
+    "baidu/ernie-5.5-flash-preview:free,"
+    "particle-ai/particle-1:free"
 )
 
 #: Latest measurement used for the current selection, independent of the replay.
-DEFAULT_CHAIN_TESTED_AT = "2026-11-13T14:38:32Z"
+DEFAULT_CHAIN_TESTED_AT = "2026-11-16T15:29:01Z"
 
 #: Where this project publishes the chain its scheduled test chose: one small JSON
 #: file on a branch of its own, written by ``.github/workflows/model-check.yml``. A

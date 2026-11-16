@@ -15,14 +15,18 @@ def test_current_defaults_are_supported_by_the_saved_review() -> None:
         )
     )
     primary, fallback = model_testing.default_chain()
-    assert primary == "nvidia/nemotron-3.5-super-vl:free"
-    assert fallback == "dots-studio/dots-3-note-preview:free"
+    assert primary == "baidu/ernie-5.5-flash-preview:free"
+    assert fallback == "particle-ai/particle-1:free"
     cases = [case["id"] for case in benchmark.live_cases()]
-    assert len(evidence) == 5
+    assert len(evidence) == 6
+    passed = {primary: 0, fallback: 0}
     for run in evidence:
         rows = model_rules.judge([primary, fallback], run["calls"], cases, 30, finished=True)
-        assert rows[0]["verdict"] == "passed", run["run"]
-        assert rows[1]["correct"] == rows[1]["answered"] > 0
+        for row in rows:
+            passed[row["model"]] += row["verdict"] == "passed"
+        if run["tested"] == config.DEFAULT_CHAIN_TESTED_AT:
+            assert all(row["verdict"] == "passed" and row["correct"] == len(cases) for row in rows)
+    assert passed == {primary: 2, fallback: 1}
     assert config.DEFAULT_CHAIN_TESTED_AT == max(run["tested"] for run in evidence)
 
 

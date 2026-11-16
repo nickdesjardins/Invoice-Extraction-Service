@@ -1,14 +1,13 @@
 {
   "version": 1,
-  "fingerprint": "8e3794dcb424ac02",
-  "tested": "2026-11-16T15:29:01Z",
+  "fingerprint": "fd8d695aa2c6483d",
+  "tested": "2026-11-16T15:38:01Z",
   "chain": [
-    "nvidia/nemotron-3.5-super-vl:free",
-    "dots-studio/dots-3-note-preview:free",
-    "baidu/ernie-5.5-flash-preview:free"
+    "baidu/ernie-5.5-flash-preview:free",
+    "particle-ai/particle-1:free"
   ],
   "test": {
-    "started": "2026-11-16T15:25:58Z",
+    "started": "2026-11-16T15:34:57Z",
     "found": [
       "inclusionai/ling-3.2-flash:free",
       "baidu/ernie-5.5-flash-preview:free",
@@ -18,12 +17,12 @@
       "dots-studio/dots-3-note-preview:free"
     ],
     "tested": [
-      "nvidia/nemotron-3.5-super-vl:free",
-      "dots-studio/dots-3-note-preview:free",
-      "inclusionai/ling-3.2-flash:free",
       "baidu/ernie-5.5-flash-preview:free",
+      "particle-ai/particle-1:free",
+      "inclusionai/ling-3.2-flash:free",
       "liquid/lfm-3-1.7b:free",
-      "particle-ai/particle-1:free"
+      "nvidia/nemotron-3.5-super-vl:free",
+      "dots-studio/dots-3-note-preview:free"
     ],
     "left_out": [],
     "gone": [],
@@ -60,35 +59,11 @@
     "timeout_seconds": 30.0,
     "calls": [
       {
-        "model": "nvidia/nemotron-3.5-super-vl:free",
-        "case": "email-invoice",
-        "outcome": "no_answer",
-        "correct": null,
-        "seconds": 14.81,
-        "error_type": "ContentBlockedError"
-      },
-      {
         "model": "baidu/ernie-5.5-flash-preview:free",
         "case": "email-invoice",
         "outcome": "answered",
         "correct": true,
-        "seconds": 2.4,
-        "error_type": null
-      },
-      {
-        "model": "dots-studio/dots-3-note-preview:free",
-        "case": "email-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 14.94,
-        "error_type": null
-      },
-      {
-        "model": "inclusionai/ling-3.2-flash:free",
-        "case": "email-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 14.14,
+        "seconds": 2.13,
         "error_type": null
       },
       {
@@ -96,7 +71,7 @@
         "case": "email-invoice",
         "outcome": "answered",
         "correct": true,
-        "seconds": 4.01,
+        "seconds": 7.31,
         "error_type": null
       },
       {
@@ -104,164 +79,28 @@
         "case": "email-invoice",
         "outcome": "no_answer",
         "correct": null,
-        "seconds": 10.49,
-        "error_type": "ContentBlockedError"
-      },
-      {
-        "model": "baidu/ernie-5.5-flash-preview:free",
-        "case": "ocr-receipt",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 3.29,
-        "error_type": null
+        "seconds": 0.18,
+        "error_type": "ProviderRateLimitError"
       },
       {
         "model": "nvidia/nemotron-3.5-super-vl:free",
-        "case": "ocr-receipt",
-        "outcome": "no_answer",
-        "correct": null,
-        "seconds": 14.29,
-        "error_type": "ContentBlockedError"
-      },
-      {
-        "model": "dots-studio/dots-3-note-preview:free",
-        "case": "ocr-receipt",
+        "case": "email-invoice",
         "outcome": "answered",
         "correct": true,
-        "seconds": 17.99,
-        "error_type": null
-      },
-      {
-        "model": "particle-ai/particle-1:free",
-        "case": "ocr-receipt",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 7.68,
+        "seconds": 6.35,
         "error_type": null
       },
       {
         "model": "baidu/ernie-5.5-flash-preview:free",
-        "case": "eur-invoice",
+        "case": "ocr-receipt",
         "outcome": "answered",
         "correct": true,
-        "seconds": 1.89,
+        "seconds": 4.6,
         "error_type": null
       },
       {
         "model": "inclusionai/ling-3.2-flash:free",
-        "case": "ocr-receipt",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 27.05,
-        "error_type": null
-      },
-      {
-        "model": "particle-ai/particle-1:free",
-        "case": "eur-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 6.47,
-        "error_type": null
-      },
-      {
-        "model": "dots-studio/dots-3-note-preview:free",
-        "case": "eur-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 13.91,
-        "error_type": null
-      },
-      {
-        "model": "baidu/ernie-5.5-flash-preview:free",
-        "case": "service-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 2.09,
-        "error_type": null
-      },
-      {
-        "model": "liquid/lfm-3-1.7b:free",
-        "case": "ocr-receipt",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 27.87,
-        "error_type": null
-      },
-      {
-        "model": "particle-ai/particle-1:free",
-        "case": "service-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 3.28,
-        "error_type": null
-      },
-      {
-        "model": "inclusionai/ling-3.2-flash:free",
-        "case": "eur-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 12.19,
-        "error_type": null
-      },
-      {
-        "model": "baidu/ernie-5.5-flash-preview:free",
-        "case": "discount-shipping",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 2.92,
-        "error_type": null
-      },
-      {
-        "model": "dots-studio/dots-3-note-preview:free",
-        "case": "service-invoice",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 11.99,
-        "error_type": null
-      },
-      {
-        "model": "particle-ai/particle-1:free",
-        "case": "discount-shipping",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 3.21,
-        "error_type": null
-      },
-      {
-        "model": "liquid/lfm-3-1.7b:free",
-        "case": "eur-invoice",
-        "outcome": "no_answer",
-        "correct": null,
-        "seconds": 16.0,
-        "error_type": "ContentBlockedError"
-      },
-      {
-        "model": "baidu/ernie-5.5-flash-preview:free",
-        "case": "prompt-injection",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 2.34,
-        "error_type": null
-      },
-      {
-        "model": "baidu/ernie-5.5-flash-preview:free",
-        "case": "not-an-invoice",
-        "outcome": "refused",
-        "correct": true,
-        "seconds": 1.47,
-        "error_type": null
-      },
-      {
-        "model": "dots-studio/dots-3-note-preview:free",
-        "case": "discount-shipping",
-        "outcome": "answered",
-        "correct": true,
-        "seconds": 15.1,
-        "error_type": null
-      },
-      {
-        "model": "inclusionai/ling-3.2-flash:free",
-        "case": "service-invoice",
+        "case": "email-invoice",
         "outcome": "no_answer",
         "correct": null,
         "seconds": 30.0,
@@ -269,34 +108,146 @@
       },
       {
         "model": "dots-studio/dots-3-note-preview:free",
-        "case": "prompt-injection",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 16.98,
+        "error_type": null
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 7.59,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "eur-invoice",
         "outcome": "no_answer",
         "correct": null,
-        "seconds": 0.95,
-        "error_type": "ProviderError"
+        "seconds": 0.39,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 20.54,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 17.87,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.86,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 17.24,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 7.06,
+        "error_type": null
       },
       {
         "model": "inclusionai/ling-3.2-flash:free",
-        "case": "discount-shipping",
+        "case": "ocr-receipt",
         "outcome": "no_answer",
         "correct": null,
-        "seconds": 1.12,
-        "error_type": "ProviderRateLimitError"
+        "seconds": 30.0,
+        "error_type": "ProviderTimeoutError"
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 7.28,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 13.72,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 2.17,
+        "error_type": null
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.77,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 14.59,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 2.3,
+        "error_type": null
       },
       {
         "model": "particle-ai/particle-1:free",
         "case": "prompt-injection",
         "outcome": "answered",
         "correct": true,
-        "seconds": 25.4,
+        "seconds": 2.07,
         "error_type": null
       },
       {
-        "model": "dots-studio/dots-3-note-preview:free",
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 23.37,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
         "case": "not-an-invoice",
         "outcome": "refused",
         "correct": true,
-        "seconds": 5.8,
+        "seconds": 1.4,
         "error_type": null
       },
       {
@@ -304,25 +255,116 @@
         "case": "not-an-invoice",
         "outcome": "refused",
         "correct": true,
-        "seconds": 2.91,
+        "seconds": 2.46,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 15.22,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 13.84,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "prompt-injection",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.79,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 7.47,
         "error_type": null
       }
     ],
     "models": [
       {
-        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ProviderRateLimitError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 2.2,
+        "slowest_seconds": 7.1,
+        "verdict": "passed",
+        "why": "one_missed",
+        "placing": "kept"
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "calls": 7,
+        "no_answer": 0,
+        "errors": {},
+        "answered": 7,
+        "correct": 7,
+        "median_seconds": 2.5,
+        "slowest_seconds": 7.6,
+        "verdict": "passed",
+        "why": "all_right",
+        "placing": "kept"
+      },
+      {
+        "model": "inclusionai/ling-3.2-flash:free",
         "calls": 2,
         "no_answer": 2,
         "errors": {
-          "ContentBlockedError": 2
+          "ProviderTimeoutError": 2
         },
         "answered": 0,
         "correct": 0,
         "median_seconds": null,
         "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 1,
+          "ContentBlockedError": 1
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "calls": 4,
+        "no_answer": 2,
+        "errors": {
+          "ContentBlockedError": 2
+        },
+        "answered": 2,
+        "correct": 2,
+        "median_seconds": 10.0,
+        "slowest_seconds": 13.7,
         "verdict": "failed",
         "why": "unusable_answers",
-        "placing": "kept"
+        "placing": null
       },
       {
         "model": "dots-studio/dots-3-note-preview:free",
@@ -333,79 +375,22 @@
         },
         "answered": 6,
         "correct": 6,
-        "median_seconds": 14.4,
-        "slowest_seconds": 18.0,
-        "verdict": "not_judged",
-        "why": "unanswered",
-        "placing": "kept"
-      },
-      {
-        "model": "inclusionai/ling-3.2-flash:free",
-        "calls": 5,
-        "no_answer": 2,
-        "errors": {
-          "ProviderTimeoutError": 1,
-          "ProviderRateLimitError": 1
-        },
-        "answered": 3,
-        "correct": 3,
-        "median_seconds": 14.1,
-        "slowest_seconds": 27.1,
+        "median_seconds": 14.9,
+        "slowest_seconds": 17.2,
         "verdict": "not_judged",
         "why": "unanswered",
         "placing": null
-      },
-      {
-        "model": "baidu/ernie-5.5-flash-preview:free",
-        "calls": 7,
-        "no_answer": 0,
-        "errors": {},
-        "answered": 7,
-        "correct": 7,
-        "median_seconds": 2.3,
-        "slowest_seconds": 3.3,
-        "verdict": "passed",
-        "why": "all_right",
-        "placing": "added"
-      },
-      {
-        "model": "liquid/lfm-3-1.7b:free",
-        "calls": 3,
-        "no_answer": 2,
-        "errors": {
-          "ContentBlockedError": 2
-        },
-        "answered": 1,
-        "correct": 1,
-        "median_seconds": 27.9,
-        "slowest_seconds": 27.9,
-        "verdict": "failed",
-        "why": "unusable_answers",
-        "placing": null
-      },
-      {
-        "model": "particle-ai/particle-1:free",
-        "calls": 7,
-        "no_answer": 0,
-        "errors": {},
-        "answered": 7,
-        "correct": 7,
-        "median_seconds": 4.0,
-        "slowest_seconds": 25.4,
-        "verdict": "passed",
-        "why": "all_right",
-        "placing": "no_place"
       }
     ],
     "chain_before": [
-      "nvidia/nemotron-3.5-super-vl:free",
-      "dots-studio/dots-3-note-preview:free"
+      "baidu/ernie-5.5-flash-preview:free",
+      "particle-ai/particle-1:free"
     ],
-    "outcome": "changed",
-    "requests": 31
+    "outcome": "unchanged",
+    "requests": 29
   },
   "job": {
-    "checked": "2026-11-16T15:29:01Z",
+    "checked": "2026-11-16T15:38:01Z",
     "found": [
       "baidu/ernie-5.5-flash-preview:free",
       "dots-studio/dots-3-note-preview:free",
@@ -418,7 +403,7 @@
   },
   "by": {
     "repository": "nickdesjardins/Invoice-Extraction-Service",
-    "commit": "54221319f998f527f317183ce2e5de2c7af0467a",
-    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/43896207393"
+    "commit": "0aca031b3fb54a30bd919575161660bfa24eec88",
+    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/43897825746"
   }
 }

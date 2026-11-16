@@ -1441,7 +1441,7 @@ def test_the_documents_give_the_reasons_for_a_red_run_as_the_job_has_them() -> N
     """A red "Model check" means that the owner has something to do, and a line says what."""
     from app import published_chain
 
-    job = ast.parse(inspect.getsource(published_chain._job))
+    job = ast.parse(inspect.getsource(published_chain._job) + "\n" + inspect.getsource(published_chain._quality_failure))
     reasons = {
         ast.dump(node.args[0])
         for node in ast.walk(job)
@@ -3226,8 +3226,8 @@ def test_sentences_that_nothing_held_say_what_the_code_does() -> None:
     assert "is_production" in inspect.getsource(suite.availability)
     command = inspect.getsource(published_chain.main)
     assert '"--previous"' in command and '"--out"' in command and '"--force"' in command
-    reasons = inspect.getsource(published_chain._job)
-    for words in ("younger than three weeks", "refused the API key", "this job has no key", "no longer offers any model", "failed this test"):
+    reasons = inspect.getsource(published_chain._job) + inspect.getsource(published_chain._quality_failure)
+    for words in ("younger than three weeks", "refused the API key", "this job has no key", "no longer offers any model", "Unresolved quality failure"):
         assert words in reasons, words
     suite_source = (PROJECT_ROOT / "tests" / "test_extract.py").read_text(encoding="utf-8")
     assert suite_source.count("def test_valid_invoice_text_parses_into_invoice_data(") == 1

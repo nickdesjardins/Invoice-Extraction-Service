@@ -1030,8 +1030,86 @@ def test_the_job_publishes_and_fails_when_a_model_of_the_chain_failed_the_test(
 
     printed = capsys.readouterr().out
     assert code == 1 and written["chain"] == [PRIMARY, FALLBACK]  # published all the same
-    assert f"Failing this run on purpose: {PRIMARY} failed this test" in printed
+    assert f"Failing this run on purpose: Unresolved quality failure in the published chain: {PRIMARY}" in printed
     assert "DEFAULT_MODEL_CHAIN" in printed
+
+
+@pytest.mark.parametrize("next_check", ["cooldown", "catalogue", "quota", "all429", "mixed"])
+def test_quality_failures_survive_inconclusive_checks(
+    world: Callable[..., World], tmp_path: Path, monkeypatch: pytest.MonkeyPatch, next_check: str
+) -> None:
+    made = world(
+        [PRIMARY, FALLBACK],
+        {PRIMARY: wrong_on("eur-invoice", "ocr-receipt"), FALLBACK: HEALTHY[FALLBACK]},
+    )
+    code, previous = run_job(tmp_path / "bad")
+    assert code == 1 and previous["quality_failures"] == [PRIMARY]
+    previous["tested"] = YESTERDAY
+    if next_check == "catalogue":
+        made.list_fails = True
+    elif next_check == "quota":
+        async def refused(*args: Any) -> str:
+            return "allowance"
+        monkeypatch.setattr(budget, "why_no_test", refused)
+    elif next_check == "all429":
+        ScriptedEngine.SCRIPT.update({PRIMARY: always("limited"), FALLBACK: always("limited")})
+    elif next_check == "mixed":
+        ScriptedEngine.SCRIPT[PRIMARY] = always("limited")
+    made.test_calls.clear()
+    code, written = run_job(tmp_path / "next", previous, force=next_check != "cooldown")
+    assert code == 1
+    if next_check in ("all429", "mixed"):
+        assert written["quality_failures"] == [PRIMARY] and written["chain"] == previous["chain"]
+        if next_check == "all429":
+            assert written["tested"] == previous["tested"]
+        assert parse(json.dumps(written), fingerprint(get_settings()), datetime.now(timezone.utc)).quality_failures == (PRIMARY,)
+        assert run_job(tmp_path / "cooldown", written)[0] == 1
+    else:
+        assert written is None and made.test_calls == []
+
+
+@pytest.mark.parametrize("resolution", ["passing", "removed"])
+def test_quality_failure_clears_only_with_new_evidence_or_a_changed_chain(
+    world: Callable[..., World], tmp_path: Path, resolution: str
+) -> None:
+    made = world(
+        [PRIMARY, FALLBACK],
+        {PRIMARY: wrong_on("eur-invoice", "ocr-receipt"), FALLBACK: HEALTHY[FALLBACK]},
+    )
+    _, previous = run_job(tmp_path / "bad")
+    # Pre-upgrade files carry the failure in their saved calls, without the new field.
+    previous.pop("quality_failures")
+    assert run_job(tmp_path / "legacy", previous)[0] == 1
+    if resolution == "removed":
+        made.listed, made.not_found = [FALLBACK], {PRIMARY}
+        ScriptedEngine.SCRIPT.update({PRIMARY: always("limited"), FALLBACK: always("limited")})
+        code, retained = run_job(tmp_path / "inconclusive-removal", previous, force=True)
+        assert code == 1 and PRIMARY in retained["chain"]
+        assert retained["quality_failures"] == [PRIMARY] and retained["tested"] == previous["tested"]
+        previous = retained
+    ScriptedEngine.SCRIPT.update({
+        PRIMARY: always("right") if resolution == "passing" else always("limited"),
+        FALLBACK: HEALTHY[FALLBACK],
+    })
+    code, written = run_job(tmp_path / "fixed", previous, force=True)
+    assert code == 0 and written["quality_failures"] == []
+    assert (PRIMARY in written["chain"]) is (resolution == "passing")
+    assert run_job(tmp_path / "next", written)[0] == 0
+
+
+def test_a_new_quality_failure_is_saved_even_when_nothing_can_be_confirmed(
+    world: Callable[..., World], tmp_path: Path
+) -> None:
+    world([PRIMARY, FALLBACK], HEALTHY)
+    _, previous = run_job(tmp_path / "good")
+    previous["tested"] = YESTERDAY
+    ScriptedEngine.SCRIPT.update({
+        PRIMARY: wrong_on("eur-invoice", "ocr-receipt"), FALLBACK: always("limited"),
+    })
+    code, written = run_job(tmp_path / "bad", previous, force=True)
+    assert code == 1 and written["quality_failures"] == [PRIMARY]
+    assert written["tested"] == previous["tested"] and written["chain"] == previous["chain"]
+    assert run_job(tmp_path / "next", written)[0] == 1
 
 
 def test_the_job_fails_when_nothing_usable_is_published_and_it_cannot_help(

@@ -35,15 +35,19 @@ the chain and switches all of that off.
 
 | Position | Default model                            | Provider | Why this position                                                    |
 |----------|------------------------------------------|----------|----------------------------------------------------------------------|
-| Primary  | `nvidia/nemotron-3-super-120b-a12b:free` | Nvidia   | First under the ordering rule: fewest wrong answers, then fewest calls with no answer |
-| Fallback | `liquid/lfm-2.5-2.6b:free`               | Liquid   | Called only when the primary's call fails. A different provider, so one outage does not stop both |
+| Primary  | `nvidia/nemotron-3.5-super-vl:free` | Nvidia | Passed all five scheduled tests from 24 October through 13 November |
+| Fallback | `dots-studio/dots-3-note-preview:free` | Dots | Slower, but repeatedly answered correctly; called when the primary fails |
 
 Only one model is called on a healthy request. The fallback runs only when the primary's call
 fails. It replaces a failed call, never a wrong answer, which is why the first position goes to
 the model that is wrong least often and not to the quickest one.
 
-This default is a dated snapshot (7 October 2026), not a ranking. Free models are withdrawn
-often, and mostly without notice. The measurements, the ordering rule and what happens when a
+The defaults were reviewed on **16 November 2026** after both October defaults were withdrawn.
+The [saved review evidence](benchmarks/2026-11-16-default-review.json) contains five scheduled
+tests: the new primary passed every one. Dots remains a slower fallback; its latest three
+tests were inconclusive because calls went unanswered. The October benchmark and recordings
+below remain historical evidence, not measurements of the new primary. The scheduled test
+can add a third model after it passes. Free models are withdrawn often, and mostly without notice. The measurements, the ordering rule and what happens when a
 model disappears are under [Model selection](#model-selection-a-dated-snapshot). Free endpoints
 may also keep what you send them: read [Data handling](#data-handling) before you send a real
 invoice.
@@ -161,6 +165,7 @@ Invoice-Extraction-Service/
 │   ├── test_playground_guard.py # who may use the page's POST routes
 │   ├── test_doors.py     # the suite's own promise that no test reaches the network
 │   ├── test_model_rules.py # verdicts and chains, as pure functions and on the saved records
+│   ├── test_current_defaults.py # current model choices and preserved historical replay evidence
 │   ├── test_model_chooser.py # the service looking after its chain, with scripted models
 │   ├── test_published_chain.py # the published list: the file, a service that reads it, the scheduled job's command
 │   ├── test_models_page.py # the model upkeep part of the page, and the two routes behind it
@@ -327,6 +332,9 @@ before you rely on it. On 7 October 2026 one free model that was listed as suppo
 output rejected this service's strict schema on every call.
 
 ## Model selection: a dated snapshot
+
+This section preserves the **7 October 2026** benchmark and the defaults chosen then.
+See the current-default table above for the replacement selected on 16 November.
 
 The default chain is a snapshot taken on **7 October 2026**. It is not a ranking, and it will not
 stay true, because free models come and go. This project's first default chain was built around
@@ -721,8 +729,9 @@ whole or not at all:
   right). The file carries a short fingerprint of all that, and a service compares it with its
   own. A fork that rewrites the prompt therefore ignores this project's file by itself.
 * Its test is newer than the test behind the chain in use. For the built-in default, that test is
-  the measuring that a person did, and it counts as over in its last minute: 19:02 UTC on
-  7 October 2026. So a list that the job tests later on that same day is newer, and is taken.
+  the latest evidence used in its review: `DEFAULT_CHAIN_TESTED_AT` in `app/config.py`
+  (13 November 2026 at 14:38:32 UTC). The October replay date does not date the current defaults.
+  So a list that the job tests later on that same day is newer, and is taken.
 
 A list is never taken while a test is running. After a failed request, a list that names the very
 chain that has just failed is not taken either. A chain that was taken from the list is a chain
@@ -731,7 +740,8 @@ missing or bad, can stop a service from starting. The service logs one line and 
 chain it has.
 
 **What a red run means.** A run is red when the owner has something to do. The job that turns red
-is the third one, "Is a tested chain published?". The reason is in the first one: open the job
+is the third one, "Is a tested chain published?". Its error annotation now shows the specific
+reason, as does the test job. For the complete measurements, open the job
 "Test the free models, if a test is due" and read the end of its step "Decide, test, and write
 the file to publish". A line that begins `Failing this run on purpose:` says which of these five
 reasons it is:

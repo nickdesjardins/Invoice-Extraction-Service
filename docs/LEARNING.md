@@ -1,3 +1,7 @@
+> The runtime defaults were reviewed on 16 November 2026 after the October models retired.
+> See the current table in [README](../README.md). October measurements, examples and replay
+> records in this guide are historical; their model IDs and results have been preserved.
+
 # Applied AI, learned through this service
 
 This document explains **why this project is built the way it is**. It is a study guide, not
@@ -1574,8 +1578,7 @@ bounds the harm of a false file is the other checks: it could still only name fr
 
 **Then trust is a matter of time** (`read_published()` in `app/model_chooser.py`). A published
 chain is taken only when its test is newer than the test behind the chain in use. For the
-built-in default, that test is the measuring a person did: the default counts as tested in the
-last minute of that measuring (`tested_at()`). A new default is pushed on the day it was
+built-in default, that test is the measuring a person did: the default counts as tested at `DEFAULT_CHAIN_TESTED_AT` (`tested_at()`). A new default is pushed on the day it was
 measured, and the push starts the scheduled test. So a list that is tested later on that same
 day has to count as newer, and it does. A published chain is never taken while a test is
 running here. And after a failed request it is not taken when it names the very chain that has

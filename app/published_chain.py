@@ -437,6 +437,12 @@ def _fail(why: str) -> int:
     Failing the run is how the owner gets told: GitHub emails about failed scheduled runs.
     """
     _say(f"Failing this run on purpose: {why}")
+    escaped = why.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+    print(f"::error title=Model check failed::{escaped}")
+    output = os.environ.get("GITHUB_OUTPUT")
+    if output:
+        with open(output, "a", encoding="utf-8") as out:
+            out.write(f"reason={escaped}\n")
     return 1
 
 

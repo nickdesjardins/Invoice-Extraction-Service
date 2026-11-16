@@ -73,13 +73,14 @@ from dotenv import dotenv_values
 # one, taken when this file is imported and so before any fixture runs. One test asks
 # it a question that it answers without the network.
 from app.budget import read_allowance as real_read_allowance
-from app.config import DEFAULT_MODEL_CHAIN
+from app.config import DEFAULT_CHAIN_TESTED_AT, DEFAULT_MODEL_CHAIN
 from app.playground.benchmark import load_records, summarise
 from app.playground.catalogue import BENCHMARK, BENCHMARK_SNAPSHOT
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-DEFAULT_CHAIN = [model.strip() for model in DEFAULT_MODEL_CHAIN.split(",")]
+RECORDED_CHAIN = list(BENCHMARK_SNAPSHOT["chain"])
+CURRENT_CHAIN = [model.strip() for model in DEFAULT_MODEL_CHAIN.split(",")]
 
 #: Everything a reader is told to trust, and the template they copy their settings from.
 DOCUMENTS = [
@@ -139,7 +140,7 @@ def test_documents_name_only_free_models_that_were_measured() -> None:
     if not present:
         pytest.skip("this copy of the project has no documents")
 
-    measured = set(DEFAULT_CHAIN) | {row["model"] for row in BENCHMARK}
+    measured = set(CURRENT_CHAIN) | set(RECORDED_CHAIN) | {row["model"] for row in BENCHMARK}
     for path in present:
         named = {
             f"{vendor}/{model}:free"
@@ -155,8 +156,8 @@ def test_documents_name_only_free_models_that_were_measured() -> None:
 
 def test_the_default_chain_is_what_the_snapshot_measured() -> None:
     """The default cannot move to a model nobody measured, or lose its place in the table."""
-    assert [row["model"] for row in BENCHMARK[: len(DEFAULT_CHAIN)]] == DEFAULT_CHAIN
-    for row in BENCHMARK[: len(DEFAULT_CHAIN)]:
+    assert [row["model"] for row in BENCHMARK[: len(RECORDED_CHAIN)]] == RECORDED_CHAIN
+    for row in BENCHMARK[: len(RECORDED_CHAIN)]:
         assert row["answered"] > 0, f"{row['model']} is in the default chain and never answered"
 
 
@@ -174,7 +175,7 @@ def test_the_default_chain_is_what_the_ordering_rule_gives() -> None:
     kept.sort(
         key=lambda row: (row["answered"] - row["correct"], row["no_answer"], row["median_seconds"])
     )
-    assert [row["model"] for row in kept] == DEFAULT_CHAIN
+    assert [row["model"] for row in kept] == RECORDED_CHAIN
 
 
 def chain_tables(text: str) -> list[list[str]]:
@@ -203,8 +204,9 @@ def test_chain_tables_in_the_documents_show_the_default_chain() -> None:
     # has stopped matching, and this test would pass while checking nothing.
     assert len(found[readme]) == 2
     for path, tables in found.items():
-        for table in tables:
-            assert table == DEFAULT_CHAIN, f"{path.relative_to(PROJECT_ROOT)} shows {table}"
+        for index, table in enumerate(tables):
+            current = path.name == "USAGE.md" or (path == readme and index == 0)
+            assert table == (CURRENT_CHAIN if current else RECORDED_CHAIN), f"{path.relative_to(PROJECT_ROOT)} shows {table}"
 
 
 # ---------------------------------------------------------------------------
@@ -465,7 +467,7 @@ def test_a_copy_of_the_template_leaves_the_chain_to_the_service(tmp_path: Path) 
 
     assert not [key for key in values if key.lower() not in Settings.model_fields]
     assert values["OPENROUTER_MODELS"] == "" and settings.models_pinned is False
-    assert settings.model_chain == DEFAULT_CHAIN
+    assert settings.model_chain == CURRENT_CHAIN
     # The line for the published list is there, commented out: the default address is used.
     assert "\n# MODEL_PUBLISHED_URL=null\n" in text
     assert settings.model_published_url == DEFAULT_PUBLISHED_URL
@@ -858,7 +860,7 @@ def test_the_page_says_what_the_usage_guide_quotes_from_it() -> None:
         assert words in page, f"the page no longer says: {words}"
     # One quotation carries a date, which the page builds from the snapshot.
     assert "The tested default, measured on ${dayWords(p.origin.tested)}." in page
-    assert f"*The tested default, measured on {long_date(BENCHMARK_SNAPSHOT['measured'])}.*" in guide
+    assert f"*The tested default, measured on {long_date(DEFAULT_CHAIN_TESTED_AT[:10])}.*" in guide
 
     # Three quotations are so short that a page says them in many places. What makes each of
     # them true is one place in the script: the rule for the page's two names, which stands
@@ -1023,28 +1025,13 @@ def test_another_base_address_does_what_the_documents_say(
     assert stuck is not None and "OPENROUTER_BASE_URL" not in stuck.group(0)
 
 
-def test_the_built_in_default_counts_as_tested_in_the_last_minute_of_its_measuring() -> None:
-    """A published list is taken only when it is newer than the test behind the chain in use.
+def test_the_current_default_date_is_independent_of_the_historical_replay() -> None:
+    from app import model_chooser, published_chain
 
-    For the built-in default that test is the measuring by hand, and it counts as over
-    in its last minute and not at the end of that day. A new default is pushed on the day
-    it was measured, and the list that the scheduled job then publishes has to be newer.
-    """
-    from app import model_chooser
-
-    day = date.fromisoformat(BENCHMARK_SNAPSHOT["measured"])
-    last = BENCHMARK_SNAPSHOT["window_utc"].rsplit(" ", 1)[-1]  # "17:54 to 19:02" -> "19:02"
-    hour, minute = (int(part) for part in last.split(":"))
-    ended = datetime(day.year, day.month, day.day, hour, minute, 59, tzinfo=timezone.utc)
-    assert model_chooser.tested_at() == ended
-    assert ended < datetime(day.year, day.month, day.day, 23, 59, 59, tzinfo=timezone.utc)
-
-    said = f"it counts as over in its last minute: {last} UTC on {long_date(BENCHMARK_SNAPSHOT['measured'])}"
-    assert said in prose("README.md"), f"README.md does not say: {said}"
-    assert "So a list that the job tests later on that same day is newer, and is taken." in prose("README.md")
-    assert "the default counts as tested in the last minute of that measuring (`tested_at()`)" in prose(
-        "docs/LEARNING.md"
-    )
+    assert model_chooser.tested_at() == published_chain.moment(DEFAULT_CHAIN_TESTED_AT)
+    assert DEFAULT_CHAIN_TESTED_AT[:10] != BENCHMARK_SNAPSHOT["measured"]
+    assert "`DEFAULT_CHAIN_TESTED_AT`" in prose("README.md")
+    assert "`DEFAULT_CHAIN_TESTED_AT` (`tested_at()`)" in prose("docs/LEARNING.md")
 
 
 def test_the_log_lines_that_the_readme_and_the_learning_guide_quote_are_the_services() -> None:
@@ -1189,13 +1176,13 @@ def test_a_default_model_that_comes_back_takes_its_measured_place_as_the_documen
 
     cases = [case["id"] for case in live_cases()]
     limit = BENCHMARK_SNAPSHOT["timeout_seconds"]
-    first, second = DEFAULT_CHAIN
+    first, second = RECORDED_CHAIN
     other = "vendor/model-x:free"
 
     def after(current: list[str], back: str, seconds: float = 3.0) -> list[str]:
         """The chain after a test in which ``back``, a model outside it, read every document right."""
         rows = model_rules.judge([back], made_up_calls(back, cases, seconds=seconds), cases, limit, finished=True)
-        return model_rules.next_chain(current, rows, [], limit, measured=DEFAULT_CHAIN)
+        return model_rules.next_chain(current, rows, [], limit, measured=RECORDED_CHAIN)
 
     # In front of every model that is not a default model, and behind a default model before it.
     assert after([second, other], first) == [first, second, other]
@@ -1233,7 +1220,7 @@ def chain_after_saved_pass(number: int) -> list[str]:
     from app.playground.benchmark import live_cases
 
     calls = [call for call in load_records(saved_records()) if call["pass"] == number]
-    models = list(dict.fromkeys([*DEFAULT_CHAIN, *(call["model"] for call in calls)]))
+    models = list(dict.fromkeys([*RECORDED_CHAIN, *(call["model"] for call in calls)]))
     sent: list[dict[str, Any]] = []
     for model in models:
         misses = 0
@@ -1245,7 +1232,7 @@ def chain_after_saved_pass(number: int) -> list[str]:
     cases = [case["id"] for case in live_cases()]
     limit = BENCHMARK_SNAPSHOT["timeout_seconds"]
     rows = model_rules.judge(models, sent, cases, limit, finished=True)
-    return model_rules.next_chain(DEFAULT_CHAIN, rows, [], limit, measured=DEFAULT_CHAIN)
+    return model_rules.next_chain(RECORDED_CHAIN, rows, [], limit, measured=RECORDED_CHAIN)
 
 
 def test_a_published_chain_can_be_longer_than_the_default_as_the_documents_say() -> None:
@@ -1262,8 +1249,8 @@ def test_a_published_chain_can_be_longer_than_the_default_as_the_documents_say()
     passes = sorted({call["pass"] for call in load_records(saved_records())})
     chains = {number: chain_after_saved_pass(number) for number in passes}
     # No pass moves a default model: that is "repair, never rank".
-    assert all(chain[: len(DEFAULT_CHAIN)] == DEFAULT_CHAIN for chain in chains.values())
-    longer = {number: chain for number, chain in chains.items() if len(chain) > len(DEFAULT_CHAIN)}
+    assert all(chain[: len(RECORDED_CHAIN)] == RECORDED_CHAIN for chain in chains.values())
+    longer = {number: chain for number, chain in chains.items() if len(chain) > len(RECORDED_CHAIN)}
     assert longer and all(len(chain) == model_rules.PLACES for chain in longer.values())
     (third,) = {chain[-1] for chain in longer.values()}
     measured = next(row for row in BENCHMARK if row["model"] == third)
@@ -1272,7 +1259,7 @@ def test_a_published_chain_can_be_longer_than_the_default_as_the_documents_say()
 
     readme = prose("README.md")
     day = long_date(BENCHMARK_SNAPSHOT["measured"])
-    places, default = IN_WORDS[model_rules.PLACES], IN_WORDS[len(DEFAULT_CHAIN)]
+    places, default = IN_WORDS[model_rules.PLACES], IN_WORDS[len(RECORDED_CHAIN)]
     assert (
         f"{IN_WORDS[len(longer)]} of the {IN_WORDS[len(chains)]} saved passes of {day} give a chain of "
         f"{places} models: the {default} default ones, and behind them `{third}`, which was right but slow"
@@ -1306,7 +1293,7 @@ def test_a_published_chain_can_be_longer_than_the_default_as_the_documents_say()
     assert "_switch(before, level)" in inspect.getsource(model_chooser._use)
     assert f"The lists in this sample hold the {default} default models." in guide
     sample = SHOWN_LOG_LINE.findall(document(DEPLOY))
-    assert all(str(DEFAULT_CHAIN) in line for _, _, line in sample), "every list in the sample is the default chain"
+    assert all(str(RECORDED_CHAIN) in line for _, _, line in sample), "every list in the sample is the default chain"
     assert (
         "When that chain is not the default chain, for example because it names a third model, one more line "
         "of `app.model_chooser` stands above the first. It begins `Model chain in use is now`"
@@ -1541,7 +1528,7 @@ async def test_callers_stop_where_the_documents_say(allowance: Any) -> None:
     from app import budget
 
     limit = 1000
-    calls = len(DEFAULT_CHAIN)
+    calls = len(RECORDED_CHAIN)
 
     async def let_in(remaining: int) -> bool:
         budget.reset()
@@ -1733,7 +1720,7 @@ def test_readme_counts_the_scenarios_as_the_catalogue_does() -> None:
 
     words = {10: "ten", 14: "fourteen", 16: "sixteen"}
     text = prose("README.md").lower()
-    assert len(DEFAULT_CHAIN) == 2
+    assert len(RECORDED_CHAIN) == 2
     assert f"{words[len(scenarios_for(2))]} prepared runs with the default chain" in text
     assert f"{words[len(scenarios_for(3))]} runs when the chain has three models" in text
     assert f"{words[len(scenarios_for(1))]} when the chain has one" in text
@@ -1764,7 +1751,7 @@ def test_readme_figures_for_a_test_of_the_models_are_what_the_records_give() -> 
 
     text = prose("README.md")
     measured = [row["model"] for row in BENCHMARK]
-    outside = [model for model in measured if model not in DEFAULT_CHAIN]
+    outside = [model for model in measured if model not in RECORDED_CHAIN]
     assert len(measured) == 4, "the README says 'the four models that were listed'"
     assert f"about {calls_a_test_sends(measured)} for a test of the four models" in text
     assert f"it costs {calls_a_test_sends(outside)}:" in text
@@ -1897,7 +1884,7 @@ def test_usage_shows_the_lines_the_catalogue_command_prints() -> None:
         raise TimeoutError
 
     printed = [
-        describe(Listing(DEFAULT_CHAIN[0], "listed")),
+        describe(Listing(RECORDED_CHAIN[0], "listed")),
         describe(look_up("vendor/model-a:free", base, model_not_found)),
         describe(Listing("vendor/model-b:free", "listed", expires="2026-12-31"), today=date(2026, 12, 21)),
         describe(look_up("vendor/model-c:free", base, no_answer)),
@@ -2268,7 +2255,7 @@ def test_what_the_learning_guide_says_about_the_third_pass_is_in_the_records() -
     from app.playground.benchmark import live_cases
 
     calls = load_records(saved_records())
-    fallback = DEFAULT_CHAIN[1]
+    fallback = RECORDED_CHAIN[1]
     passes: dict[int, list[dict[str, Any]]] = {}
     for call in calls:
         if call["model"] == fallback:
@@ -2404,7 +2391,7 @@ def test_the_recorded_test_is_what_the_learning_guide_says_it_is() -> None:
     verdicts = {row["model"]: row["verdict"] for row in recorded["models"]}
     assert verdicts["apodex/apodex-1.1-mini:free"] == "failed"
     assert verdicts["dots-studio/dots-3-note-preview:free"] == "slow"
-    assert all(verdicts[model] == "passed" for model in DEFAULT_CHAIN)
+    assert all(verdicts[model] == "passed" for model in RECORDED_CHAIN)
     labels = verdict_labels()
     learning = prose("docs/LEARNING.md")
     # The sentence names the two models by what the same paragraph says of each. It once
@@ -2686,7 +2673,7 @@ def test_the_python_guide_describes_the_test_setup_as_it_is() -> None:
         assert call in conftest and f"`{call}`" in text
     for name, value in (("MODEL_CATALOGUE_CHECK", "false"), ("MODEL_PUBLISHED_URL", "null")):
         assert TEST_ENVIRONMENT[name] == value and f"`{name}={value}`" in text
-    assert len(TEST_ENVIRONMENT["OPENROUTER_MODELS"].split(",")) == 3 and len(DEFAULT_CHAIN) == 2
+    assert len(TEST_ENVIRONMENT["OPENROUTER_MODELS"].split(",")) == 3 and len(RECORDED_CHAIN) == 2
 
 
 # ---------------------------------------------------------------------------
@@ -2946,7 +2933,7 @@ def test_the_deployment_guide_quotes_the_two_pages_and_the_log_as_they_are() -> 
         assert words in live_demo, f"the service's page no longer says: {words}"
     # The foot of that page: the service's name and version, then the environment.
     assert "${service.name} v${service.version} · ${service.environment}" in live_demo
-    titles = {scenario["title"] for scenario in scenarios_for(len(DEFAULT_CHAIN))}
+    titles = {scenario["title"] for scenario in scenarios_for(len(RECORDED_CHAIN))}
     for title in ("Every model fails", "Invoice inside an email thread"):
         assert f"**{title}**" in guide and title in titles
     # How a scenario is run: it is picked in the list with this heading, then this button.
@@ -3002,7 +2989,7 @@ def test_the_deployment_guide_quotes_the_two_pages_and_the_log_as_they_are() -> 
 
     # And the figures the guide gives are the code's and the records'.
     first = BENCHMARK[0]
-    assert first["model"] == DEFAULT_CHAIN[0]
+    assert first["model"] == RECORDED_CHAIN[0]
     assert (
         f"about {first['median_seconds']:.0f} seconds for its usual answer and about "
         f"{first['slowest_seconds']:.0f} seconds for its slowest"
@@ -3191,7 +3178,7 @@ def test_sentences_that_nothing_held_say_what_the_code_does() -> None:
     places, quorum = model_rules.PLACES, extractors.ExtractionDispatcher.UNPARSEABLE_QUORUM
     timeout = Settings.model_fields["timeout_seconds"].default
     open_share = round((1 - budget.VISITOR_SHARE) * 1000)  # of a day of 1000 requests
-    through = budget.MINUTE_CEILING - len(DEFAULT_CHAIN) + 1  # requests a minute, each answered by its first model
+    through = budget.MINUTE_CEILING - len(RECORDED_CHAIN) + 1  # requests a minute, each answered by its first model
     sample_documents = len(benchmark.live_cases())
 
     # ---- What the sentences that are written in words rest on -----------------------
@@ -3425,7 +3412,7 @@ def test_sentences_that_nothing_held_say_what_the_code_does() -> None:
     )
     assert not missing, f"{DEPLOY} no longer says: {missing}"
     guide = prose(DEPLOY)
-    by_title = {scenario["title"]: scenario for scenario in scenarios_for(len(DEFAULT_CHAIN))}
+    by_title = {scenario["title"]: scenario for scenario in scenarios_for(len(RECORDED_CHAIN))}
     for title, status_code, outcome in (("Every model fails", 503, "Every model failed"), ("Invoice inside an email thread", 200, "Invoice extracted")):
         assert by_title[title]["checks"][0]["expected"] == status_code
         assert f'the result "{status_code} {outcome}"' in guide
@@ -3449,7 +3436,7 @@ def test_sentences_that_nothing_held_say_what_the_code_does() -> None:
     header = run_headers(saved_records())[0]
     assert {"models", "passes", "timeout_seconds", "max_output_tokens"} <= set(header)
     assert "the models, the number of passes, the time limit and the output cap" in notes
-    fallback = [call for call in load_records(saved_records()) if call["model"] == DEFAULT_CHAIN[1]]
+    fallback = [call for call in load_records(saved_records()) if call["model"] == RECORDED_CHAIN[1]]
     limited = sum(call["error_type"] == "ProviderRateLimitError" for call in fallback)
     assert f"it was rate limited on {limited} of {len(fallback)}" in notes
 
@@ -3520,7 +3507,7 @@ def test_more_of_what_the_documents_quote_from_the_page_is_on_the_page() -> None
         assert words in page, f"the page no longer says: {words}"
 
     # What the catalogue names. The page shows these as the service sends them.
-    scenarios = scenarios_for(len(DEFAULT_CHAIN))
+    scenarios = scenarios_for(len(RECORDED_CHAIN))
     named = {scenario["title"] for scenario in scenarios} | {group["title"] for group in GROUPS}
     named |= {check["label"] for scenario in scenarios for check in scenario["checks"]}
     for words in CATALOGUE_WORDS_IN_USAGE:
@@ -3621,7 +3608,7 @@ def test_figures_the_documents_take_from_the_notes_are_in_the_notes() -> None:
 
     # Figures worked out from the saved calls, where the README states them a second time.
     measured = [row["model"] for row in BENCHMARK]
-    outside = [model for model in measured if model not in DEFAULT_CHAIN]
+    outside = [model for model in measured if model not in RECORDED_CHAIN]
     a_test = calls_a_test_sends(measured)
     assert f"about {a_test} requests with those four models" in readme
     assert f"{calls_a_test_sends(outside)} in all with the four models" in readme
@@ -4374,7 +4361,7 @@ def test_the_documents_say_where_a_visitor_finds_what_the_page_tells() -> None:
     )
 
     # ---- "Run all": what it costs, how it is stopped, and a run that is refused or unanswered ---
-    scenarios = scenarios_for(len(DEFAULT_CHAIN))
+    scenarios = scenarios_for(len(RECORDED_CHAIN))
     calls = sum(scenario["live_calls"] for scenario in scenarios)
     rail = script_function(script, "renderRailHead")
     assert "const calls = scenarios.reduce((sum, scenario) => sum + scenario.live_calls, 0);" in rail
@@ -5295,7 +5282,7 @@ def test_the_documents_describe_the_test_suite_panel_and_what_production_hides()
     assert "allowed = not get_settings().is_production" in inspect.getsource(routes)
 
     # ---- The two scenarios that the deployment guide has its reader run ---------------------------
-    by_title = {scenario["title"]: scenario for scenario in scenarios_for(len(DEFAULT_CHAIN))}
+    by_title = {scenario["title"]: scenario for scenario in scenarios_for(len(RECORDED_CHAIN))}
     simulated, live = by_title["Every model fails"], by_title["Invoice inside an email thread"]
     assert simulated["live_calls"] == 0 and all(simulated["simulate"])
     assert live["live_calls"] >= 1 and not any(live["simulate"])
@@ -5308,7 +5295,7 @@ def test_the_documents_describe_the_scenarios_as_the_catalogue_has_them() -> Non
     """How many scenarios of each kind, which need a third model, and which two kinds have no spare."""
     from app.playground.catalogue import GROUPS, scenarios_for
 
-    assert len(DEFAULT_CHAIN) == 2
+    assert len(RECORDED_CHAIN) == 2
     two, three = scenarios_for(2), scenarios_for(3)
     of_group = {group["title"]: [scenario for scenario in two if scenario["group"] == group["id"]] for group in GROUPS}
     assert set(of_group) == {"Documents", "Rejections", "Resilience"}
@@ -5369,7 +5356,7 @@ def test_the_documents_describe_the_scenarios_as_the_catalogue_has_them() -> Non
     # One refusal needs a verdict from both models. And where the first model is made to fail,
     # the second is the only live one behind it.
     (not_an_invoice,) = [scenario for scenario in two if scenario["title"] == "Not an invoice"]
-    assert not_an_invoice["live_calls"] == len(DEFAULT_CHAIN) and not any(not_an_invoice["simulate"])
+    assert not_an_invoice["live_calls"] == len(RECORDED_CHAIN) and not any(not_an_invoice["simulate"])
     assert "Two models agree" in [check["label"] for check in not_an_invoice["checks"]]
     primary_fails = [
         scenario for scenario in of_group["Resilience"] if scenario["simulate"][0] and not any(scenario["simulate"][1:])

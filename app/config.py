@@ -41,16 +41,18 @@ Environment = Literal["development", "staging", "production", "test"]
 
 #: Ordered default chain. Every entry is free to call.
 #:
-#: A dated snapshot, not a ranking. Both models were measured through this service
-#: on 7 October 2026; the figures are in the README under "Model selection". The
-#: first position goes to the model with the fewest wrong answers and failed calls,
-#: because the chain moves on only when a call fails: a fallback replaces a failed
-#: call, never a wrong answer. The two models are served by different providers, so
-#: one upstream outage cannot take out both.
+#: Reviewed on 16 November 2026 after both October defaults were withdrawn.
+#: The primary passed five scheduled tests (24 October through 13 November).
+#: Dots is a slower fallback, with correct answers in the October benchmark and
+#: subsequent checks. Evidence: benchmarks/2026-11-16-default-review.json.
+#: The October benchmark remains a historical recording, not the current default.
 DEFAULT_MODEL_CHAIN = (
-    "nvidia/nemotron-3-super-120b-a12b:free,"
-    "liquid/lfm-2.5-2.6b:free"
+    "nvidia/nemotron-3.5-super-vl:free,"
+    "dots-studio/dots-3-note-preview:free"
 )
+
+#: Latest measurement used for the current selection, independent of the replay.
+DEFAULT_CHAIN_TESTED_AT = "2026-11-13T14:38:32Z"
 
 #: Where this project publishes the chain its scheduled test chose: one small JSON
 #: file on a branch of its own, written by ``.github/workflows/model-check.yml``. A

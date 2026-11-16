@@ -1,3 +1,6 @@
+> Current defaults were updated on 16 November 2026; see [The default chain](#the-default-chain).
+> October benchmark tables and sample logs in this guide remain dated historical examples.
+
 # How to use this service
 
 Practical guide: install it, run it, call it, configure it, and fix it when it misbehaves.
@@ -215,7 +218,7 @@ Reading the result:
 | *simulated* | The failure was staged by the page, not caused by the provider |
 | *Not needed* | The chain stopped before reaching that model |
 | *The demo is busy* or *Today's share of live runs is used up*, with status 503 | The service refused the run before any model was called: see *A run that is refused* below. Once midnight UTC has passed, the second title reads *The day's share of live runs was used up* |
-| The last line of the *Model chain* card | Where the chain in use comes from. For a chain named in `OPENROUTER_MODELS` it reads *Fixed by the admin of this demo.* Otherwise it names the origin: *The tested default, measured on 7 October 2026.*, or this project's scheduled test, or a change that the service made itself (§9) |
+| The last line of the *Model chain* card | Where the chain in use comes from. For a chain named in `OPENROUTER_MODELS` it reads *Fixed by the admin of this demo.* Otherwise it names the origin: *The tested default, measured on 13 November 2026.*, or this project's scheduled test, or a change that the service made itself (§9) |
 | *Unlisted from OpenRouter, please contact the admin.* on a model | Shown for a chain named in `OPENROUTER_MODELS`. When the service started, OpenRouter's catalogue did not list that model: it was withdrawn, or its id is mistyped (§9). It is still tried whenever its turn comes. If you run the service, you are the admin: the startup log says how to replace the model. A model whose end OpenRouter has announced shows *Ends* and the date instead |
 | *No longer offered by OpenRouter* on a model | Shown for a chain the service looks after. OpenRouter's own page for that model says "Model not found". Nobody has to be contacted: the service looks for a replacement after the next run that fails on that model (§9) |
 | *No answer yet* or *Not answering* in the top bar | The page got no answer from the service: see *A demo that does not answer* below |
@@ -739,7 +742,7 @@ page's word.
 | | `OPENROUTER_MODELS` is blank | `OPENROUTER_MODELS` names models |
 |---|---|---|
 | The log says | `Model choice: automatic.` | `Model choice: pinned.` |
-| The page says under the chain | *The tested default, measured on 7 October 2026.*, or where the chain has come from since | *Fixed by the admin of this demo.* |
+| The page says under the chain | *The tested default, measured on 13 November 2026.*, or where the chain has come from since | *Fixed by the admin of this demo.* |
 | The chain | Starts from the default, or from this project's published list when that is newer. The service can then take a withdrawn model out and add a tested one. The chain holds three models at most | Exactly the models you named, in your order, always |
 | When a model is withdrawn | The service looks for a replacement by itself | You replace it, with the steps further down |
 | The tests of the models, the published list, the button on the page | In use | Switched off |
@@ -755,12 +758,14 @@ log then says so in a `WARNING` that begins
 
 | Position | Model | Served by |
 |---|---|---|
-| Primary | `nvidia/nemotron-3-super-120b-a12b:free` | Nvidia |
-| Fallback | `liquid/lfm-2.5-2.6b:free` | Liquid |
+| Primary | `nvidia/nemotron-3.5-super-vl:free` | Nvidia |
+| Fallback | `dots-studio/dots-3-note-preview:free` | Dots |
 
-It is a dated snapshot (7 October 2026), not a ranking. The [README](../README.md), under "Model
-selection", records what was measured that day and how. The two models are served by different
-providers, so one upstream outage cannot take out both.
+These defaults were reviewed on 16 November 2026 after both October defaults were withdrawn.
+The [saved review](../benchmarks/2026-11-16-default-review.json) contains five scheduled checks: the
+primary passed all five. Dots is a slower fallback with correct answers in the October benchmark
+and subsequent checks; recent unanswered calls make its latest tests inconclusive. The
+[README](../README.md) preserves the October benchmark separately from these current defaults.
 
 The first default chain, in September 2026, had three models, two of them the free variants of
 `nex-agi/nex-n2.5-mini` and `nex-agi/nex-n2.5-pro`. OpenRouter listed those as free for 17 days,
@@ -1356,6 +1361,7 @@ The suite's files:
 | `tests/test_playground_guard.py` | Who may use the playground's `POST` routes |
 | `tests/test_model_catalogue.py` | The catalogue check: what one lookup concludes, the command's exit code, and that the startup check reports without changing any response |
 | `tests/test_model_rules.py` | What a test of the free models concludes: the verdicts, and the chain after a test |
+| `tests/test_current_defaults.py` | Current model choices against the saved scheduled checks, without changing historical recordings |
 | `tests/test_model_chooser.py` | How the service looks after its chain: blank or named, noticing a failure, a repair, the button, the pauses |
 | `tests/test_published_chain.py` | The published list: the file and its checks, how a service uses it, and the scheduled job's command |
 | `tests/test_models_page.py` | The *Model upkeep* part of the page: words for every code the service can send, and the two routes behind it |

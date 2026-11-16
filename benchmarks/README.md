@@ -1,11 +1,21 @@
 # Benchmark records
 
-Each file here is a record of real calls to free models, one JSON object per line. They are kept
+The dated run files here record real calls to free models, one JSON object per line. They are kept
 so that the figures in the main README and on the playground page can be checked, and so that the
 next measurement has something to be compared with.
 
 Every call sent one of the playground's sample documents. No file holds a key, an account
 identifier or raw upstream text: only the service's own error type and its sanitised message.
+
+## Current-default review: 16 November 2026
+
+[`2026-11-16-default-review.json`](2026-11-16-default-review.json) preserves the calls and verdicts
+from five published GitHub Actions checks, from 24 October through 13 November, together with
+their immutable commit IDs and run links. It is a JSON array, not a new benchmark run.
+`nvidia/nemotron-3.5-super-vl:free` passed all five checks. Dots gave correct answers throughout,
+but was slow or not judged because some calls went unanswered. These observations support the
+replacement primary and fallback after the October defaults were withdrawn; they do not rewrite
+the October benchmark, and they do not promise future availability.
 
 ## Dated runs: `<UTC date>/<UTC time>.jsonl`
 

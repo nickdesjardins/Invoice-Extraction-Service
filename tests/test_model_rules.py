@@ -312,15 +312,16 @@ def test_every_recorded_pass_keeps_the_hand_picked_chain(number: int) -> None:
     tested = [row["model"] for row in BENCHMARK]
     rows = judge(tested, made, CASES, LIMIT, finished=True)
 
-    chain = next_chain([FIRST, SECOND], rows, [], LIMIT)
+    recorded = BENCHMARK_SNAPSHOT["chain"]
+    chain = next_chain(recorded, rows, [], LIMIT)
 
-    assert chain[:2] == [FIRST, SECOND]
+    assert chain[:2] == recorded
     by_model = {row["model"]: row for row in rows}
-    assert by_model[FIRST]["verdict"] == "passed"
+    assert by_model[BENCHMARK_SNAPSHOT["chain"][0]]["verdict"] == "passed"
     assert by_model["apodex/apodex-1.1-mini:free"]["verdict"] == "failed"
     assert by_model["dots-studio/dots-3-note-preview:free"]["verdict"] in ("slow", "not_judged")
 
 
 def test_the_readmes_ordering_rule_is_one_function() -> None:
     """rank() is the rule the README states; on the snapshot it gives the default chain."""
-    assert [row["model"] for row in rank(BENCHMARK, BENCHMARK_SNAPSHOT["timeout_seconds"])] == [FIRST, SECOND]
+    assert [row["model"] for row in rank(BENCHMARK, BENCHMARK_SNAPSHOT["timeout_seconds"])] == BENCHMARK_SNAPSHOT["chain"]

@@ -45,7 +45,6 @@ from app.extractors import get_dispatcher
 from app.model_testing import now as _now
 from app.model_testing import stamp as _stamp
 from app.playground import benchmark
-from app.playground.catalogue import BENCHMARK_SNAPSHOT
 
 logger = logging.getLogger("app.model_chooser")
 
@@ -176,17 +175,16 @@ def mode(settings: Optional[Settings] = None) -> str:
 def tested_at() -> datetime:
     """When a full test last stood behind the chain in use.
 
-    For the built-in default that is the last minute of the measuring by hand, so a
-    list tested later is newer, also later on that same day: a new default is pushed
-    on the day it was measured, and the push starts the scheduled test.
+    The built-in default has its own measurement date. Historical replay records
+    must not make a newly reviewed default look older than it is.
     """
     origin = model_cache.origin()
     if origin:
         written = origin.get("tested")
     else:
-        # "17:54 to 19:02": the minute the last request of the measuring went out.
-        ended = BENCHMARK_SNAPSHOT["window_utc"].rsplit(" ", 1)[-1]
-        written = f"{BENCHMARK_SNAPSHOT['measured']}T{ended}:59Z"
+        from app.config import DEFAULT_CHAIN_TESTED_AT
+
+        written = DEFAULT_CHAIN_TESTED_AT
     return published_chain.moment(written) or datetime.fromtimestamp(0, timezone.utc)
 
 

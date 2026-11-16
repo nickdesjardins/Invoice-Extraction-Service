@@ -1,0 +1,1348 @@
+[
+  {
+    "revision": "ce76f3735e08e2682991c1e26ea16157ded54882",
+    "tested": "2026-11-13T14:38:32Z",
+    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/43444105591",
+    "models": [
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": "dropped"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ProviderError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 19.3,
+        "slowest_seconds": 25.4,
+        "verdict": "not_judged",
+        "why": "unanswered",
+        "placing": "kept"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ContentBlockedError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 13.5,
+        "slowest_seconds": 20.0,
+        "verdict": "passed",
+        "why": "one_missed",
+        "placing": "kept"
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ProviderRateLimitError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 2.2,
+        "slowest_seconds": 2.8,
+        "verdict": "passed",
+        "why": "one_missed",
+        "placing": "added"
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "calls": 4,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 2
+        },
+        "answered": 2,
+        "correct": 2,
+        "median_seconds": 8.9,
+        "slowest_seconds": 11.9,
+        "verdict": "not_judged",
+        "why": "unanswered",
+        "placing": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "calls": 3,
+        "no_answer": 2,
+        "errors": {
+          "ContentBlockedError": 2
+        },
+        "answered": 1,
+        "correct": 1,
+        "median_seconds": 5.0,
+        "slowest_seconds": 5.0,
+        "verdict": "failed",
+        "why": "unusable_answers",
+        "placing": null
+      }
+    ],
+    "calls": [
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.16,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 7.7,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.86,
+        "error_type": null
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 5.9,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 25.16,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 5.03,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.1,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 2.75,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 16.48,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 11.86,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 2.41,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 9.69,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "eur-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.32,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 25.35,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.32,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 16.5,
+        "error_type": null
+      },
+      {
+        "model": "particle-ai/particle-1:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.55,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "eur-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 12.46,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.96,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 12.34,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.62,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 12.78,
+        "error_type": null
+      },
+      {
+        "model": "baidu/ernie-5.5-flash-preview:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 2.38,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 20.06,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 19.97,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 18.52,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 6.78,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "prompt-injection",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.66,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 4.73,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 14.17,
+        "error_type": null
+      }
+    ]
+  },
+  {
+    "revision": "f967f175349dfbe14667d4e2ea6ea3d3aeb1a375",
+    "tested": "2026-11-10T14:55:33Z",
+    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/42838561578",
+    "models": [
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "calls": 6,
+        "no_answer": 2,
+        "errors": {
+          "ContentBlockedError": 2
+        },
+        "answered": 4,
+        "correct": 4,
+        "median_seconds": 1.7,
+        "slowest_seconds": 3.7,
+        "verdict": "failed",
+        "why": "unusable_answers",
+        "placing": "kept"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "calls": 6,
+        "no_answer": 2,
+        "errors": {
+          "ContentBlockedError": 1,
+          "ProviderError": 1
+        },
+        "answered": 4,
+        "correct": 4,
+        "median_seconds": 17.6,
+        "slowest_seconds": 18.2,
+        "verdict": "not_judged",
+        "why": "unanswered",
+        "placing": "kept"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "calls": 7,
+        "no_answer": 0,
+        "errors": {},
+        "answered": 7,
+        "correct": 7,
+        "median_seconds": 13.2,
+        "slowest_seconds": 15.3,
+        "verdict": "passed",
+        "why": "all_right",
+        "placing": "kept"
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "calls": 3,
+        "no_answer": 2,
+        "errors": {
+          "ContentBlockedError": 2
+        },
+        "answered": 1,
+        "correct": 1,
+        "median_seconds": 13.0,
+        "slowest_seconds": 13.0,
+        "verdict": "failed",
+        "why": "unusable_answers",
+        "placing": null
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": null
+      }
+    ],
+    "calls": [
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.64,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 15.48,
+        "error_type": null
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.56,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 13.2,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.77,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 15.4,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.55,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 18.23,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.59,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 15.35,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 12.97,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 8.52,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 18.23,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 12.73,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 3.68,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-3-1.7b:free",
+        "case": "eur-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 24.06,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "prompt-injection",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 5.49,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 13.98,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 24.65,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 10.45,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 16.98,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "prompt-injection",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.87,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 14.89,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 1.98,
+        "error_type": null
+      }
+    ]
+  },
+  {
+    "revision": "4d2c3a4ccf8f00fd9783aa4752b8d46ea3207a41",
+    "tested": "2026-11-03T14:16:55Z",
+    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/41651732185",
+    "models": [
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": "kept"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ProviderError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 18.0,
+        "slowest_seconds": 21.6,
+        "verdict": "not_judged",
+        "why": "unanswered",
+        "placing": "kept"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ContentBlockedError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 8.5,
+        "slowest_seconds": 11.2,
+        "verdict": "passed",
+        "why": "one_missed",
+        "placing": "kept"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "calls": 4,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 2
+        },
+        "answered": 2,
+        "correct": 2,
+        "median_seconds": 3.5,
+        "slowest_seconds": 4.0,
+        "verdict": "not_judged",
+        "why": "unanswered",
+        "placing": null
+      }
+    ],
+    "calls": [
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.25,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 14.61,
+        "error_type": null
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 2.74,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 9.51,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.2,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 2.94,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 16.97,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 8.58,
+        "error_type": null
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 4.01,
+        "error_type": null
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.89,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 8.48,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 21.29,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "service-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 13.04,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 11.18,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 21.57,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 6.6,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 1.91,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 19.1,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "prompt-injection",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.66,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 4.33,
+        "error_type": null
+      }
+    ]
+  },
+  {
+    "revision": "700cae5fee45bc324ad34d27c597ca4a6cda0484",
+    "tested": "2026-10-27T12:14:24Z",
+    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/40501837339",
+    "models": [
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": "dropped"
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "calls": 4,
+        "no_answer": 1,
+        "errors": {
+          "ProviderRateLimitError": 1
+        },
+        "answered": 3,
+        "correct": 2,
+        "median_seconds": 2.2,
+        "slowest_seconds": 2.6,
+        "verdict": "not_judged",
+        "why": "unanswered",
+        "placing": "kept"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ContentBlockedError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 17.2,
+        "slowest_seconds": 19.1,
+        "verdict": "slow",
+        "why": "one_missed",
+        "placing": "kept"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ContentBlockedError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 10.7,
+        "slowest_seconds": 20.3,
+        "verdict": "passed",
+        "why": "one_missed",
+        "placing": "added"
+      }
+    ],
+    "calls": [
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.15,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.31,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 1.11,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.14,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 18.64,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 7.18,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 2.62,
+        "error_type": null
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.97,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 1.47,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 12.31,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 18.38,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": false,
+        "seconds": 2.23,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 9.45,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "eur-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 21.96,
+        "error_type": "ContentBlockedError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 20.32,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 15.68,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 17.13,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 19.1,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 11.88,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 3.5,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 15.95,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 5.05,
+        "error_type": null
+      }
+    ]
+  },
+  {
+    "revision": "08eaa22725b6cc0f201903258b936350358e0fce",
+    "tested": "2026-10-24T11:02:32Z",
+    "run": "https://github.com/nickdesjardins/Invoice-Extraction-Service/actions/runs/40088101011",
+    "models": [
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": "kept"
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderError": 1,
+          "ProviderRateLimitError": 1
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": "kept"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "calls": 7,
+        "no_answer": 0,
+        "errors": {},
+        "answered": 7,
+        "correct": 7,
+        "median_seconds": 15.4,
+        "slowest_seconds": 21.6,
+        "verdict": "slow",
+        "why": "all_right",
+        "placing": "kept"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "calls": 2,
+        "no_answer": 2,
+        "errors": {
+          "ProviderRateLimitError": 2
+        },
+        "answered": 0,
+        "correct": 0,
+        "median_seconds": null,
+        "slowest_seconds": null,
+        "verdict": "not_judged",
+        "why": "no_answers",
+        "placing": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "calls": 7,
+        "no_answer": 1,
+        "errors": {
+          "ProviderTimeoutError": 1
+        },
+        "answered": 6,
+        "correct": 6,
+        "median_seconds": 9.4,
+        "slowest_seconds": 20.9,
+        "verdict": "passed",
+        "why": "one_missed",
+        "placing": "no_place"
+      }
+    ],
+    "calls": [
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.24,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 3.54,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "email-invoice",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.69,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 17.96,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.12,
+        "error_type": "ProviderError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "email-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 8.09,
+        "error_type": null
+      },
+      {
+        "model": "liquid/lfm-2.5-2.6b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.12,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "xingchen-agi/xing4.0-29b-a4b:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 0.92,
+        "error_type": "ProviderRateLimitError"
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "ocr-receipt",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 16.77,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 11.88,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "ocr-receipt",
+        "outcome": "no_answer",
+        "correct": null,
+        "seconds": 30.0,
+        "error_type": "ProviderTimeoutError"
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "eur-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 9.29,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 21.58,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "service-invoice",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 9.92,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 15.43,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "discount-shipping",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 20.86,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 14.63,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "prompt-injection",
+        "outcome": "answered",
+        "correct": true,
+        "seconds": 9.46,
+        "error_type": null
+      },
+      {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 3.95,
+        "error_type": null
+      },
+      {
+        "model": "nvidia/nemotron-3.5-super-vl:free",
+        "case": "not-an-invoice",
+        "outcome": "refused",
+        "correct": true,
+        "seconds": 2.56,
+        "error_type": null
+      }
+    ]
+  }
+]

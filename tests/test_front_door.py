@@ -59,7 +59,7 @@ import httpx
 import pytest
 
 from app import extractors
-from app.config import DEFAULT_MODEL_CHAIN, Settings
+from app.config import Settings
 from app.main import create_app
 from app.playground.benchmark import check_passes, expects_refusal, live_cases, load_records, summarise
 from app.playground.catalogue import BENCHMARK, BENCHMARK_SNAPSHOT, EMAIL_INVOICE, MEETING_EMAIL, scenarios_for
@@ -84,7 +84,7 @@ SCRIPT = SCRIPT_FILE.read_text(encoding="utf-8")
 #: The live demo's own page. The front door wears its colours and borrows its words.
 PLAYGROUND = PROJECT_ROOT / "app" / "playground" / "static"
 
-DEFAULT_CHAIN = [model.strip() for model in DEFAULT_MODEL_CHAIN.split(",")]
+RECORDED_CHAIN = list(BENCHMARK_SNAPSHOT["chain"])
 
 #: Where GitHub Pages serves the page: a project site, so under the repository's name.
 PAGES_URL = "https://nickdesjardins.github.io/Invoice-Extraction-Service/"
@@ -506,13 +506,13 @@ def test_recordings_are_what_the_code_sends_and_checks_today(record: dict[str, A
     changes, record the runs again.
     """
     wanted = record["scenario"]["id"]
-    scenario = next(item for item in scenarios_for(len(DEFAULT_CHAIN)) if item["id"] == wanted)
+    scenario = next(item for item in scenarios_for(len(RECORDED_CHAIN)) if item["id"] == wanted)
 
     assert record["request"]["body"] == {"text": scenario["text"], "simulate": scenario["simulate"]}
     assert scenario["text"] == EMAIL_INVOICE
     for part in ("title", "summary", "simulate", "checks"):
         assert record["scenario"][part] == scenario[part], part
-    assert chain(record) == DEFAULT_CHAIN
+    assert chain(record) == RECORDED_CHAIN
     assert record["limits"]["timeout_seconds"] == Settings.model_fields["timeout_seconds"].default
     # The page gives the time after which a simulated timeout ends: the code's own, today.
     assert record["limits"]["simulated_timeout_seconds"] == SIMULATED_TIMEOUT_SECONDS
@@ -550,7 +550,7 @@ def test_the_first_recording_is_a_run_with_no_failure_and_no_simulation() -> Non
     assert tried == [(0, "answered", False)]
     body = result(RUN)["body"]
     assert body["success"] is True and body["fallback_triggered"] is False
-    assert body["model_used"] == DEFAULT_CHAIN[0]
+    assert body["model_used"] == RECORDED_CHAIN[0]
 
 
 def test_the_second_recording_is_a_simulated_failure_and_a_real_answer() -> None:
@@ -563,7 +563,7 @@ def test_the_second_recording_is_a_simulated_failure_and_a_real_answer() -> None
     assert budget <= first["elapsed_ms"] / 1000 < budget + 0.5
     assert (second["index"], second["outcome"], second["simulated"]) == (1, "answered", False)
     body = result(FALLBACK)["body"]
-    assert body["fallback_triggered"] is True and body["model_used"] == DEFAULT_CHAIN[1]
+    assert body["fallback_triggered"] is True and body["model_used"] == RECORDED_CHAIN[1]
 
 
 @pytest.mark.parametrize("record", [RUN, FALLBACK], ids=list(RECORDINGS))
@@ -600,10 +600,10 @@ def code_facts() -> dict[str, str]:
             "This web service takes the text of an email, a till receipt or a scanned page and "
             "asks a free language model to fill in a fixed invoice form. If it gets no answer "
             "that fits the form, it asks a second model.",
-            (all(model.endswith(":free") for model in DEFAULT_CHAIN), "a default model is not free"),
+            (all(model.endswith(":free") for model in RECORDED_CHAIN), "a default model is not free"),
             (strict, "the fixed response format is no longer on by default"),
             ("InvoiceData.model_validate" in extractors_source, "answers are not validated"),
-            (len(DEFAULT_CHAIN) == 2, "the default chain is not a first model and a second"),
+            (len(RECORDED_CHAIN) == 2, "the default chain is not a first model and a second"),
         ),
         "stack": stated(
             "FastAPI · Pydantic v2 · OpenRouter · strict JSON schema · temperature 0",
@@ -791,7 +791,7 @@ def benchmark_facts(rows: tuple[dict[str, Any], ...] = BENCHMARK) -> dict[str, s
         "bench.window": f"{shot['window_utc']} UTC",
         "bench.models": CARDINALS[len(rows)],
         "bench.records": ", ".join(shot["records"]),
-        "chain.length": CARDINALS[len(DEFAULT_CHAIN)],
+        "chain.length": CARDINALS[len(RECORDED_CHAIN)],
         # The caution is the project's own: the demo's page says it under its table.
         "bench.limits": stated(
             f"{shot['passes']} passes of {shot['cases']} documents per model show whether a model "
@@ -824,8 +824,8 @@ def benchmark_facts(rows: tuple[dict[str, Any], ...] = BENCHMARK) -> dict[str, s
     for index, row in enumerate(rows):
         answered = row["answered"] > 0
         place = (
-            f"{ORDINALS[DEFAULT_CHAIN.index(row['model'])].capitalize()} model"
-            if row["model"] in DEFAULT_CHAIN
+            f"{ORDINALS[RECORDED_CHAIN.index(row['model'])].capitalize()} model"
+            if row["model"] in RECORDED_CHAIN
             else "Left out"
         )
         # The snapshot's note says "ends 2026-12-31": the page says what ends, and writes the
@@ -945,12 +945,12 @@ def test_page_figures_are_what_the_saved_records_say() -> None:
 
 def test_the_page_calls_the_models_first_and_second_in_chain_order() -> None:
     """ "First model" on the page is row 0 of the snapshot. It has to be position 0 of the chain."""
-    assert [row["model"] for row in BENCHMARK[: len(DEFAULT_CHAIN)]] == DEFAULT_CHAIN
-    assert len(DEFAULT_CHAIN) == 2, "the page speaks of a first model and a second one"
+    assert [row["model"] for row in BENCHMARK[: len(RECORDED_CHAIN)]] == RECORDED_CHAIN
+    assert len(RECORDED_CHAIN) == 2, "the page speaks of a first model and a second one"
     tiles = [clean(node.text()) for node in with_class("tile")]
     assert [tile.split(" model")[0] for tile in tiles] == ["First", "Second"]
     context = [node for node in BODY.find(lambda node: node.tag == "tr") if "is-context" in node.classes]
-    assert len(context) == len(BENCHMARK) - len(DEFAULT_CHAIN), "the models left out are drawn as context"
+    assert len(context) == len(BENCHMARK) - len(RECORDED_CHAIN), "the models left out are drawn as context"
 
 
 def test_quotations_stand_word_for_word_in_the_file_they_name() -> None:
@@ -1307,7 +1307,7 @@ def test_marks_stand_beside_the_outcomes_they_show() -> None:
         for row in BODY.find(lambda node: node.tag == "tr")
         if row.find(lambda node: (node.attrs.get("data-fact") or "").endswith(".model"))
     ]
-    assert drawn == [row["model"] not in DEFAULT_CHAIN for row in BENCHMARK]
+    assert drawn == [row["model"] not in RECORDED_CHAIN for row in BENCHMARK]
 
 
 #: Everything the stylesheet takes out of sight, or draws without content. A new rule that
@@ -1651,7 +1651,7 @@ def expected_sentences() -> dict[str, str]:
     assert give_up // 60_000 in CARDINALS, (
         f"the page says this limit in words, from one to {CARDINALS[max(CARDINALS)]} minutes"
     )
-    scenarios = scenarios_for(len(DEFAULT_CHAIN))
+    scenarios = scenarios_for(len(RECORDED_CHAIN))
     their_page = (PLAYGROUND / "index.html").read_text(encoding="utf-8")
     return {
         "waking": (

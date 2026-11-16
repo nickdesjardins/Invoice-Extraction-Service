@@ -56,6 +56,7 @@ TEST_ENVIRONMENT: dict[str, str] = {
 #: that command would append its made-up results to the summary page of the very run
 #: that is executing the suite. So no test sees them unless it sets them itself.
 RUNNER_VARIABLES = (
+    "GITHUB_OUTPUT",
     "GITHUB_STEP_SUMMARY",
     "GITHUB_REPOSITORY",
     "GITHUB_SERVER_URL",

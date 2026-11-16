@@ -1147,7 +1147,8 @@ def test_the_recorded_test_is_the_first_saved_pass_as_it_was() -> None:
 
     assert record["by"] == "recorded" and record["requests"] == len(record["calls"]) == 28
     assert {call["model"] for call in record["calls"]} == set(record["tested"]) and len(record["tested"]) == 4
-    assert record["tested"][:2] == [PRIMARY, FALLBACK] == record["chain_before"]
+    recorded_chain = list(model_testing.BENCHMARK_SNAPSHOT["chain"])
+    assert record["tested"][:2] == recorded_chain == record["chain_before"]
     verdicts = {row["model"].split("/")[0]: (row["verdict"], row["placing"]) for row in record["models"]}
     assert verdicts == {
         "nvidia": ("passed", "kept"),
@@ -1155,7 +1156,7 @@ def test_the_recorded_test_is_the_first_saved_pass_as_it_was() -> None:
         "dots-studio": ("slow", "added"),
         "apodex": ("failed", None),
     }
-    assert record["chain"][:2] == [PRIMARY, FALLBACK] and len(record["chain"]) == 3
+    assert record["chain"][:2] == recorded_chain and len(record["chain"]) == 3
     assert all(set(call) == set(model_testing.CALL_FIELDS) for call in record["calls"])
 
 

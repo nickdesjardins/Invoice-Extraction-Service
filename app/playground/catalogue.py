@@ -644,6 +644,7 @@ def scenarios_for(chain_length: int) -> list[dict[str, Any]]:
 
 BENCHMARK_SNAPSHOT: dict[str, Any] = {
     "measured": "2026-10-07",
+    "chain": ["nvidia/nemotron-3-super-120b-a12b:free", "liquid/lfm-2.5-2.6b:free"],
     # First and last request of the run, in UTC.
     "window_utc": "17:54 to 19:02",
     "passes": 3,

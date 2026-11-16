@@ -241,7 +241,7 @@ def recorded_run() -> Optional[dict[str, Any]]:
             calls = [call for call in benchmark.load_records(paths) if call.get("pass") == 1]
             calls.sort(key=lambda call: call["started"])
             cases = benchmark.live_cases()
-            chain = default_chain()
+            chain = list(BENCHMARK_SNAPSHOT["chain"])
             tested = list(dict.fromkeys(call["model"] for call in calls))
             tested.sort(key=lambda model: chain.index(model) if model in chain else len(chain))
             limit = BENCHMARK_SNAPSHOT["timeout_seconds"]

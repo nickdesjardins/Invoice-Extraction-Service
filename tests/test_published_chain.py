@@ -27,6 +27,7 @@ import pytest
 
 from app import (
     budget,
+    config,
     extractors,
     main,
     model_cache,
@@ -393,7 +394,7 @@ async def test_a_newer_published_chain_is_in_use_before_the_first_request(
     record = await scheduled_test([PRIMARY, FALLBACK], [PRIMARY, FALLBACK, NEWCOMER])
     calls_of_the_job = len(made.test_calls)
     # Tested after the day the built-in default was measured, so it is the newer evidence.
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-01-01")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-01-01T00:00:00Z")
     asked = published(document(record, datetime.now(timezone.utc) - timedelta(days=3)))
 
     async with app.router.lifespan_context(app):
@@ -451,7 +452,7 @@ async def test_no_published_file_can_stop_the_service_from_starting(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     world([PRIMARY, FALLBACK], HEALTHY)
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-01-01")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-01-01T00:00:00Z")
     newer = {**valid(), "tested": stamp(datetime.now(timezone.utc) - timedelta(days=1)), **junk}
     published(newer)
 
@@ -515,8 +516,7 @@ async def test_a_list_tested_after_the_default_was_measured_is_newer_on_the_same
     """Measure, change the default, push: the push starts the job, which publishes that
     same day. The built-in default counts as tested when its measuring ended, not at midnight."""
     world([PRIMARY, FALLBACK, NEWCOMER], HEALTHY)
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-10-07")
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "window_utc", "17:54 to 19:02")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-10-07T19:02:59Z")
     published({**valid(), "tested": f"2026-10-07T{tested_at}Z", "chain": [PRIMARY, FALLBACK, NEWCOMER]})
 
     async with app.router.lifespan_context(app):
@@ -548,7 +548,7 @@ async def test_a_failed_request_is_repaired_from_the_published_list_at_no_cost(
     """The startup read did not get through; the first failed request asks again before anything is spent."""
     made = world([FALLBACK, NEWCOMER], {NEWCOMER: always("right")}, gone=(PRIMARY,))
     fresh = {**valid(), "tested": stamp(datetime.now(timezone.utc) - timedelta(hours=1))}
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-01-01")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-01-01T00:00:00Z")
     asked = published(TimeoutError("slow"))
     async with app.router.lifespan_context(app):
         assert model_chooser.picture()["published"]["state"] == "unreachable"
@@ -572,7 +572,7 @@ async def test_the_chain_that_has_just_failed_is_not_taken_again_from_the_publis
 ) -> None:
     made = world([FALLBACK, NEWCOMER], {NEWCOMER: always("right")}, gone=(PRIMARY,))
     same = {**valid(), "chain": [PRIMARY, FALLBACK], "tested": stamp(datetime.now(timezone.utc) - timedelta(hours=1))}
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-01-01")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-01-01T00:00:00Z")
     published(TimeoutError("slow"))
     async with app.router.lifespan_context(app):
         published(same)
@@ -607,7 +607,7 @@ async def test_a_look_goes_on_for_a_model_that_failed_and_is_in_the_adopted_list
     """
     script = {PRIMARY: always("right"), NEWCOMER: always("right"), FALLBACK: always("limited")}
     made = world([FALLBACK, NEWCOMER], script, gone=(PRIMARY,) if pages == "not_listed" else ())
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-01-01")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-01-01T00:00:00Z")
     record = await scheduled_test([PRIMARY, NEWCOMER], [PRIMARY, NEWCOMER])
     budget.reset()  # the job's calls are not this service's minute
     published(document(record, datetime.now(timezone.utc) - timedelta(hours=1)))
@@ -702,7 +702,7 @@ async def test_startup_tells_the_admin_what_is_in_use_and_why_a_list_is_old(
     """Twenty days old. Either the job has not run, or it runs and can confirm nothing:
     the file itself says which, and "press Enable workflow" helps in the first case only."""
     world([PRIMARY, FALLBACK, NEWCOMER], {**HEALTHY, NEWCOMER: always("right")})
-    monkeypatch.setitem(model_chooser.BENCHMARK_SNAPSHOT, "measured", "2026-01-01")
+    monkeypatch.setattr(config, "DEFAULT_CHAIN_TESTED_AT", "2026-01-01T00:00:00Z")
     record = await scheduled_test([PRIMARY, FALLBACK], [PRIMARY, FALLBACK, NEWCOMER])
     written = document(record, datetime.now(timezone.utc) - timedelta(days=20))
     if confirmed_nothing:
@@ -1129,6 +1129,21 @@ def test_a_refused_key_fails_the_run_at_once(world: Callable[..., World], tmp_pa
     code, written = run_job(tmp_path, fresh, force=True)
 
     assert code == 1 and written is None
+
+
+def test_failure_reason_is_visible_in_actions_and_passed_to_the_verdict(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "outputs"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output))
+    assert published_chain._fail("Model failed at 50%\nCheck the retained chain.") == 1
+    printed = capsys.readouterr().out
+    assert "::error title=Model check failed::Model failed at 50%25%0ACheck the retained chain." in printed
+    assert output.read_text(encoding="utf-8") == "reason=Model failed at 50%25%0ACheck the retained chain.\n"
+    workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/model-check.yml").read_text()
+    assert "reason: ${{ steps.test.outputs.reason }}" in workflow
+    assert "REASON: ${{ needs.test.outputs.reason }}" in workflow
+    assert '"::error title=Model check failed::$REASON"' in workflow
 
 
 def test_the_job_leaves_a_fifth_of_the_day_for_visitors(
